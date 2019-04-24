@@ -47,11 +47,15 @@ read -p "efipartition # (/dev/sda#) = /dev/sda" efipartition
 echo
 read -p "ospartition # (/dev/sda#) = /dev/sda" ospartition
 echo
-read -p "Enter your preferred bootloader-id: " bootloaderid
+read -p "Enter bootloader-id: " bootloaderid
 echo
-read -p "Enter your hostname: " hostname
+read -p "Enter hostname: " hostname
 echo
-read -p "Enter your preferred username: " username
+read -p "Enter username: " username
+echo
+read -p "Enter user password: " userpass
+echo
+read -p "Enter root password: " rootpass
 echo
 echo "----------------------------------------------------------------------"
 echo "FORMAT PARTITIONS + MOUNT ROOT"
@@ -103,7 +107,9 @@ echo "[ SETTING HOSTNAME ]"
 echo $hostname > /mnt/etc/hostname
 echo
 echo "[ SET ROOT PASSWORD ]"
-arch-chroot /mnt passwd
+# https://www.systutorials.com/39549/changing-linux-users-password-in-one-command-line/
+# echo "linuxpassword" | passwd --stdin linuxuser
+arch-chroot /mnt echo $rootpass | passwd --stdin
 echo
 echo "[ CREATING /boot/efi DIRECTORY ]"
 mkdir /mnt/boot/efi
@@ -130,7 +136,9 @@ echo "[ CREATING USER WITH ADMINISTRATOR PRIVILIGES ]"
 arch-chroot /mnt useradd -m -g users -G wheel -s /bin/bash $username
 echo
 echo "[ SET USER PASSWORD ]"
-arch-chroot /mnt passwd $username
+# https://www.systutorials.com/39549/changing-linux-users-password-in-one-command-line/
+# echo "linuxpassword" | passwd --stdin linuxuser
+arch-chroot /mnt echo $userpass | passwd --stdin $username
 echo
 echo "[ SETTING ADMINISTRATOR PRIVILIGES ]"
 sed -i 's/^# %wheel ALL=(ALL) ALL/ %wheel ALL=(ALL) ALL/g' /mnt/etc/sudoers
