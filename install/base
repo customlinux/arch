@@ -1,0 +1,148 @@
+#!/bin/bash
+echo "----------------------------------------------------------------------"
+echo "CHECKING IF SCRIPT IS RUN AS ROOT"
+echo "----------------------------------------------------------------------"
+if [[ $EUID -ne 0 ]]
+then
+    echo "You must be a root user to run this." 2>&1
+    exit 1
+else
+	echo "Scipt is being run as root."
+	echo
+fi
+echo "----------------------------------------------------------------------"
+echo "CHECK IF SYSTEM IS BOOTED IN EFI MODE"
+echo "----------------------------------------------------------------------"
+ls /sys/firmware/efi/efivars
+echo
+echo "[ IF A DIRECTORY EXISTS, PRESS 'ENTER' TO CONTINUE ]"
+read
+echo "----------------------------------------------------------------------"
+echo "INSTALLING REFLECTOR AND UPDATING MIRRORLIST"
+echo "----------------------------------------------------------------------"
+pacman -S --noconfirm reflector
+reflector --verbose -l 100 -p http -p https --sort rate --save /etc/pacman.d/mirrorlist
+echo "----------------------------------------------------------------------"
+echo "UPDATING SYSTEM CLOCK"
+echo "----------------------------------------------------------------------"
+timedatectl set-ntp true
+echo "----------------------------------------------------------------------"
+echo "PARTITION THE DRIVE"
+echo "----------------------------------------------------------------------"
+fdisk -l
+echo
+lsblk
+echo
+echo "[ CFDISK - PRESS 'ENTER' TO CONTINUE ]"
+read
+cfdisk
+fdisk -l
+echo
+lsblk
+echo
+echo "----------------------------------------------------------------------"
+echo "INPUT VARIABLE VALUES"
+echo "----------------------------------------------------------------------"
+read -p "efipartition # (/dev/sda#) = /dev/sda" efipartition
+echo
+read -p "ospartition # (/dev/sda#) = /dev/sda" ospartition
+echo
+read -p "Enter your preferred bootloader-id: " bootloaderid
+echo
+read -p "Enter your hostname: " hostname
+echo
+read -p "Enter your preferred username: " username
+echo
+echo "----------------------------------------------------------------------"
+echo "FORMAT PARTITIONS + MOUNT ROOT"
+echo "----------------------------------------------------------------------"
+mkfs.fat -F32 /dev/sda$efipartition
+echo
+mkfs.ext4 /dev/sda$ospartition
+echo
+mount /dev/sda$ospartition /mnt
+echo "----------------------------------------------------------------------"
+echo "PACSTRAP - BASE + BASE-DEVEL"
+echo "----------------------------------------------------------------------"
+pacstrap /mnt base base-devel
+echo
+echo "----------------------------------------------------------------------"
+echo "GENERATE FSTAB"
+echo "----------------------------------------------------------------------"
+genfstab -U /mnt >> /mnt/etc/fstab
+echo
+cat /mnt/etc/fstab
+echo "---------------------------------------------------------------------"
+#echo "   __      ___  __  __  ___       __                                 "
+#echo "  |_  |\ |  |  |_  |__|  |  |\ | | _   _   _   _                     "
+#echo "  |__ | \|  |  |__ | \  _|_ | \| |__| |_| |_| |_|                    "
+echo "   _______    _       _   _______    _______    _______    _______   "
+echo "  |  _____|  | |     | | |  ___  |  |  ___  |  |  ___  |  |__   __|  "
+echo "  | |        | |_____| | | |___| |  | |   | |  | |   | |     | |     "
+echo "  | |        |  _____  | |  _____|  | |   | |  | |   | |     | |     "
+echo "  | |_____   | |     | | | |  \ \   | |___| |  | |___| |     | |     "
+echo "  |_______|  |_|     |_| |_|   \_\  |_______|  |_______|     |_|     "
+echo "                                                                     "
+echo "---------------------------------------------------------------------"
+echo
+echo "[ SET TIMEZONE TO US-PACIFIC ]"
+arch-chroot /mnt ln -sf /usr/share/zoneinfo/US/Pacific /etc/localtime
+echo
+echo "[ GENERATING /etc/adjtime ]"
+arch-chroot /mnt hwclock --systohc --utc
+echo
+echo "[ SETTING LOCALE TO en_US.UTF-8 UTF-8 FOR AMERICAN-ENGLISH ]"
+sed -i 's/^#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/g' /mnt/etc/locale.gen
+echo
+echo "[ SETTING LANG VARIABLE TO LANG=en_US.UTF-8 ]"
+echo "LANG=en_US.UTF-8" > /mnt/etc/locale.conf
+echo
+echo "[ GENERATING LOCALE ]"
+arch-chroot /mnt locale-gen
+echo
+echo "[ SETTING HOSTNAME ]"
+echo $hostname > /mnt/etc/hostname
+echo
+echo "[ SET ROOT PASSWORD ]"
+arch-chroot /mnt passwd
+echo
+echo "[ CREATING /boot/efi DIRECTORY ]"
+mkdir /mnt/boot/efi
+echo
+echo "[ MOUNTING EFI PARTITION TO /boot/efi DIRECTORY ]"
+mount /dev/sda$efipartition /mnt/boot/efi
+echo
+echo "[ INSTALLING GRUB RELATED PACKAGES ]"
+arch-chroot /mnt pacman -S --needed --noconfirm grub efibootmgr intel-ucode os-prober sudo networkmanager wget
+echo
+echo "[ INSTALLING GRUB TO /boot/efi ]"
+arch-chroot /mnt grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=$bootloaderid
+echo
+echo "[ CHANGING GRUB TIMEOUT TO 0 ]"
+sed -i '4s/5/0/' /mnt/etc/default/grub
+echo
+echo "[ GENERATING GRUB CONFIGURATION FILE ]"
+arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
+echo
+echo "[ ENABLING NETWORK MANAGER ]"
+arch-chroot /mnt systemctl enable NetworkManager
+echo
+echo "[ CREATING USER WITH ADMINISTRATOR PRIVILIGES ]"
+arch-chroot /mnt useradd -m -g users -G wheel -s /bin/bash $username
+echo
+echo "[ SET USER PASSWORD ]"
+arch-chroot /mnt passwd $username
+echo
+echo "[ SETTING ADMINISTRATOR PRIVILIGES ]"
+sed -i 's/^# %wheel ALL=(ALL) ALL/ %wheel ALL=(ALL) ALL/g' /mnt/etc/sudoers
+echo
+echo "----------------------------------------------------------------------"
+echo "FINISHING INSTALL: MOVING DE FILES TO /mnt + REMOVING EXTRA FILES"
+echo "----------------------------------------------------------------------"
+cp /root/arch/install/*{gnome,kde,xfce,budgie,bedrock}* /mnt/home/$username
+chmod +x /mnt/home/$username/*
+rm -r /root/arch
+echo
+echo "[ UNMOUNT & REBOOT ]"
+umount -a
+reboot
