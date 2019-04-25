@@ -53,9 +53,9 @@ read -p "Enter hostname: " hostname
 echo
 read -p "Enter username: " username
 echo
-read -pr "Enter user password: " userpass
+read -rp "Enter user password: " userpass
 echo
-read -pr "Enter root password: " rootpass
+read -rp "Enter root password: " rootpass
 echo
 echo "----------------------------------------------------------------------"
 echo "FORMAT PARTITIONS + MOUNT ROOT"
