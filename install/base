@@ -107,9 +107,8 @@ echo "[ SETTING HOSTNAME ]"
 echo $hostname > /mnt/etc/hostname
 echo
 echo "[ SET ROOT PASSWORD ]"
-# https://www.systutorials.com/39549/changing-linux-users-password-in-one-command-line/
-# echo "linuxpassword" | passwd --stdin linuxuser
-arch-chroot /mnt echo -n "$rootpass" | passwd --stdin
+#echo -n "$rootpass" | passwd --stdin
+arch-chroot /mnt echo "root:$rootpass" | chpasswd
 echo
 echo "[ CREATING /boot/efi DIRECTORY ]"
 mkdir /mnt/boot/efi
@@ -136,9 +135,8 @@ echo "[ CREATING USER WITH ADMINISTRATOR PRIVILIGES ]"
 arch-chroot /mnt useradd -m -g users -G wheel -s /bin/bash $username
 echo
 echo "[ SET USER PASSWORD ]"
-# https://www.systutorials.com/39549/changing-linux-users-password-in-one-command-line/
-# echo "linuxpassword" | passwd --stdin linuxuser
-arch-chroot /mnt echo -n "$userpass" | passwd --stdin $username
+#echo -n "$userpass" | passwd --stdin $username
+arch-chroot /mnt echo "$username:$userpass" | chpasswd
 echo
 echo "[ SETTING ADMINISTRATOR PRIVILIGES ]"
 sed -i 's/^# %wheel ALL=(ALL) ALL/ %wheel ALL=(ALL) ALL/g' /mnt/etc/sudoers
