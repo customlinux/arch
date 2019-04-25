@@ -53,9 +53,9 @@ read -p "Enter hostname: " hostname
 echo
 read -p "Enter username: " username
 echo
-read -p "Enter user password: " userpass
+read -pr "Enter user password: " userpass
 echo
-read -p "Enter root password: " rootpass
+read -pr "Enter root password: " rootpass
 echo
 echo "----------------------------------------------------------------------"
 echo "FORMAT PARTITIONS + MOUNT ROOT"
@@ -109,7 +109,7 @@ echo
 echo "[ SET ROOT PASSWORD ]"
 # https://www.systutorials.com/39549/changing-linux-users-password-in-one-command-line/
 # echo "linuxpassword" | passwd --stdin linuxuser
-arch-chroot /mnt echo $rootpass | passwd --stdin
+arch-chroot /mnt echo -n "$rootpass" | passwd --stdin
 echo
 echo "[ CREATING /boot/efi DIRECTORY ]"
 mkdir /mnt/boot/efi
@@ -138,7 +138,7 @@ echo
 echo "[ SET USER PASSWORD ]"
 # https://www.systutorials.com/39549/changing-linux-users-password-in-one-command-line/
 # echo "linuxpassword" | passwd --stdin linuxuser
-arch-chroot /mnt echo $userpass | passwd --stdin $username
+arch-chroot /mnt echo -n "$userpass" | passwd --stdin $username
 echo
 echo "[ SETTING ADMINISTRATOR PRIVILIGES ]"
 sed -i 's/^# %wheel ALL=(ALL) ALL/ %wheel ALL=(ALL) ALL/g' /mnt/etc/sudoers
