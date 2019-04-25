@@ -112,7 +112,7 @@ echo "[ SET ROOT PASSWORD ]"
 #echo "root:$rootpass" | chpasswd
 #arch-chroot /mnt 
 echo "root:$rootpass" > /mnt/temppassfile
-arch-chroot /mnt 'chpasswd < /temppassfile'
+arch-chroot /mnt chpasswd < /mnt/temppassfile
 rm /mnt/temppassfile
 echo
 echo "[ CREATING /boot/efi DIRECTORY ]"
@@ -145,7 +145,7 @@ echo "[ SET USER PASSWORD ]"
 #echo "$username:$userpass" | chpasswd
 #arch-chroot /mnt 
 echo "$username:$userpass" > /mnt/temppassfile
-arch-chroot /mnt 'chpasswd < /temppassfile'
+arch-chroot /mnt chpasswd < /mnt/temppassfile
 rm /mnt/temppassfile
 echo
 echo "[ SETTING ADMINISTRATOR PRIVILIGES ]"
