@@ -110,10 +110,10 @@ echo "[ SET ROOT PASSWORD ]"
 # https://www.systutorials.com/39549/changing-linux-users-password-in-one-command-line/
 #echo -n "$rootpass" | passwd --stdin
 #echo "root:$rootpass" | chpasswd
-#arch-chroot /mnt 
-echo "root:$rootpass" > /mnt/temppassfile
-arch-chroot /mnt chpasswd < /mnt/temppassfile
-rm /mnt/temppassfile
+arch-chroot /mnt sh -c "echo 'root:$rootpass' | chpasswd"
+#echo "root:$rootpass" > /mnt/temppassfile
+#arch-chroot /mnt chpasswd < /mnt/temppassfile
+#rm /mnt/temppassfile
 echo
 echo "[ CREATING /boot/efi DIRECTORY ]"
 mkdir /mnt/boot/efi
@@ -143,10 +143,10 @@ echo "[ SET USER PASSWORD ]"
 # https://www.systutorials.com/39549/changing-linux-users-password-in-one-command-line/
 #echo -n "$userpass" | passwd --stdin $username
 #echo "$username:$userpass" | chpasswd
-#arch-chroot /mnt 
-echo "$username:$userpass" > /mnt/temppassfile
-arch-chroot /mnt chpasswd < /mnt/temppassfile
-rm /mnt/temppassfile
+arch-chroot /mnt sh -c "echo '$username:$userpass' | chpasswd"
+#echo "$username:$userpass" > /mnt/temppassfile
+#arch-chroot /mnt chpasswd < /mnt/temppassfile
+#rm /mnt/temppassfile
 echo
 echo "[ SETTING ADMINISTRATOR PRIVILIGES ]"
 sed -i 's/^# %wheel ALL=(ALL) ALL/ %wheel ALL=(ALL) ALL/g' /mnt/etc/sudoers
