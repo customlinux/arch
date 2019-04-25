@@ -1,0 +1,244 @@
+#!/bin/bash
+automathemely
+while [[ ! "$yesnoautomountpartitions" =~ ^[yYnN]$ ]]; do read -n1 -p "Do you want to automount any partitions at startup? [y/n] : " yesnoautomountpartitions && echo; done
+case $yesnoautomountpartitions in
+	y|Y)
+		gnome-disks
+		echo ;;
+	n|N)
+		echo
+		echo "Continuing..."
+		echo ;;
+esac
+while [[ ! "$yesnomultipledisplays" =~ ^[yYnN]$ ]]; do read -n1 -p "Are you using multiple displays? [y/n] : " yesnomultipledisplays && echo; done
+case $yesnomultipledisplays in
+	y|Y)
+		echo
+		echo "If multiple displays are being used, set them up correctly in System Settings before continuing to apply the same configuration to GDM."
+		echo
+		echo "Press 'ENTER' to open System Settings."
+		read
+		gnome-control-center display
+		echo "[ GDM MONITOR SETTINGS ]"
+		sudo cp ~/.config/monitors.xml /var/lib/gdm/.config/
+		sudo chown gdm:gdm /var/lib/gdm/.config/monitors.xml
+		echo ;;
+	n|N)
+		echo
+		echo "Continuing..."
+		echo ;;
+esac
+echo "------------------------------------------------------------------------------------------------"
+echo "[ CONFIGURING DCONF SETTINGS ]"
+echo "------------------------------------------------------------------------------------------------"
+echo
+echo "Plank - [net/launchpad/plank/docks/dock1]"
+dconf write /net/launchpad/plank/docks/dock1/hide-mode "'auto-hide'"
+dconf write /net/launchpad/plank/docks/dock1/monitor "'eDP-1'"
+echo "Nautilus Terminal - [org/flozz/nautilus-terminal]"
+dconf write /org/flozz/nautilus-terminal/default-show-terminal false
+echo "Gnome Background - [org/gnome/desktop/background]"
+dconf write /org/gnome/desktop/background/picture-uri "'/usr/share/backgrounds/gnome/mojave-timed.xml'"
+echo "Gnome DateTime - [org/gnome/desktop/datetime]"
+dconf write /org/gnome/desktop/datetime/automatic-timezone true
+echo "Gnome UI - [org/gnome/desktop/interface]"
+#IN-GDM-SETTINGS# dconf write /org/gnome/desktop/interface/clock-format "'12h'"
+dconf write /org/gnome/desktop/interface/clock-show-date true
+dconf write /org/gnome/desktop/interface/clock-show-seconds true
+dconf write /org/gnome/desktop/interface/cursor-theme "'capitaine-cursors'"
+#dconf write /org/gnome/desktop/interface/document-font-name "'Clear Sans 11'"
+#dconf write /org/gnome/desktop/interface/font-name "'Clear Sans Medium, Medium 11'"
+dconf write /org/gnome/desktop/interface/icon-theme "'la-capitaine'"
+#dconf write /org/gnome/desktop/interface/monospace-font-name "'Hack 11'"
+dconf write /org/gnome/desktop/interface/show-battery-percentage true
+echo "Touchpad - [org/gnome/desktop/peripherals/touchpad]"
+#IN-GDM-SETTINGS# dconf write /org/gnome/desktop/peripherals/touchpad/tap-to-click true
+echo "Gnome Screensaver - [org/gnome/desktop/screensaver]"
+dconf write /org/gnome/desktop/screensaver/picture-uri "'/usr/share/backgrounds/gnome/mojave-timed.xml'"
+echo "Search - [org/gnome/desktop/search-providers]"
+dconf write /org/gnome/desktop/search-providers/disable-external true
+echo "Gnome Windows - [org/gnome/desktop/wm/preferences]"
+dconf write /org/gnome/desktop/wm/preferences/action-double-click-titlebar "'none'"
+dconf write /org/gnome/desktop/wm/preferences/action-middle-click-titlebar "'toggle-maximize'"
+dconf write /org/gnome/desktop/wm/preferences/button-layout "':minimize,maximize,close'"
+dconf write /org/gnome/desktop/wm/preferences/resize-with-right-button false
+#dconf write /org/gnome/desktop/wm/preferences/titlebar-font "'Clear Sans Bold 11'"
+echo "Image Viewer - [org/gnome/eog/ui]"
+dconf write /org/gnome/eog/ui/sidebar false
+dconf write /org/gnome/eog/view/use-background-color false
+echo "System Monitor - [org/gnome/gnome-system-monitor]"
+dconf write /org/gnome/gnome-system-monitor/current-tab "'resources'"
+dconf write /org/gnome/gnome-system-monitor/maximized true
+echo "Gnome Mutter - [org/gnome/mutter]"
+dconf write /org/gnome/mutter/attach-modal-dialogs false
+dconf write /org/gnome/mutter/center-new-windows true
+dconf write /org/gnome/mutter/edge-tiling true
+echo "Nautilus - [org/gnome/nautilus/icon-view]"
+dconf write /org/gnome/nautilus/icon-view/default-zoom-level "'standard'"
+dconf write /org/gnome/nautilus/window-state/sidebar-width 1
+dconf write /org/gnome/nautilus/preferences/show-create-link true
+dconf write /org/gtk/settings/file-chooser/show-hidden true
+dconf write /org/gtk/settings/file-chooser/sort-directories-first true
+dconf write /org/gtk/settings/file-chooser/sidebar-width 1
+echo "Night Light - [org/gnome/settings-daemon/plugins/color]"
+dconf write /org/gnome/settings-daemon/plugins/color/night-light-enabled true
+echo "Display - [org/gnome/settings-daemon/plugins/xsettings]"
+dconf write /org/gnome/settings-daemon/plugins/xsettings/antialiasing "'rgba'"
+echo "Power - [/org/gnome/settings-daemon/plugins/power]"
+dconf write /org/gnome/settings-daemon/plugins/power/sleep-inactive-battery-timeout 900
+echo "Location Services - [org/gnome/system/location]"
+dconf write /org/gnome/system/location/enabled true
+echo "Gnome Terminal - [org/gnome/terminal/legacy]"
+dconf write /org/gnome/terminal/legacy/default-show-menubar false
+dconf write /org/gnome/terminal/legacy/keybindings/toggle-menubar "'<Alt>m'"
+dconf write /org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/audible-bell false
+dconf write /org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/cursor-shape "'ibeam'"
+#dconf write /org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/font "'Hack 12'"
+dconf write /org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/use-system-font false
+dconf write /org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/use-theme-colors false
+echo
+echo "[ CONFIGURING GNOME EXTENSIONS ]"
+echo
+echo "Arch Update - [org/gnome/shell/extensions/arch-update]"
+dconf write /org/gnome/shell/extensions/arch-update/always-visible false
+dconf write /org/gnome/shell/extensions/arch-update/boot-wait 60
+dconf write /org/gnome/shell/extensions/arch-update/notify true
+echo "Caffeine - [org/gnome/shell/extensions/caffeine]"
+dconf write /org/gnome/shell/extensions/caffeine/restore-state false
+dconf write /org/gnome/shell/extensions/caffeine/show-notifications false
+echo "Clock Override - [org/gnome/shell/extensions/clock_override]"
+dconf write /org/gnome/shell/extensions/clock_override/override-string "'%A  | %l:%M:%S %p  |  %B %d'"
+echo "Lock Keys - [org/gnome/shell/extensions/lockkeys]"
+dconf write /org/gnome/shell/extensions/lockkeys/notifications false
+dconf write /org/gnome/shell/extensions/lockkeys/style "'show-hide'"
+echo "Notification Alert - [org/gnome/shell/extensions/notifications-alert]"
+dconf write /org/gnome/shell/extensions/notifications-alert/blinkrate 0
+dconf write /org/gnome/shell/extensions/notifications-alert/color "'#00b1ff'"
+echo "Apps View Columns - [org/gnome/shell/extensions/set-columns]"
+dconf write /org/gnome/shell/extensions/set-columns/columns-max 7
+echo "System Menu Tweaks Button - [org/gnome/shell/extensions/tweaks-system-menu]"
+dconf write /org/gnome/shell/extensions/tweaks-system-menu/merge-with-settings false
+#echo "System Monitor (Top Panel) - [org/gnome/shell/extensions/system-monitor]"
+#dconf write /org/gnome/shell/extensions/system-monitor/background "'#ffffff16'"
+#dconf write /org/gnome/shell/extensions/system-monitor/battery-display false
+#dconf write /org/gnome/shell/extensions/system-monitor/battery-graph-width 100
+#dconf write /org/gnome/shell/extensions/system-monitor/battery-hidesystem false
+#dconf write /org/gnome/shell/extensions/system-monitor/battery-show-menu false
+#dconf write /org/gnome/shell/extensions/system-monitor/battery-show-text false
+#dconf write /org/gnome/shell/extensions/system-monitor/battery-time false
+#dconf write /org/gnome/shell/extensions/system-monitor/center-display false
+#dconf write /org/gnome/shell/extensions/system-monitor/compact-display false
+#dconf write /org/gnome/shell/extensions/system-monitor/cpu-display true
+#dconf write /org/gnome/shell/extensions/system-monitor/cpu-graph-width 100
+#dconf write /org/gnome/shell/extensions/system-monitor/cpu-refresh-time 1000
+#dconf write /org/gnome/shell/extensions/system-monitor/cpu-show-menu false
+#dconf write /org/gnome/shell/extensions/system-monitor/cpu-show-text true
+#dconf write /org/gnome/shell/extensions/system-monitor/cpu-style "'digit'"
+#dconf write /org/gnome/shell/extensions/system-monitor/disk-display false
+#dconf write /org/gnome/shell/extensions/system-monitor/disk-show-menu false
+#dconf write /org/gnome/shell/extensions/system-monitor/fan-show-menu false
+#dconf write /org/gnome/shell/extensions/system-monitor/icon-display false
+#dconf write /org/gnome/shell/extensions/system-monitor/memory-refresh-time 1000
+#dconf write /org/gnome/shell/extensions/system-monitor/memory-show-menu false
+#dconf write /org/gnome/shell/extensions/system-monitor/memory-show-text true
+#dconf write /org/gnome/shell/extensions/system-monitor/memory-style "'digit'"
+#dconf write /org/gnome/shell/extensions/system-monitor/move-clock false
+#dconf write /org/gnome/shell/extensions/system-monitor/net-display false
+#dconf write /org/gnome/shell/extensions/system-monitor/net-show-menu false
+#dconf write /org/gnome/shell/extensions/system-monitor/net-style "'digit'"
+#dconf write /org/gnome/shell/extensions/system-monitor/show-tooltip false
+#dconf write /org/gnome/shell/extensions/system-monitor/swap-display false
+#dconf write /org/gnome/shell/extensions/system-monitor/swap-show-menu false
+#dconf write /org/gnome/shell/extensions/system-monitor/thermal-show-menu false
+echo
+echo "------------------------------------------------------------------------------------------------"
+echo "ENABLING / DISABLING GNOME EXTENSIONS"
+echo "------------------------------------------------------------------------------------------------"
+echo
+gnome-shell-extension-tool -e arch-update@RaphaelRochet
+gnome-shell-extension-tool -d arrangeWindows@sun.wxg@gmail.com
+echo
+echo "------------------------------------------------------------------------------------------------"
+echo "CONFIGURING AUTOMATHEMELY"
+echo "------------------------------------------------------------------------------------------------"
+echo
+automathemely --setting desktop_environment=gnome
+##automathemely --setting themes.gnome.light.gtk=Ant-Nebula
+sudo sed -i '7s/""/"Ant-Nebula"/' ~/.config/automathemely/user_settings.json
+##automathemely --setting themes.gnome.light.icons=la-capitaine
+sudo sed -i 's/"icons": ""/"icons": "la-capitaine"/g' ~/.config/automathemely/user_settings.json
+##automathemely --setting themes.gnome.light.shell=Ant-Nebula
+sudo sed -i 's/"shell": ""/"shell": "Ant-Nebula"/g' ~/.config/automathemely/user_settings.json
+##automathemely --setting themes.gnome.dark.gtk=Dark-Side
+sudo sed -i '12s/""/"Sierra-Dark"/' ~/.config/automathemely/user_settings.json
+##automathemely --setting themes.gnome.dark.icons=la-capitaine
+##automathemely --setting themes.gnome.dark.shell=Ant-Nebula
+#automathemely --setting location.auto_enabled=True
+sudo sed -i 's/"auto_enabled": false/"auto_enabled": true/' ~/.config/automathemely/user_settings.json
+automathemely --setting misc.notifications=False
+echo
+echo "[ OPENING AUTOMATHEMELY SETTINGS GUI ]"
+echo
+automathemely -m
+# ^
+automathemely --restart
+echo
+echo "[ ADDING AUTOMATHEMELY TO GNOME AUTOSTART ]"
+echo
+cat << EOT1 >> /home/$USER/.config/autostart/runautomathemely.desktop
+[Desktop Entry]
+Name=automathemelyrunner
+Type=Application
+Exec=python3 /usr/lib/python3.7/site-packages/automathemely/bin/autothscheduler.py
+Hidden=false
+NoDisplay=false
+X-GNOME-Autostart-enabled=true
+EOT1
+chmod +x /home/$USER/.config/autostart/runautomathemely.desktop
+echo "------------------------------------------------------------------------------------------------"
+echo "CONFIGURING MISCELLANEOUS SETTINGS"
+echo "------------------------------------------------------------------------------------------------"
+echo
+while [[ ! "$yesnousegrub" =~ ^[yYnN]$ ]]; do read -n1 -p "Do you want to use the grub os-selector at startup (for dualboot, etc.) ? [y/n] : " yesnousegrub && echo; done
+case $yesnousegrub in
+	y|Y)
+		echo "[ CONFIGURING GRUB SETTINGS ]"
+		echo
+		sudo sed -i '4s/0/2/' /etc/default/grub
+		sudo sed -i 's/GRUB_DEFAULT=0/GRUB_DEFAULT=saved/g' /etc/default/grub
+		sudo sed -i '/GRUB_SAVEDEFAULT/s/^#//g' /etc/default/grub
+		echo "[ INSTALLING GRUB THEME ]"
+		echo
+		wget -O - https://github.com/shvchk/poly-light/raw/master/install.sh | bash
+		echo ;;
+	n|N)
+		echo
+		echo "Continuing..."
+		echo ;;
+esac
+echo "[ GIT SETTINGS ]"
+echo
+git config --global core.editor "subl3 -n -w"
+git config --global credential.helper 'cache --timeout=1800'
+git config --global core.autocrlf input
+echo
+echo "[ PACMAN SETTINGS (MAKEPKG) - DISABLING RECOMPRESSION ]"
+echo
+sudo sed -i '144s/.xz//' /etc/makepkg.conf
+echo
+echo "------------------------------------------------------------------------------------------------"
+echo "REMOVING EXTRA SOFTWARE / FILES"
+echo "------------------------------------------------------------------------------------------------"
+echo
+sudo pacman -Rns --noconfirm gnome-disk-utility
+echo
+sudo mkdir /home/$USER/Documents/Arch-Install
+sudo mv /home/$USER/*{gnome,kde,xfce,budgie,bedrock}* /home/$USER/Documents/Arch-Install
+sudo mv /home/$USER/.config/autostart/run*postinstall.desktop /home/$USER/Documents/Arch-Install
+echo
+echo "[ Installation scripts have been moved into directory '/home/$USER/Documents/Arch-Install'. ]"
+echo
+echo "[ PRESS 'ENTER' TO REBOOT ]"
+echo
+read
+sudo reboot
