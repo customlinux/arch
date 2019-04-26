@@ -44,8 +44,8 @@ chmod +x gnome-shell-extension-installer
 sudo mv gnome-shell-extension-installer /usr/bin/
 echo
 echo "[ INSTALLING GNOME SHELL EXTENSIONS ]"
-# Extension Info:               Arch Updates|Arrange Windows|Caffeine|Clock Override|Disable Workspace Switch Animation|Hide Activities Button|Impatience|Lock Keys|Apps View Columns|No Spring|No Top-Left Corner|No Annoyance|Notification Alert Color|Places|Remove Dash|Remove Dropdown Arrows|Suspend Button|Tweaks in System Menu|User Themes|Workspace Indicator|
-gnome-shell-extension-installer 1010         1604            517      1206           1328                               1128                   277        36        1305              1303      118                1236         258                      8      1297        800                    826            1653                  19          21                 
+# Extension Info:               Arch Updates|Arrange Windows|Caffeine|Clock Override|Disable Workspace Switch Animation|Hide Activities Button|Impatience|Lock Keys|Apps View Columns|No Spring|No Top-Left Corner|No Annoyance|Notification Alert Color|Places|Remove Dash|Remove Dropdown Arrows|Suspend Button|Tweaks in System Menu|User Themes|Workspace Indicator|Transparent Top Bar|
+gnome-shell-extension-installer 1010         1604            517      1206           1328                               1128                   277        36        1305              1303      118                1236         258                      8      1297        800                    826            1653                  19          21                  1708
 # Top Icons: 1497 (not needed | last checked 07/04/2019)
 # Hide Top Bar: 545 (not fully stable)
 # TopIcons Plus: 1031 (not maintained | last checked 23/02/2019)
