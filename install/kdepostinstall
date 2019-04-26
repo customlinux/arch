@@ -1,0 +1,78 @@
+#!/bin/bash
+automathemely
+while [[ ! "$yesnoautomountpartitions" =~ ^[yYnN]$ ]]; do read -n1 -p "Do you want to automount any partitions at startup? [y/n] : " yesnoautomountpartitions && echo; done
+case $yesnoautomountpartitions in
+	y|Y)
+		gnome-disks
+		echo ;;
+	n|N)
+		echo
+		echo "Skipping..."
+		echo ;;
+esac
+while [[ ! "$yesnomultipledisplays" =~ ^[yYnN]$ ]]; do read -n1 -p "Do you want to set up multiple displays? [y/n] : " yesnomultipledisplays && echo; done
+case $yesnomultipledisplays in
+	y|Y)
+		echo
+		echo "Press 'ENTER' to open Display Settings."
+		read
+		systemsettings
+		echo ;;
+	n|N)
+		echo
+		echo "Skipping..."
+		echo ;;
+esac
+echo "------------------------------------------------------------------------------------------------"
+echo "CONFIGURING MISCELLANEOUS SETTINGS"
+echo "------------------------------------------------------------------------------------------------"
+echo
+while [[ ! "$yesnousegrub" =~ ^[yYnN]$ ]]; do read -n1 -p "Do you want to use the grub os-selector at startup (for dualboot, etc.) ? [y/n] : " yesnousegrub && echo; done
+case $yesnousegrub in
+	y|Y)
+		echo "[ CONFIGURING GRUB SETTINGS ]"
+		echo
+		sudo sed -i '4s/0/2/' /etc/default/grub
+		sudo sed -i 's/GRUB_DEFAULT=0/GRUB_DEFAULT=saved/g' /etc/default/grub
+		sudo sed -i '/GRUB_SAVEDEFAULT/s/^#//g' /etc/default/grub
+		echo "[ INSTALLING GRUB THEME ]"
+		echo
+		wget -O - https://github.com/shvchk/poly-light/raw/master/install.sh | bash
+		echo ;;
+	n|N)
+		echo
+		echo "Continuing..."
+		echo ;;
+esac
+echo "[ KWALLET CHROMIUM FLAGS ]"
+cat << EOT >> /home/$USER/.config/chromium-flags.conf
+# This line will be ignored.
+# --password-store=<basic|gnome|kwallet>
+EOT
+echo
+echo "[ GIT SETTINGS ]"
+echo
+git config --global core.editor "subl3 -n -w"
+git config --global credential.helper 'cache --timeout=1800'
+git config --global core.autocrlf input
+echo
+echo "[ PACMAN SETTINGS (MAKEPKG) - DISABLING RECOMPRESSION ]"
+echo
+sudo sed -i '144s/.xz//' /etc/makepkg.conf
+echo
+echo "------------------------------------------------------------------------------------------------"
+echo "REMOVING EXTRA SOFTWARE / FILES"
+echo "------------------------------------------------------------------------------------------------"
+echo
+sudo pacman -Rns --noconfirm gnome-disk-utility
+echo
+sudo mkdir /home/$USER/Documents/Arch-Install
+sudo mv /home/$USER/*{gnome,kde,xfce,budgie,bedrock}* /home/$USER/Documents/Arch-Install
+sudo mv /home/$USER/.config/autostart/run*postinstall.desktop /home/$USER/Documents/Arch-Install
+echo
+echo "[ Installation scripts have been moved into directory '/home/$USER/Documents/Arch-Install'. ]"
+echo
+echo "[ PRESS 'ENTER' TO REBOOT ]"
+echo
+read
+sudo reboot

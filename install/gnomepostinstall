@@ -10,13 +10,11 @@ case $yesnoautomountpartitions in
 		echo "Continuing..."
 		echo ;;
 esac
-while [[ ! "$yesnomultipledisplays" =~ ^[yYnN]$ ]]; do read -n1 -p "Are you using multiple displays? [y/n] : " yesnomultipledisplays && echo; done
+while [[ ! "$yesnomultipledisplays" =~ ^[yYnN]$ ]]; do read -n1 -p "Do you want to set up multiple displays? [y/n] : " yesnomultipledisplays && echo; done
 case $yesnomultipledisplays in
 	y|Y)
 		echo
-		echo "If multiple displays are being used, set them up correctly in System Settings before continuing to apply the same configuration to GDM."
-		echo
-		echo "Press 'ENTER' to open System Settings."
+		echo "Press 'ENTER' to open Display Settings."
 		read
 		gnome-control-center display
 		echo "[ GDM MONITOR SETTINGS ]"
@@ -231,6 +229,7 @@ echo "REMOVING EXTRA SOFTWARE / FILES"
 echo "------------------------------------------------------------------------------------------------"
 echo
 sudo pacman -Rns --noconfirm gnome-disk-utility
+sudo pacman -Rndd --noconfirm tracker-miners tracker
 echo
 sudo mkdir /home/$USER/Documents/Arch-Install
 sudo mv /home/$USER/*{gnome,kde,xfce,budgie,bedrock}* /home/$USER/Documents/Arch-Install

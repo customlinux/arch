@@ -1,0 +1,101 @@
+#!/bin/bash
+while [[ ! "$yesnowifi" =~ ^[yYnN]$ ]]; do read -n1 -p "Do you want to connect to wifi? [y/n] : " yesnowifi && echo; done
+case $yesnowifi in
+	y|Y)
+		echo "[ CONNECT TO WIFI ]"
+		nmcli device wifi list
+		echo
+		read -p "Enter your wifi SSID: " ssid
+		read -p "Enter your wifi password: " wifipass
+		nmcli device wifi connect $ssid password $wifipass
+		echo ;;
+	n|N)
+		echo
+		echo "Continuing..."
+		echo ;;
+esac
+echo "[ UPDATING SYSTEM ]"
+sudo pacman -Syu --noconfirm
+echo
+echo "[ TIMEDATECTL: ACTIVATE NTP SERVICE ]"
+sudo timedatectl set-ntp true
+echo "----------------------------------------------------------------------"
+echo "INSTALLING GNOME"
+echo "----------------------------------------------------------------------"
+# Package Info: Don't reinstall|Don't Confirm (y/n)|Development Tools|Fast Updated Mirrors|Github|Terminal OS Info|NTFS Support|Disk-Partition Utility             |KDE           |Display Manager         |File Manager|Terminal|User Management|Bluetooth Management          |Power Management|Screen Management|Wallet Management         |Screenshot|View Images|Applets: Network   Audio    |Default Home Directories|Chrome Integration        |Web Browser|Kvantum Theme Manager|Terminal Directory View|Display Settings: arandr|Output to log file.
+sudo pacman -S  --needed        --noconfirm         base-devel        reflector            git    neofetch         ntfs-3g      partitionmanager gnome-disk-utility plasma-desktop sddm sddm-kcm xorg-xinit dolphin ark  konsole  user-manager    bluedevil pulseaudio-bluetooth powerdevil       kscreen           kwallet-pam kwalletmanager spectacle  gwenview             plasma-nm plasma-pa xdg-user-dirs            plasma-browser-integration chromium    kvantum-qt5           tree                    xorg-xrandr arandr      #|& tee -a /home/$USER/log-kde-ARCH && echo "----------------------------------------------------------------------" >> log-kde-ARCH
+# Not needed: Wallpapers (plasma-workspace-wallpapers) - Wallpapers aren't that good.
+# Not needed: Monospace Font (ttf-hack) - Already included?
+# Not needed: 
+echo
+echo "[ INSTALLING PIKAUR: AN AUR HELPER ]"
+git clone https://aur.archlinux.org/pikaur.git
+cd pikaur
+makepkg -fsri --noconfirm
+cd /home/$USER
+sudo rm -r pikaur
+echo
+echo "[ INSTALLING AUR PACKAGES ]"
+# Package Info: Don't reinstall|Don't Confirm (y/n)|Browser Plugin for DRM|Text Editor     |Touchpad Gestures|
+pikaur -S       --needed        --noconfirm         chromium-widevine      sublime-text-dev libinput-gestures
+# Not needed: AUR GUI Frontend (pamac-aur)
+# Not needed: MacOS like Icon Theme (la-capitaine-icon-theme)
+# Not needed: MacOS like Cursor Theme (capitaine-cursors)
+# Not needed: 
+echo
+#echo "[ CUSTOMIZING DISPLAY MANAGER ]"
+#sudo sed -i '/WaylandEnable=false/s/^#//' /etc/gdm/custom.conf
+#echo
+echo "[ ENABLING DISPLAY MANAGER ]"
+sudo systemctl enable sddm
+echo
+echo "[ ENABLING BLUETOOTH ]"
+sudo systemctl enable bluetooth
+echo
+echo "[ CUSTOMIZING TOUCHPAD GESTURES ]"
+cp /etc/libinput-gestures.conf ~/.config/
+sed -i '/^#/!s/\(.*\)/# \1/g' ~/.config/libinput-gestures.conf
+cat << EOT >> /home/$USER/.config/libinput-gestures.conf
+#
+# Go to workspace above
+gesture swipe up 3 _internal ws_up
+# Go to workspace below
+gesture swipe down 3 _internal ws_down
+# Go forward
+gesture swipe left 3 xdotool key alt+Right
+# Go back
+gesture swipe right 3 xdotool key alt+Left
+# Open applications view
+gesture swipe left_up 3 xdotool key super+a
+# Open workspaces view
+gesture swipe left_down 3 xdotool key super+s
+# Tile window to the right
+gesture pinch clockwise xdotool key super+Right
+# Tile window to the left
+gesture pinch anticlockwise xdotool key super+Left
+EOT
+echo
+echo "[ ADDING USER TO 'INPUT' GRPUP ]"
+sudo gpasswd -a $USER input
+echo
+echo "[ SETTING APPS TO AUTOSTART ]"
+libinput-gestures-setup autostart
+mkdir /home/$USER/.config/autostart
+echo
+echo "----------------------------------------------------------------------"
+echo "SETTING UP POST INSTALL SCRIPT TO RUN AFTER REBOOT"
+echo "----------------------------------------------------------------------"
+cat << EOT >> /home/$USER/.config/autostart/runkdepostinstall.desktop
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=kdepostinstall
+Exec=/home/$USER/kdepostinstall
+Terminal=true
+EOT
+chmod +x /home/$USER/.config/autostart/runkdepostinstall.desktop
+echo
+echo "----------------------------------------------------------------------"
+echo "REBOOTING"
+echo "----------------------------------------------------------------------"
+sudo reboot
