@@ -20,7 +20,7 @@ echo
 echo "[ TIMEDATECTL: ACTIVATE NTP SERVICE ]"
 sudo timedatectl set-ntp true
 echo "----------------------------------------------------------------------"
-echo "INSTALLING GNOME"
+echo "INSTALLING KDE"
 echo "----------------------------------------------------------------------"
 # Package Info: Don't reinstall|Don't Confirm (y/n)|Development Tools|Fast Updated Mirrors|Github|Terminal OS Info|NTFS Support|Disk-Partition Utility             |KDE           |Display Manager         |File Manager|Terminal|User Management|Bluetooth Management          |Power Management|Screen Management|Wallet Management         |Screenshot|View Images|Applets: Network   Audio    |Default Home Directories|Chrome Integration        |Web Browser|Kvantum Theme Manager|Terminal Directory View|Display Settings: arandr|Output to log file.
 sudo pacman -S  --needed        --noconfirm         base-devel        reflector            git    neofetch         ntfs-3g      partitionmanager gnome-disk-utility plasma-desktop sddm sddm-kcm xorg-xinit dolphin ark  konsole  user-manager    bluedevil pulseaudio-bluetooth powerdevil       kscreen           kwallet-pam kwalletmanager spectacle  gwenview             plasma-nm plasma-pa xdg-user-dirs            plasma-browser-integration chromium    kvantum-qt5           tree                    xorg-xrandr arandr      #|& tee -a /home/$USER/log-kde-ARCH && echo "----------------------------------------------------------------------" >> log-kde-ARCH
