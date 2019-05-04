@@ -44,7 +44,7 @@ case $yesnousegrub in
 		echo "Continuing..."
 		echo ;;
 esac
-echo "[ KWALLET CHROMIUM FLAGS ]"
+echo "[ CONFIGURING KWALLET CHROMIUM FLAGS ]"
 cat << EOT >> /home/$USER/.config/chromium-flags.conf
 # This line will be ignored.
 # --password-store=<basic|gnome|kwallet>
