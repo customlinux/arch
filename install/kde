@@ -57,22 +57,26 @@ cp /etc/libinput-gestures.conf ~/.config/
 sed -i '/^#/!s/\(.*\)/# \1/g' ~/.config/libinput-gestures.conf
 cat << EOT >> /home/$USER/.config/libinput-gestures.conf
 #
-# Go to workspace above
-gesture swipe up 3 _internal ws_up
-# Go to workspace below
-gesture swipe down 3 _internal ws_down
+# Go to workspace left
+gesture swipe right 3 xdotool set_desktop --relative -- -1
+# Go to workspace right
+gesture swipe left 3 xdotool set_desktop --relative 1
 # Go forward
-gesture swipe left 3 xdotool key alt+Right
+gesture swipe up 3 xdotool key alt+Right
 # Go back
-gesture swipe right 3 xdotool key alt+Left
+gesture swipe down 3 xdotool key alt+Left
 # Open applications view
-gesture swipe left_up 3 xdotool key super+a
-# Open workspaces view
-gesture swipe left_down 3 xdotool key super+s
+gesture swipe left_up 3 xdotool key alt+F1
+# Toggle maximize window
+gesture swipe right_up 3 xdotool key super+Page_Up
+# Open windows overview
+gesture swipe left_down 3 xdotool key ctrl+F9
+# Open workspaces grid view
+gesture swipe right_down 3 xdotool key ctrl+F8
 # Tile window to the right
-gesture pinch clockwise xdotool key super+Right
+gesture pinch clockwise 2 xdotool key super+Right
 # Tile window to the left
-gesture pinch anticlockwise xdotool key super+Left
+gesture pinch anticlockwise 2 xdotool key super+Left
 EOT
 echo
 echo "[ ADDING USER TO 'INPUT' GRPUP ]"
