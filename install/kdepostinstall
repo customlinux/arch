@@ -14,9 +14,11 @@ while [[ ! "$yesnomultipledisplays" =~ ^[yYnN]$ ]]; do read -n1 -p "Do you want 
 case $yesnomultipledisplays in
 	y|Y)
 		echo
-		echo "Press 'ENTER' to open Display Settings."
+		// echo "Press 'ENTER' to open Display Settings."
+		echo "Press 'ENTER' to set custom display configuration."
 		read
-		systemsettings
+		// systemsettings5
+		xrandr --output eDP-1 --mode 1366x768 --pos 157x1050 --rotate normal --output HDMI-1 --primary --mode 1680x1050 --pos 0x0 --rotate normal --output DP-1 --off
 		echo ;;
 	n|N)
 		echo
