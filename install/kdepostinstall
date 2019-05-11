@@ -1,5 +1,4 @@
 #!/bin/bash
-automathemely
 while [[ ! "$yesnoautomountpartitions" =~ ^[yYnN]$ ]]; do read -n1 -p "Do you want to automount any partitions at startup? [y/n] : " yesnoautomountpartitions && echo; done
 case $yesnoautomountpartitions in
 	y|Y)
