@@ -1,4 +1,13 @@
 #!/bin/bash
+while [[ ! "$yesnorunpostinstallscript" =~ ^[yYnN]$ ]]; do read -n1 -p "Do you want to run this post install script right now? [y/n] : " yesnorunpostinstallscript && echo; done
+case $yesnorunpostinstallscript in
+	y|Y)
+		echo "Continuing..."
+		echo;;
+	n|N)
+		echo "Exiting..."
+		exit 0
+		
 while [[ ! "$yesnoautomountpartitions" =~ ^[yYnN]$ ]]; do read -n1 -p "Do you want to automount any partitions at startup? [y/n] : " yesnoautomountpartitions && echo; done
 case $yesnoautomountpartitions in
 	y|Y)
