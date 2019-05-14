@@ -6,8 +6,8 @@ case $yesnorunpostinstallscript in
 		echo;;
 	n|N)
 		echo "Exiting..."
-		exit 0
-		
+		exit 0;;
+esac
 while [[ ! "$yesnoautomountpartitions" =~ ^[yYnN]$ ]]; do read -n1 -p "Do you want to automount any partitions at startup? [y/n] : " yesnoautomountpartitions && echo; done
 case $yesnoautomountpartitions in
 	y|Y)
@@ -20,27 +20,21 @@ case $yesnoautomountpartitions in
 esac
 while [[ ! "$yesnomultipledisplays" =~ ^[yYnN]$ ]]; do read -n1 -p "Do you want to set up multiple displays? [y/n] : " yesnomultipledisplays && echo; done
 case $yesnomultipledisplays in
-	y|Y)
-		echo
-		# echo "Press 'ENTER' to open Display Settings."
-		echo "Press 'ENTER' to set custom display configuration."
-		read
-		# systemsettings5
-		xrandr --output eDP-1 --mode 1366x768 --pos 157x1050 --rotate normal --output HDMI-1 --primary --mode 1680x1050 --pos 0x0 --rotate normal --output DP-1 --off
-		sudo cat << EOT > /usr/share/sddm/scripts/Xsetup
-		#!/bin/sh
-		# Xsetup - run as root before the login dialog appears
-		
-		xrandr --output eDP-1 --mode 1366x768 --pos 157x1050 --rotate normal --output HDMI-1 --primary --mode 1680x1050 --pos 0x0 --rotate normal --output DP-1 --off
-		EOT
-		#
-		sudo cat << EOT >> /etc/sddm.conf
-		
-		[XDisplay]
-		DisplayCommands=/usr/share/sddm/scripts/Xsetup
-		
-		EOT
-		echo ;;
+y|Y)
+echo
+# echo "Press 'ENTER' to open Display Settings."
+echo "Press 'ENTER' to set custom display configuration."
+read
+# systemsettings5
+xrandr --output eDP-1 --mode 1366x768 --pos 157x1050 --rotate normal --output HDMI-1 --primary --mode 1680x1050 --pos 0x0 --rotate normal --output DP-1 --off
+sudo cat << EOT > /usr/share/sddm/scripts/Xsetup
+xrandr --output eDP-1 --mode 1366x768 --pos 157x1050 --rotate normal --output HDMI-1 --primary --mode 1680x1050 --pos 0x0 --rotate normal --output DP-1 --off
+EOT
+#sudo cat << EOT >> /etc/sddm.conf
+#[XDisplay]
+#DisplayCommands=/usr/share/sddm/scripts/Xsetup
+#EOT
+echo ;;
 	n|N)
 		echo
 		echo "Skipping..."
