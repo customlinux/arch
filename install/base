@@ -20,7 +20,7 @@ read
 echo "----------------------------------------------------------------------"
 echo "INSTALLING REFLECTOR AND UPDATING MIRRORLIST"
 echo "----------------------------------------------------------------------"
-pacman -S --noconfirm reflector
+pacman -S --needed --noconfirm reflector
 reflector --verbose -l 100 -p http -p https --sort rate --save /etc/pacman.d/mirrorlist
 echo "----------------------------------------------------------------------"
 echo "UPDATING SYSTEM CLOCK"
@@ -93,7 +93,9 @@ echo "[ SET TIMEZONE TO US-PACIFIC ]"
 arch-chroot /mnt ln -sf /usr/share/zoneinfo/US/Pacific /etc/localtime
 echo
 echo "[ GENERATING /etc/adjtime ]"
-arch-chroot /mnt hwclock --systohc --utc
+# Generated with custom timedatectl command below
+timedatectl set-local-rtc 0 --adjust-system-clock
+#arch-chroot /mnt hwclock --systohc --utc
 echo
 echo "[ SETTING LOCALE TO en_US.UTF-8 UTF-8 FOR AMERICAN-ENGLISH ]"
 sed -i 's/^#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/g' /mnt/etc/locale.gen
