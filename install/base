@@ -25,7 +25,8 @@ reflector --verbose -l 100 -p http -p https --sort rate --save /etc/pacman.d/mir
 echo "----------------------------------------------------------------------"
 echo "UPDATING SYSTEM CLOCK"
 echo "----------------------------------------------------------------------"
-timedatectl set-ntp true
+#timedatectl set-ntp true
+timedatectl set-local-rtc 0 --adjust-system-clock
 echo "----------------------------------------------------------------------"
 echo "PARTITION THE DRIVE"
 echo "----------------------------------------------------------------------"
