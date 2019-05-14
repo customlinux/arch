@@ -18,7 +18,8 @@ echo "[ UPDATING SYSTEM ]"
 sudo pacman -Syu --noconfirm
 echo
 echo "[ TIMEDATECTL: ACTIVATE NTP SERVICE ]"
-sudo timedatectl set-ntp true
+#sudo timedatectl set-ntp true
+sudo timedatectl set-local-rtc 0 --adjust-system-clock
 echo "----------------------------------------------------------------------"
 echo "INSTALLING KDE"
 echo "----------------------------------------------------------------------"
