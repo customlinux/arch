@@ -26,10 +26,10 @@ echo
 echo "Press 'ENTER' to set custom display configuration."
 read
 # systemsettings5
-xrandr --output eDP-1 --mode 1366x768 --pos 157x1050 --rotate normal --output HDMI-1 --primary --mode 1680x1050 --pos 0x0 --rotate normal --output DP-1 --off
-sudo cat << EOT > /usr/share/sddm/scripts/Xsetup
-xrandr --output eDP-1 --mode 1366x768 --pos 157x1050 --rotate normal --output HDMI-1 --primary --mode 1680x1050 --pos 0x0 --rotate normal --output DP-1 --off
-EOT
+#xrandr --output eDP-1 --mode 1366x768 --pos 157x1050 --rotate normal --output HDMI-1 --primary --mode 1680x1050 --pos 0x0 --rotate normal --output DP-1 --off
+#sudo cat << EOT > /usr/share/sddm/scripts/Xsetup
+#xrandr --output eDP-1 --mode 1366x768 --pos 157x1050 --rotate normal --output HDMI-1 --primary --mode 1680x1050 --pos 0x0 --rotate normal --output DP-1 --off
+#EOT
 #sudo cat << EOT >> /etc/sddm.conf
 #[XDisplay]
 #DisplayCommands=/usr/share/sddm/scripts/Xsetup
@@ -60,6 +60,37 @@ case $yesnousegrub in
 		echo
 		echo "Continuing..."
 		echo ;;
+esac
+while [[ ! "$yesnowindowapplets" =~ ^[yYnN]$ ]]; do read -n1 -p "Do you want to install window applets (title, appmenu, buttons) ? [y/n] : " yesnowindowapplets && echo; done
+case $yesnowindowapplets in
+y|Y)
+echo
+# Window Title: https://github.com/psifidotos/applet-window-title
+sudo pacman -S --needed --noconfirm kdeclarative
+git clone https://github.com/psifidotos/applet-window-title.git
+cd applet-window-title
+plasmapkg2 -i .
+cd ..
+sudo rm -r applet-window-title
+# Window Appmenu: https://github.com/psifidotos/applet-window-appmenu
+sudo pacman -S --needed qt5-quickcontrols xcb-util xorg-xrandr extra-cmake-modules plasma-framework kwindowsystem appmenu-gtk-module
+git clone https://github.com/psifidotos/applet-window-appmenu.git
+cd applet-window-appmenu
+sh install.sh
+cd ..
+sudo rm -r applet-window-appmenu
+# Window Buttons: https://github.com/psifidotos/applet-window-buttons
+sudo pacman -S --needed kcoreaddons kdeclarative plasma-framework extra-cmake-modules
+git clone https://github.com/psifidotos/applet-window-buttons.git
+cd applet-window-buttons
+sh install.sh
+cd ..
+sudo rm -r applet-window-buttons
+echo ;;
+n|N)
+echo
+echo "Continuing..."
+echo ;;
 esac
 echo "[ CONFIGURING KWALLET CHROMIUM FLAGS ]"
 cat << EOT >> /home/$USER/.config/chromium-flags.conf
