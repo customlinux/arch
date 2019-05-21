@@ -51,12 +51,12 @@ plasmapkg2 -i .
 cd ..
 sudo rm -r applet-window-title
 # Window Appmenu: https://github.com/psifidotos/applet-window-appmenu
-#sudo pacman -S --needed qt5-quickcontrols xcb-util xorg-xrandr extra-cmake-modules plasma-framework kwindowsystem appmenu-gtk-module
-#git clone https://github.com/psifidotos/applet-window-appmenu.git
-#cd applet-window-appmenu
-#sh install.sh
-#cd ..
-#sudo rm -r applet-window-appmenu
+sudo pacman -S --needed qt5-quickcontrols xcb-util xorg-xrandr extra-cmake-modules plasma-framework kwindowsystem appmenu-gtk-module
+git clone https://github.com/psifidotos/applet-window-appmenu.git
+cd applet-window-appmenu
+sh install.sh
+cd ..
+sudo rm -r applet-window-appmenu
 # Window Buttons: https://github.com/psifidotos/applet-window-buttons
 sudo pacman -S --needed kcoreaddons kdeclarative plasma-framework extra-cmake-modules
 git clone https://github.com/psifidotos/applet-window-buttons.git
