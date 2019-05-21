@@ -26,7 +26,7 @@ echo "----------------------------------------------------------------------"
 echo "UPDATING SYSTEM CLOCK"
 echo "----------------------------------------------------------------------"
 #timedatectl set-ntp true
-timedatectl set-local-rtc 0 --adjust-system-clock
+timedatectl set-local-rtc 1 --adjust-system-clock
 echo "----------------------------------------------------------------------"
 echo "PARTITION THE DRIVE"
 echo "----------------------------------------------------------------------"
@@ -94,7 +94,7 @@ arch-chroot /mnt ln -sf /usr/share/zoneinfo/US/Pacific /etc/localtime
 echo
 echo "[ GENERATING /etc/adjtime ]"
 # Generated with custom timedatectl command below
-timedatectl set-local-rtc 0 --adjust-system-clock
+timedatectl set-local-rtc 1 --adjust-system-clock
 #arch-chroot /mnt hwclock --systohc --utc
 echo
 echo "[ SETTING LOCALE TO en_US.UTF-8 UTF-8 FOR AMERICAN-ENGLISH ]"
