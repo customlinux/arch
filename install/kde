@@ -18,8 +18,8 @@ echo "[ UPDATING SYSTEM ]"
 sudo pacman -Syu --noconfirm
 echo
 echo "[ CONFIGURING TIMEDATECTL ]"
-#sudo timedatectl set-ntp true
-sudo timedatectl set-local-rtc 1 --adjust-system-clock
+sudo timedatectl set-ntp true
+#sudo timedatectl set-local-rtc 1 --adjust-system-clock
 echo "----------------------------------------------------------------------"
 echo "INSTALLING KDE"
 echo "----------------------------------------------------------------------"
