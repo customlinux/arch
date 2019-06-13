@@ -21,7 +21,7 @@ echo "----------------------------------------------------------------------"
 echo "INSTALLING REFLECTOR AND UPDATING MIRRORLIST"
 echo "----------------------------------------------------------------------"
 pacman -S --needed --noconfirm reflector
-reflector --verbose -l 100 -p http -p https --sort rate --save /etc/pacman.d/mirrorlist
+reflector --verbose -l 100 -a 24 -p http -p https --sort rate --save /etc/pacman.d/mirrorlist
 echo "----------------------------------------------------------------------"
 echo "UPDATING SYSTEM CLOCK"
 echo "----------------------------------------------------------------------"
