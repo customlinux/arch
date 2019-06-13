@@ -39,9 +39,9 @@ case $yesnousegrub in
 		sudo sed -i 's/GRUB_DEFAULT=0/GRUB_DEFAULT=saved/g' /etc/default/grub
 		sudo sed -i '/GRUB_SAVEDEFAULT/s/^#//g' /etc/default/grub
 		echo
-		echo "[ INSTALLING GRUB THEME: POLY LIGHT ]"
+		echo "[ INSTALLING GRUB THEME: POLY DARK ]"
 		echo
-		wget -O - https://github.com/shvchk/poly-light/raw/master/install.sh | bash
+		wget -O - https://github.com/shvchk/poly-dark/raw/master/install.sh | bash
 		echo ;;
 	n|N)
 		echo
@@ -137,7 +137,7 @@ echo "--------------------------------------------------------------------------
 echo "REMOVING EXTRA SOFTWARE / FILES"
 echo "------------------------------------------------------------------------------------------------"
 echo
-sudo pacman -Rns --noconfirm gnome-disk-utility
+#sudo pacman -Rns --noconfirm gnome-disk-utility
 echo
 sudo mkdir /home/$USER/Documents/Arch-Install
 sudo mv /home/$USER/*{gnome,kde,xfce,budgie,bedrock}* /home/$USER/Documents/Arch-Install
