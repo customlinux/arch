@@ -1,5 +1,5 @@
 #!/bin/bash
-automathemely
+#automathemely
 while [[ ! "$yesnoautomountpartitions" =~ ^[yYnN]$ ]]; do read -n1 -p "Do you want to automount any partitions at startup? [y/n] : " yesnoautomountpartitions && echo; done
 case $yesnoautomountpartitions in
 	y|Y)
@@ -43,10 +43,10 @@ echo "Gnome UI - [org/gnome/desktop/interface]"
 #IN-GDM-SETTINGS# dconf write /org/gnome/desktop/interface/clock-format "'12h'"
 dconf write /org/gnome/desktop/interface/clock-show-date true
 dconf write /org/gnome/desktop/interface/clock-show-seconds true
-dconf write /org/gnome/desktop/interface/cursor-theme "'capitaine-cursors'"
+#dconf write /org/gnome/desktop/interface/cursor-theme "'capitaine-cursors'"
 #dconf write /org/gnome/desktop/interface/document-font-name "'Clear Sans 11'"
 #dconf write /org/gnome/desktop/interface/font-name "'Clear Sans Medium, Medium 11'"
-dconf write /org/gnome/desktop/interface/icon-theme "'la-capitaine'"
+#dconf write /org/gnome/desktop/interface/icon-theme "'la-capitaine'"
 #dconf write /org/gnome/desktop/interface/monospace-font-name "'Hack 11'"
 dconf write /org/gnome/desktop/interface/show-battery-percentage true
 echo "Touchpad - [org/gnome/desktop/peripherals/touchpad]"
@@ -98,24 +98,24 @@ echo
 echo "[ CONFIGURING GNOME EXTENSIONS ]"
 echo
 echo "Arch Update - [org/gnome/shell/extensions/arch-update]"
-dconf write /org/gnome/shell/extensions/arch-update/always-visible false
-dconf write /org/gnome/shell/extensions/arch-update/boot-wait 60
-dconf write /org/gnome/shell/extensions/arch-update/notify true
+#dconf write /org/gnome/shell/extensions/arch-update/always-visible false
+#dconf write /org/gnome/shell/extensions/arch-update/boot-wait 60
+#dconf write /org/gnome/shell/extensions/arch-update/notify true
 echo "Caffeine - [org/gnome/shell/extensions/caffeine]"
-dconf write /org/gnome/shell/extensions/caffeine/restore-state false
-dconf write /org/gnome/shell/extensions/caffeine/show-notifications false
+#dconf write /org/gnome/shell/extensions/caffeine/restore-state false
+#dconf write /org/gnome/shell/extensions/caffeine/show-notifications false
 echo "Clock Override - [org/gnome/shell/extensions/clock_override]"
-dconf write /org/gnome/shell/extensions/clock_override/override-string "'%A  | %l:%M:%S %p  |  %B %d'"
+#dconf write /org/gnome/shell/extensions/clock_override/override-string "'%A  | %l:%M:%S %p  |  %B %d'"
 echo "Lock Keys - [org/gnome/shell/extensions/lockkeys]"
-dconf write /org/gnome/shell/extensions/lockkeys/notifications false
-dconf write /org/gnome/shell/extensions/lockkeys/style "'show-hide'"
+#dconf write /org/gnome/shell/extensions/lockkeys/notifications false
+#dconf write /org/gnome/shell/extensions/lockkeys/style "'show-hide'"
 echo "Notification Alert - [org/gnome/shell/extensions/notifications-alert]"
-dconf write /org/gnome/shell/extensions/notifications-alert/blinkrate 0
-dconf write /org/gnome/shell/extensions/notifications-alert/color "'#00b1ff'"
+#dconf write /org/gnome/shell/extensions/notifications-alert/blinkrate 0
+#dconf write /org/gnome/shell/extensions/notifications-alert/color "'#00b1ff'"
 echo "Apps View Columns - [org/gnome/shell/extensions/set-columns]"
-dconf write /org/gnome/shell/extensions/set-columns/columns-max 7
+#dconf write /org/gnome/shell/extensions/set-columns/columns-max 7
 echo "System Menu Tweaks Button - [org/gnome/shell/extensions/tweaks-system-menu]"
-dconf write /org/gnome/shell/extensions/tweaks-system-menu/merge-with-settings false
+#dconf write /org/gnome/shell/extensions/tweaks-system-menu/merge-with-settings false
 #echo "System Monitor (Top Panel) - [org/gnome/shell/extensions/system-monitor]"
 #dconf write /org/gnome/shell/extensions/system-monitor/background "'#ffffff16'"
 #dconf write /org/gnome/shell/extensions/system-monitor/battery-display false
@@ -153,46 +153,46 @@ echo "--------------------------------------------------------------------------
 echo "ENABLING / DISABLING GNOME EXTENSIONS"
 echo "------------------------------------------------------------------------------------------------"
 echo
-gnome-shell-extension-tool -e arch-update@RaphaelRochet
-gnome-shell-extension-tool -d arrangeWindows@sun.wxg@gmail.com
+#gnome-shell-extension-tool -e arch-update@RaphaelRochet
+#gnome-shell-extension-tool -d arrangeWindows@sun.wxg@gmail.com
 echo
 echo "------------------------------------------------------------------------------------------------"
 echo "CONFIGURING AUTOMATHEMELY"
 echo "------------------------------------------------------------------------------------------------"
 echo
-automathemely --setting desktop_environment=gnome
+#automathemely --setting desktop_environment=gnome
 ##automathemely --setting themes.gnome.light.gtk=Ant-Nebula
-sudo sed -i '7s/""/"Ant-Nebula"/' ~/.config/automathemely/user_settings.json
+#sudo sed -i '7s/""/"Ant-Nebula"/' ~/.config/automathemely/user_settings.json
 ##automathemely --setting themes.gnome.light.icons=la-capitaine
-sudo sed -i 's/"icons": ""/"icons": "la-capitaine"/g' ~/.config/automathemely/user_settings.json
+#sudo sed -i 's/"icons": ""/"icons": "la-capitaine"/g' ~/.config/automathemely/user_settings.json
 ##automathemely --setting themes.gnome.light.shell=Ant-Nebula
-sudo sed -i 's/"shell": ""/"shell": "Ant-Nebula"/g' ~/.config/automathemely/user_settings.json
+#sudo sed -i 's/"shell": ""/"shell": "Ant-Nebula"/g' ~/.config/automathemely/user_settings.json
 ##automathemely --setting themes.gnome.dark.gtk=Dark-Side
-sudo sed -i '12s/""/"Sierra-Dark"/' ~/.config/automathemely/user_settings.json
+#sudo sed -i '12s/""/"Sierra-Dark"/' ~/.config/automathemely/user_settings.json
 ##automathemely --setting themes.gnome.dark.icons=la-capitaine
 ##automathemely --setting themes.gnome.dark.shell=Ant-Nebula
 #automathemely --setting location.auto_enabled=True
-sudo sed -i 's/"auto_enabled": false/"auto_enabled": true/' ~/.config/automathemely/user_settings.json
-automathemely --setting misc.notifications=False
+#sudo sed -i 's/"auto_enabled": false/"auto_enabled": true/' ~/.config/automathemely/user_settings.json
+#automathemely --setting misc.notifications=False
 echo
 echo "[ OPENING AUTOMATHEMELY SETTINGS GUI ]"
 echo
-automathemely -m
+#automathemely -m
 # ^
-automathemely --restart
+#automathemely --restart
 echo
 echo "[ ADDING AUTOMATHEMELY TO GNOME AUTOSTART ]"
 echo
-cat << EOT1 >> /home/$USER/.config/autostart/runautomathemely.desktop
-[Desktop Entry]
-Name=automathemelyrunner
-Type=Application
-Exec=python3 /usr/lib/python3.7/site-packages/automathemely/bin/autothscheduler.py
-Hidden=false
-NoDisplay=false
-X-GNOME-Autostart-enabled=true
-EOT1
-chmod +x /home/$USER/.config/autostart/runautomathemely.desktop
+#cat << EOT1 >> /home/$USER/.config/autostart/runautomathemely.desktop
+#[Desktop Entry]
+#Name=automathemelyrunner
+#Type=Application
+#Exec=python3 /usr/lib/python3.7/site-packages/automathemely/bin/autothscheduler.py
+#Hidden=false
+#NoDisplay=false
+#X-GNOME-Autostart-enabled=true
+#EOT1
+#chmod +x /home/$USER/.config/autostart/runautomathemely.desktop
 echo "------------------------------------------------------------------------------------------------"
 echo "CONFIGURING MISCELLANEOUS SETTINGS"
 echo "------------------------------------------------------------------------------------------------"
@@ -207,7 +207,7 @@ case $yesnousegrub in
 		sudo sed -i '/GRUB_SAVEDEFAULT/s/^#//g' /etc/default/grub
 		echo "[ INSTALLING GRUB THEME ]"
 		echo
-		wget -O - https://github.com/shvchk/poly-light/raw/master/install.sh | bash
+		wget -O - https://github.com/shvchk/poly-dark/raw/master/install.sh | bash
 		echo ;;
 	n|N)
 		echo
@@ -228,8 +228,8 @@ echo "--------------------------------------------------------------------------
 echo "REMOVING EXTRA SOFTWARE / FILES"
 echo "------------------------------------------------------------------------------------------------"
 echo
-sudo pacman -Rns --noconfirm gnome-disk-utility
-sudo pacman -Rndd --noconfirm tracker-miners tracker
+#sudo pacman -Rns --noconfirm gnome-disk-utility
+#sudo pacman -Rndd --noconfirm tracker-miners tracker
 echo
 sudo mkdir /home/$USER/Documents/Arch-Install
 sudo mv /home/$USER/*{gnome,kde,xfce,budgie,bedrock}* /home/$USER/Documents/Arch-Install
