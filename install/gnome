@@ -34,8 +34,8 @@ cd /home/$USER
 sudo rm -r pikaur
 echo
 echo "[ INSTALLING AUR PACKAGES ]"
-# Package Info: Don't reinstall|Don't Confirm (y/n)|Browser Plugin for DRM|AUR GUI Frontend|Admin Options |Good Text Editor|Touchpad Gestures|Theme Changer|MacOS like Icon Theme  |MacOS like Cursor Theme|                 
-pikaur -S       --needed        --noconfirm         chromium-widevine      pamac-aur        nautilus-admin sublime-text-dev libinput-gestures automathemely la-capitaine-icon-theme capitaine-cursors
+# Package Info: Don't reinstall|Don't Confirm (y/n)|Browser Plugin for DRM|AUR GUI Frontend|Admin Options |Good Text Editor|Touchpad Gestures|Theme       |Theme Changer|MacOS like Icon Theme  |MacOS like Cursor Theme|                 
+pikaur -S       --needed        --noconfirm         chromium-widevine      pamac-aur        nautilus-admin sublime-text-dev libinput-gestures plata-theme #automathemely la-capitaine-icon-theme capitaine-cursors
 # Not needed: gnome-shell-extension-system-monitor-git lightdm-slick-greeter pulseaudio-bluetooth-a2dp-gdm-fix ttf-clear-sans
 echo
 echo "[ INSTALLING GNOME SHELL EXTENSION INSTALLER ]"
@@ -46,7 +46,9 @@ sudo mv gnome-shell-extension-installer /usr/bin/
 echo
 echo "[ INSTALLING GNOME SHELL EXTENSIONS ]"
 # Extension Info:               Arch Updates|Arrange Windows|Caffeine|Clock Override|Disable Workspace Switch Animation|Hide Activities Button|Impatience|Lock Keys|Apps View Columns|No Spring|No Top-Left Corner|No Annoyance|Notification Alert Color|Places|Remove Dash|Remove Dropdown Arrows|Suspend Button|Tweaks in System Menu|User Themes|Workspace Indicator|Transparent Top Bar|
-gnome-shell-extension-installer 1010         1604            517      1206           1328                               1128                   277        36        1305              1303      118                1236         258                      8      1297        800                    826            1653                  19          21                  1708
+#gnome-shell-extension-installer 1010         1604            517      1206           1328                               1128                   277        36        1305              1303      118                1236         258                      8      1297        800                    826            1653                  19          21                  1708
+# Material Shell Extension
+git clone https://github.com/PapyElGringo/material-shell.git ~/.local/share/gnome-shell/extensions/material-shell@papyelgringo
 # Top Icons: 1497 (not needed | last checked 07/04/2019)
 # Hide Top Bar: 545 (not fully stable)
 # TopIcons Plus: 1031 (not maintained | last checked 23/02/2019)
@@ -92,7 +94,7 @@ echo
 echo "[ SETTING APPS TO AUTOSTART ]"
 libinput-gestures-setup autostart
 mkdir /home/$USER/.config/autostart
-cp /usr/share/applications/plank.desktop /home/$USER/.config/autostart
+#cp /usr/share/applications/plank.desktop /home/$USER/.config/autostart
 echo
 echo "[ SETTING PLANK THEME ]"
 dconf write /net/launchpad/plank/docks/dock1/theme "'Transparent'"
@@ -112,9 +114,9 @@ sudo mv /usr/share/backgrounds/gnome/gnome-backgrounds.xml /usr/share/gnome-back
 # ^
 sudo rm -r /home/$USER/customization
 echo
-echo "[ INSTALLING THEMES ]"
+#echo "[ INSTALLING THEMES ]"
 # Ant-Nebula
-sudo git clone https://github.com/EliverLara/Ant-Nebula --branch slim /usr/share/themes/Ant-Nebula
+#sudo git clone https://github.com/EliverLara/Ant-Nebula --branch slim /usr/share/themes/Ant-Nebula
 # Materia-Dark Theme
 	#git clone --depth 1 https://github.com/nana-4/materia-theme /home/$USER/materia-theme
 	#cd /home/$USER/materia-theme
@@ -122,12 +124,12 @@ sudo git clone https://github.com/EliverLara/Ant-Nebula --branch slim /usr/share
 	#sudo mv /usr/share/themes/Materia* /usr/share/themes/Materia-Dark
 	#sudo rm -r /home/$USER/materia-theme
 # Sierra Theme
-	git clone https://github.com/vinceliuice/Sierra-gtk-theme.git /home/$USER/Sierra-gtk-theme
-	cd /home/$USER/Sierra-gtk-theme
-	sudo ./install.sh -d /usr/share/themes -c dark -o standard -f compact -a standard -na
-	sudo rm -r /usr/share/themes/Sierra-compact-dark-*
-	sudo mv /usr/share/themes/Sierra* /usr/share/themes/Sierra-Dark
-	sudo rm -r /home/$USER/Sierra*
+#	git clone https://github.com/vinceliuice/Sierra-gtk-theme.git /home/$USER/Sierra-gtk-theme
+#	cd /home/$USER/Sierra-gtk-theme
+#	sudo ./install.sh -d /usr/share/themes -c dark -o standard -f compact -a standard -na
+#	sudo rm -r /usr/share/themes/Sierra-compact-dark-*
+#	sudo mv /usr/share/themes/Sierra* /usr/share/themes/Sierra-Dark
+#	sudo rm -r /home/$USER/Sierra*
 # Minwaita Dark theme
 	#cd /usr/share/themes
 	#sudo git clone https://github.com/godlyranchdressing/Minwaita.git /usr/share/themes/MinwaitaTEMP1
