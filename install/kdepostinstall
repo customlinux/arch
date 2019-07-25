@@ -137,7 +137,7 @@ echo "--------------------------------------------------------------------------
 echo "REMOVING EXTRA SOFTWARE / FILES"
 echo "------------------------------------------------------------------------------------------------"
 echo
-#sudo pacman -Rns --noconfirm gnome-disk-utility
+sudo pacman -Rns --noconfirm gnome-disk-utility
 echo
 sudo mkdir /home/$USER/Documents/Arch-Install
 sudo mv /home/$USER/*{gnome,kde,xfce,budgie,bedrock}* /home/$USER/Documents/Arch-Install
