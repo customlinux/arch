@@ -129,10 +129,10 @@ git config --global core.editor "subl3 -n -w"
 git config --global credential.helper 'cache --timeout=1800'
 git config --global core.autocrlf input
 echo
-echo "[ PACMAN SETTINGS (MAKEPKG) - DISABLING RECOMPRESSION ]"
-echo
-sudo sed -i '144s/.xz//' /etc/makepkg.conf
-echo
+#echo "[ PACMAN SETTINGS (MAKEPKG) - DISABLING RECOMPRESSION ]"
+#echo
+#sudo sed -i '144s/.xz//' /etc/makepkg.conf
+#echo
 echo "------------------------------------------------------------------------------------------------"
 echo "REMOVING EXTRA SOFTWARE / FILES"
 echo "------------------------------------------------------------------------------------------------"
