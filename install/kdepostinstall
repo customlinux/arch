@@ -133,6 +133,11 @@ echo
 #echo
 #sudo sed -i '144s/.xz//' /etc/makepkg.conf
 #echo
+echo "[ PACMAN MIRRORLIST - REFLECTOR ]"
+echo
+sudo pacman -S --needed --noconfirm reflector
+reflector --verbose -l 100 -a 24 -p http -p https --sort rate --save /etc/pacman.d/mirrorlist
+echo
 echo "------------------------------------------------------------------------------------------------"
 echo "REMOVING EXTRA SOFTWARE / FILES"
 echo "------------------------------------------------------------------------------------------------"
