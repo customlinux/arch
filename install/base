@@ -54,10 +54,8 @@ echo
 read -rp "Enter root password: " rootpass
 echo
 echo "----------------------------------------------------------------------"
-echo "FORMAT PARTITIONS + MOUNT ROOT"
+echo "FORMAT & MOUNT ROOT"
 echo "----------------------------------------------------------------------"
-mkfs.fat -F32 /dev/sda$efipartition
-echo
 mkfs.ext4 /dev/sda$ospartition
 echo
 mount /dev/sda$ospartition /mnt
@@ -100,11 +98,11 @@ echo
 echo "[ SETTING LOCALE TO en_US.UTF-8 UTF-8 FOR AMERICAN-ENGLISH ]"
 sed -i 's/^#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/g' /mnt/etc/locale.gen
 echo
-echo "[ SETTING LANG VARIABLE TO LANG=en_US.UTF-8 ]"
-echo "LANG=en_US.UTF-8" > /mnt/etc/locale.conf
-echo
 echo "[ GENERATING LOCALE ]"
 arch-chroot /mnt locale-gen
+echo
+echo "[ SETTING LANG VARIABLE TO LANG=en_US.UTF-8 ]"
+echo "LANG=en_US.UTF-8" > /mnt/etc/locale.conf
 echo
 echo "[ SETTING HOSTNAME ]"
 echo $hostname > /mnt/etc/hostname
@@ -115,7 +113,9 @@ echo
 echo "[ CREATING /boot/efi DIRECTORY ]"
 mkdir /mnt/boot/efi
 echo
-echo "[ MOUNTING EFI PARTITION TO /boot/efi DIRECTORY ]"
+echo "[ FORMATTING EFI PARTITION & MOUNTING TO /boot/efi DIRECTORY ]"
+mkfs.fat -F32 /dev/sda$efipartition
+echo
 mount /dev/sda$efipartition /mnt/boot/efi
 echo
 echo "[ INSTALLING GRUB RELATED PACKAGES ]"
