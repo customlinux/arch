@@ -54,11 +54,16 @@ echo
 read -rp "Enter root password: " rootpass
 echo
 echo "----------------------------------------------------------------------"
-echo "FORMAT & MOUNT ROOT"
+echo "FORMAT + MOUNT [/] & [efi] PARTITIONS"
 echo "----------------------------------------------------------------------"
 mkfs.ext4 /dev/sda$ospartition
 echo
+mkfs.fat -F32 /dev/sda$efipartition
+echo
 mount /dev/sda$ospartition /mnt
+echo
+mount /dev/sda$efipartition /mnt/boot
+echo
 echo "----------------------------------------------------------------------"
 echo "INSTALLING REFLECTOR AND UPDATING MIRRORLIST"
 echo "----------------------------------------------------------------------"
@@ -67,7 +72,7 @@ reflector --verbose -l 100 -a 24 -p http -p https --sort rate --save /etc/pacman
 echo "----------------------------------------------------------------------"
 echo "PACSTRAP - BASE + BASE-DEVEL"
 echo "----------------------------------------------------------------------"
-pacstrap /mnt linux-zen base base-devel sudo wget
+pacstrap /mnt linux-zen base base-devel sudo networkmanager wget
 echo
 echo "----------------------------------------------------------------------"
 echo "GENERATE FSTAB"
@@ -110,25 +115,11 @@ echo
 echo "[ SET ROOT PASSWORD ]"
 arch-chroot /mnt sh -c "echo 'root:$rootpass' | chpasswd"
 echo
-echo "[ CREATING /boot/efi DIRECTORY ]"
-mkdir /mnt/boot/efi
+echo "[ INSTALLING BOOT RELATED PACKAGES ]"
+arch-chroot /mnt pacman -S --needed --noconfirm efibootmgr intel-ucode #os-prober
 echo
-echo "[ FORMATTING EFI PARTITION & MOUNTING TO /boot/efi DIRECTORY ]"
-mkfs.fat -F32 /dev/sda$efipartition
-echo
-mount /dev/sda$efipartition /mnt/boot/efi
-echo
-echo "[ INSTALLING GRUB RELATED PACKAGES ]"
-arch-chroot /mnt pacman -S --needed --noconfirm grub efibootmgr intel-ucode os-prober networkmanager
-echo
-echo "[ INSTALLING GRUB TO /boot/efi ]"
-arch-chroot /mnt grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=$bootloaderid
-echo
-echo "[ CHANGING GRUB TIMEOUT TO 0 ]"
-sed -i '4s/5/0/' /mnt/etc/default/grub
-echo
-echo "[ GENERATING GRUB CONFIGURATION FILE ]"
-arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
+echo "[ INSTALLING EFISTUB TO /boot ]"
+arch-chroot /mnt efibootmgr --disk /dev/sda --part $partitionnumber --create --label "$bootloaderid" --loader /boot/vmlinuz-linux-zen --unicode 'root=PARTUUID=$BlkidPartUuid rw initrd=\boot\initramfs-linux-zen.img initrd=/cpu_manufacturer-ucode.img initrd=/initramfs-linux.img' --verbose
 echo
 echo "[ ENABLING NETWORK MANAGER ]"
 arch-chroot /mnt systemctl enable NetworkManager
@@ -150,5 +141,5 @@ chmod +x /mnt/home/$username/*
 rm -r /root/arch
 echo
 echo "[ UNMOUNT & REBOOT ]"
-umount -a
+umount -R /mnt
 reboot
