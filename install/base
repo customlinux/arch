@@ -18,11 +18,6 @@ echo
 echo "[ IF A DIRECTORY EXISTS, PRESS 'ENTER' TO CONTINUE ]"
 read
 echo "----------------------------------------------------------------------"
-echo "INSTALLING REFLECTOR AND UPDATING MIRRORLIST"
-echo "----------------------------------------------------------------------"
-pacman -S --needed --noconfirm reflector
-reflector --verbose -l 100 -a 24 -p http -p https --sort rate --save /etc/pacman.d/mirrorlist
-echo "----------------------------------------------------------------------"
 echo "UPDATING SYSTEM CLOCK"
 echo "----------------------------------------------------------------------"
 timedatectl set-ntp true
@@ -67,9 +62,14 @@ mkfs.ext4 /dev/sda$ospartition
 echo
 mount /dev/sda$ospartition /mnt
 echo "----------------------------------------------------------------------"
+echo "INSTALLING REFLECTOR AND UPDATING MIRRORLIST"
+echo "----------------------------------------------------------------------"
+pacman -S --needed --noconfirm reflector
+reflector --verbose -l 100 -a 24 -p http -p https --sort rate --save /etc/pacman.d/mirrorlist
+echo "----------------------------------------------------------------------"
 echo "PACSTRAP - BASE + BASE-DEVEL"
 echo "----------------------------------------------------------------------"
-pacstrap /mnt base base-devel
+pacstrap /mnt linux-zen base base-devel sudo wget
 echo
 echo "----------------------------------------------------------------------"
 echo "GENERATE FSTAB"
@@ -119,7 +119,7 @@ echo "[ MOUNTING EFI PARTITION TO /boot/efi DIRECTORY ]"
 mount /dev/sda$efipartition /mnt/boot/efi
 echo
 echo "[ INSTALLING GRUB RELATED PACKAGES ]"
-arch-chroot /mnt pacman -S --needed --noconfirm grub efibootmgr intel-ucode os-prober sudo networkmanager wget
+arch-chroot /mnt pacman -S --needed --noconfirm grub efibootmgr intel-ucode os-prober networkmanager
 echo
 echo "[ INSTALLING GRUB TO /boot/efi ]"
 arch-chroot /mnt grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=$bootloaderid
