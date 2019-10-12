@@ -72,7 +72,8 @@ reflector --verbose -l 100 -a 24 -p http -p https --sort rate --save /etc/pacman
 echo "----------------------------------------------------------------------"
 echo "PACSTRAP - BASE + BASE-DEVEL"
 echo "----------------------------------------------------------------------"
-pacstrap /mnt linux-zen base base-devel linux-firmware sudo nano e2fsprogs networkmanager wget diffutils
+# Extra Required Packages:    Kernel    Firmware       Root Text Ext234    WiFi           exFat       NTFS    Download
+pacstrap /mnt base base-devel linux-zen linux-firmware sudo nano e2fsprogs networkmanager exfat-utils ntfs-3g wget
 echo
 echo "----------------------------------------------------------------------"
 echo "GENERATE FSTAB"
