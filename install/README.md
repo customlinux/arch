@@ -8,7 +8,7 @@ wifi-menu (for wifi)
 
 pacman -Sy --noconfirm git
 
-git clone https://github.com/customlinux/arch
+git clone https://github.com/customlinux/arch --branch non-grub
 
 /bin/bash arch/install/base
 
