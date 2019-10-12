@@ -62,6 +62,10 @@ mkfs.fat -F32 /dev/sda$efipartition
 echo
 mount /dev/sda$ospartition /mnt
 echo
+ls /mnt
+mkdir /mnt/boot
+ls /mnt
+echo "Press 'ENTER' to continue" && read
 mount /dev/sda$efipartition /mnt/boot
 echo
 echo "----------------------------------------------------------------------"
@@ -72,8 +76,8 @@ reflector --verbose -l 100 -a 24 -p http -p https --sort rate --save /etc/pacman
 echo "----------------------------------------------------------------------"
 echo "PACSTRAP - BASE + BASE-DEVEL"
 echo "----------------------------------------------------------------------"
-# Extra Required Packages:    Kernel    Firmware       Root Text Ext234    WiFi           exFat       NTFS    Download
-pacstrap /mnt base base-devel linux-zen linux-firmware sudo nano e2fsprogs networkmanager exfat-utils ntfs-3g wget
+# Extra Required Packages:    Kernel    Firmware       Root Text Ext234    WiFi           exFat       NTFS    Microcode   Download
+pacstrap /mnt base base-devel linux-zen linux-firmware sudo nano e2fsprogs networkmanager exfat-utils ntfs-3g intel-ucode wget
 echo
 echo "----------------------------------------------------------------------"
 echo "GENERATE FSTAB"
@@ -116,16 +120,24 @@ echo
 echo "[ SET ROOT PASSWORD ]"
 arch-chroot /mnt sh -c "echo 'root:$rootpass' | chpasswd"
 echo
-echo "[ INSTALLING BOOT RELATED PACKAGES ]"
-arch-chroot /mnt pacman -S --needed --noconfirm efibootmgr intel-ucode os-prober
+echo "[ INSTALLING OTHER PACKAGES ]"
+arch-chroot /mnt pacman -S --needed --noconfirm reflector
 echo
-echo "[ INSTALLING EFISTUB TO /boot ]"
+echo "[ INSTALLING SYSTEMD-BOOT TO /boot ]"
 echo
-arch-chroot /mnt blkid
+arch-chroot /mnt bootctl --path=/boot install
 echo
-read -rp "Enter boot partition part uuid: " blkidpartuuid
-echo
-arch-chroot /mnt efibootmgr --disk /dev/sda --part $efipartition --create --label "$bootloaderid" --loader /boot/vmlinuz-linux-zen --unicode 'root=PARTUUID=$blkidpartuuid rw initrd=\boot\initramfs-linux-zen.img initrd=/cpu_manufacturer-ucode.img initrd=/initramfs-linux.img' --verbose
+cat << EOT >> /mnt/etc/pacman.d/hooks/100-systemd-boot.hook
+[Trigger]
+Type = Package
+Operation = Upgrade
+Target = systemd
+
+[Action]
+Description = Updating systemd-boot
+When = PostTransaction
+Exec = /usr/bin/bootctl update
+EOT
 echo
 echo "[ ENABLING NETWORK MANAGER ]"
 arch-chroot /mnt systemctl enable NetworkManager
@@ -147,5 +159,7 @@ chmod +x /mnt/home/$username/*
 rm -r /root/arch
 echo
 echo "[ UNMOUNT & REBOOT ]"
+echo
+echo "'Ctrl + c' to CANCEL reboot - OR - 'Enter' to CONTINUE reboot." && read
 umount -R /mnt
 reboot
