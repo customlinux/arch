@@ -123,11 +123,9 @@ echo "[ INSTALLING EFISTUB TO /boot ]"
 echo
 arch-chroot /mnt blkid
 echo
-read -rp "Enter boot partition number: " bootpartnum
-echo
 read -rp "Enter boot partition part uuid: " blkidpartuuid
 echo
-arch-chroot /mnt efibootmgr --disk /dev/sda --part $bootpartnum --create --label "$bootloaderid" --loader /boot/vmlinuz-linux-zen --unicode 'root=PARTUUID=$blkidpartuuid rw initrd=\boot\initramfs-linux-zen.img initrd=/cpu_manufacturer-ucode.img initrd=/initramfs-linux.img' --verbose
+arch-chroot /mnt efibootmgr --disk /dev/sda --part $efipartition --create --label "$bootloaderid" --loader /boot/vmlinuz-linux-zen --unicode 'root=PARTUUID=$blkidpartuuid rw initrd=\boot\initramfs-linux-zen.img initrd=/cpu_manufacturer-ucode.img initrd=/initramfs-linux.img' --verbose
 echo
 echo "[ ENABLING NETWORK MANAGER ]"
 arch-chroot /mnt systemctl enable NetworkManager
