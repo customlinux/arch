@@ -72,7 +72,7 @@ reflector --verbose -l 100 -a 24 -p http -p https --sort rate --save /etc/pacman
 echo "----------------------------------------------------------------------"
 echo "PACSTRAP - BASE + BASE-DEVEL"
 echo "----------------------------------------------------------------------"
-pacstrap /mnt linux-zen base base-devel sudo networkmanager wget
+pacstrap /mnt linux-zen base base-devel linux-firmware sudo nano networkmanager wget
 echo
 echo "----------------------------------------------------------------------"
 echo "GENERATE FSTAB"
@@ -116,10 +116,17 @@ echo "[ SET ROOT PASSWORD ]"
 arch-chroot /mnt sh -c "echo 'root:$rootpass' | chpasswd"
 echo
 echo "[ INSTALLING BOOT RELATED PACKAGES ]"
-arch-chroot /mnt pacman -S --needed --noconfirm efibootmgr intel-ucode #os-prober
+arch-chroot /mnt pacman -S --needed --noconfirm efibootmgr intel-ucode os-prober
 echo
 echo "[ INSTALLING EFISTUB TO /boot ]"
-arch-chroot /mnt efibootmgr --disk /dev/sda --part $partitionnumber --create --label "$bootloaderid" --loader /boot/vmlinuz-linux-zen --unicode 'root=PARTUUID=$BlkidPartUuid rw initrd=\boot\initramfs-linux-zen.img initrd=/cpu_manufacturer-ucode.img initrd=/initramfs-linux.img' --verbose
+echo
+arch-chroot /mnt blkid
+echo
+read -rp "Enter boot partition number: " bootpartnum
+echo
+read -rp "Enter boot partition part uuid: " blkidpartuuid
+echo
+arch-chroot /mnt efibootmgr --disk /dev/sda --part $bootpartnum --create --label "$bootloaderid" --loader /boot/vmlinuz-linux-zen --unicode 'root=PARTUUID=$blkidpartuuid rw initrd=\boot\initramfs-linux-zen.img initrd=/cpu_manufacturer-ucode.img initrd=/initramfs-linux.img' --verbose
 echo
 echo "[ ENABLING NETWORK MANAGER ]"
 arch-chroot /mnt systemctl enable NetworkManager
