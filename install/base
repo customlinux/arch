@@ -72,7 +72,7 @@ reflector --verbose -l 100 -a 24 -p http -p https --sort rate --save /etc/pacman
 echo "----------------------------------------------------------------------"
 echo "PACSTRAP - BASE + BASE-DEVEL"
 echo "----------------------------------------------------------------------"
-pacstrap /mnt linux-zen base base-devel linux-firmware sudo nano networkmanager wget
+pacstrap /mnt linux-zen base base-devel linux-firmware sudo nano e2fsprogs networkmanager wget diffutils
 echo
 echo "----------------------------------------------------------------------"
 echo "GENERATE FSTAB"
