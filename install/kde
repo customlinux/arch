@@ -14,51 +14,47 @@ case $yesnowifi in
 		echo "Continuing..."
 		echo ;;
 esac
-echo "[ UPDATING SYSTEM ]"
+echo "[ UPDATE SYSTEM ]"
 sudo pacman -Syu --noconfirm
 echo
-echo "[ CONFIGURING TIMEDATECTL ]"
+echo "[ CONFIGURE TIMEDATECTL ]"
 sudo timedatectl set-ntp true
 #sudo timedatectl set-local-rtc 1 --adjust-system-clock
 echo "----------------------------------------------------------------------"
-echo "INSTALLING KDE"
+echo "INSTALL KDE"
 echo "----------------------------------------------------------------------"
-# Package Info: Don't reinstall|Don't Confirm (y/n)|Development Tools|Fast Updated Mirrors|Github|Terminal OS Info|NTFS Support|Disk-Partition Utility             |KDE           |Display Manager         |File Manager|Terminal|User Management|Bluetooth Management          |Power Management|Screen Management|Wallet Management         |KDE Connect     |KDE Info   |KDE RunAsRoot|GTK Management           |Screenshot|View Images|Applets: Network   Audio    |Default Home Directories|Chrome Integration        |Web Browser|Kvantum Theme Manager|Terminal Directory View|Extract (needed for grub theme)|Display Settings: randr|Latte Dock|Output to log file.
-sudo pacman -S  --needed        --noconfirm         base-devel        reflector            git    neofetch         ntfs-3g      partitionmanager gnome-disk-utility plasma-desktop sddm sddm-kcm xorg-xinit dolphin ark  konsole  user-manager    bluedevil pulseaudio-bluetooth powerdevil       kscreen           kwallet-pam kwalletmanager kdeconnect sshfs kinfocenter kdesu         kde-gtk-config breeze-gtk spectacle  gwenview             plasma-nm plasma-pa xdg-user-dirs            plasma-browser-integration chromium    kvantum-qt5           tree                    unzip                           xorg-xrandr             latte-dock#|& tee -a /home/$USER/log-kde-ARCH && echo "----------------------------------------------------------------------" >> log-kde-ARCH
+# Package Info: Don't reinstall|Don't Confirm (y/n)|Github|Disk-Partition Utility|KDE           |Display Manager         |File Manager|Terminal|User Management|Bluetooth Management          |Power Management|Screen Management|Wallet Management         |KDE Connect     |KDE Info   |KDE RunAsRoot|GTK Management           |Screenshot|View Images|Network + Audio Applets|Default Home Directories|Chrome Integration        |Web Browser|Terminal Directory View|Extract|Display Settings|Latte Dock
+sudo pacman -S  --needed        --noconfirm         git    gnome-disk-utility     plasma-desktop sddm sddm-kcm xorg-xinit dolphin ark  konsole  user-manager    bluedevil pulseaudio-bluetooth powerdevil       kscreen           kwallet-pam kwalletmanager kdeconnect sshfs kinfocenter kdesu         kde-gtk-config breeze-gtk spectacle  gwenview    plasma-nm plasma-pa     xdg-user-dirs            plasma-browser-integration chromium    tree                    unzip   xorg-xrandr      latte-dock
 # Not needed: Wallpapers (plasma-workspace-wallpapers) - Wallpapers aren't that good.
-# Not needed: Monospace Font (ttf-hack) - Already included?
-# Not needed: 
+# Not needed: Monospace Font (ttf-hack) - Better mono font available.
+# Not needed: KDE Partition Manager (partitionmanager) - Gnome Disk Utility is better?
+# Not needed: Kvantum Theme Manager (kvantum-qt5) - Not required for normal usage.
 echo
-echo "[ INSTALLING PIKAUR: AN AUR HELPER ]"
+echo "[ INSTALL PIKAUR: AN AUR HELPER ]"
 git clone https://aur.archlinux.org/pikaur.git
 cd pikaur
 makepkg -fsri --noconfirm
 cd /home/$USER
 sudo rm -r pikaur
 echo
-echo "[ INSTALLING AUR PACKAGES ]"
-# Package Info: Don't reinstall|Don't Confirm (y/n)|Browser Plugin for DRM|Text Editor     |Touchpad Gestures
-pikaur -S       --needed        --noconfirm         chromium-widevine      sublime-text-dev libinput-gestures
+echo "[ INSTALL AUR PACKAGES ]"
+# Package Info: Don't reinstall|Don't Confirm (y/n)|Browser Plugin for DRM|Touchpad Gestures
+pikaur -S       --needed        --noconfirm         chromium-widevine      libinput-gestures
 # Not needed: AppImage Launcher (appimagelauncher)
 # Not needed: AUR GUI Frontend (pamac-aur)
 # Not needed: MacOS like Icon Theme (la-capitaine-icon-theme)
 # Not needed: MacOS like Cursor Theme (capitaine-cursors)
-# Not needed: 
+# Not needed: Sublime Text Editor (sublime-text-dev) - Kate is better?
 echo
-#echo "[ CUSTOMIZING DISPLAY MANAGER ]"
-#sudo sed -i '/WaylandEnable=false/s/^#//' /etc/gdm/custom.conf
-#echo
-echo "[ ENABLING DISPLAY MANAGER ]"
+echo "[ ENABLE DISPLAY MANAGER ]"
 sudo systemctl enable sddm
 echo
-echo "[ ENABLING BLUETOOTH ]"
+echo "[ ENABLE BLUETOOTH ]"
 sudo systemctl enable bluetooth
 echo
-echo "[ CUSTOMIZING TOUCHPAD GESTURES ]"
-cp /etc/libinput-gestures.conf ~/.config/
-sed -i '/^#/!s/\(.*\)/# \1/g' ~/.config/libinput-gestures.conf
-cat << EOT >> /home/$USER/.config/libinput-gestures.conf
-#
+echo "[ CUSTOMIZE TOUCHPAD GESTURES ]"
+touch /home/$USER/.config/libinput-gestures.conf
+cat << EOT > /home/$USER/.config/libinput-gestures.conf
 # Go to workspace left
 gesture swipe right 3 xdotool set_desktop --relative -- -1
 # Go to workspace right
@@ -81,15 +77,15 @@ gesture pinch clockwise 2 xdotool key super+Right
 gesture pinch anticlockwise 2 xdotool key super+Left
 EOT
 echo
-echo "[ ADDING USER TO 'INPUT' GROUP ]"
+echo "[ ADD USER TO 'INPUT' GROUP ]"
 sudo gpasswd -a $USER input
 echo
-echo "[ SETTING APPS TO AUTOSTART ]"
+echo "[ SET APPS TO AUTOSTART ]"
 libinput-gestures-setup autostart
 mkdir /home/$USER/.config/autostart
 echo
 echo "----------------------------------------------------------------------"
-echo "SETTING UP POST INSTALL SCRIPT TO RUN AFTER REBOOT"
+echo "SET UP POST INSTALL SCRIPT TO RUN AFTER REBOOT"
 echo "----------------------------------------------------------------------"
 cat << EOT >> /home/$USER/.config/autostart/runkdepostinstall.desktop
 [Desktop Entry]
@@ -102,6 +98,6 @@ EOT
 chmod +x /home/$USER/.config/autostart/runkdepostinstall.desktop
 echo
 echo "----------------------------------------------------------------------"
-echo "REBOOTING"
+echo "REBOOT"
 echo "----------------------------------------------------------------------"
 sudo reboot
