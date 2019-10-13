@@ -20,7 +20,10 @@ esac
 while [[ ! "$yesnodisplaysettings" =~ ^[yYnN]$ ]]; do read -n1 -p "Do you want configure the display settings? [y/n] : " yesnodisplaysettings && echo; done
 case $yesnodisplaysettings in
 	y|Y)
-		kcmshell5 kcm_kscreen
+		mkdir -p /home/$USER/myScripts
+		wget -P /home/$USER/myScripts https://raw.githubusercontent.com/customlinux/files/master/scripts/displaySetup.sh
+		chmod +x /home/$USER/myScripts/displaySetup.sh
+		/home/$USER/myScripts/displaySetup.sh
 		echo ;;
 	n|N)
 		echo "Skipping..."
@@ -79,45 +82,45 @@ echo
 echo "Continuing..."
 echo ;;
 esac
-while [[ ! "$yesnoakavathemes" =~ ^[yYnN]$ ]]; do read -n1 -p "Do you want to install Akava themes? [y/n] : " yesnoakavathemes && echo; done
-case $yesnoakavathemes in
-y|Y)
-# BreezeBlurred: https://github.com/alex47/BreezeBlurred
-sudo pacman -S --needed --noconfirm kdecoration qt5-declarative qt5-x11extras kcoreaddons kguiaddons kconfigwidgets kwindowsystem fftw cmake extra-cmake-modules
-git clone https://github.com/alex47/BreezeBlurred
-cd BreezeBlurred
-mkdir build
-cd build
-cmake .. -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DKDE_INSTALL_LIBDIR=lib -DBUILD_TESTING=OFF -DKDE_INSTALL_USE_QT_SYS_PATHS=ON
-sudo make install
-kwin_x11 --replace &
-cd ..
-cd ..
-sudo rm -r BreezeBlurred
-# Kvantum Theme: https://github.com/FabricioMeMa/Akava-Kv/tree/patch-1
-git clone https://github.com/FabricioMeMa/Akava-Kv --branchpatch-1
-sudo rm -r Akava-Kv
-# Desktop Theme: https://github.com/Akava-Design/Akava-Theme
-git clone https://github.com/Akava-Design/Akava-Theme.git
-mkdir ~/.local/share/plasma
-mkdir ~/.local/share/plasma/desktoptheme
-mv Akava-Theme/Akava ~/.local/share/plasma/desktoptheme/
-sudo rm -r Akava-Theme
-# Konsole Theme: https://github.com/Akava-Design/Akava-Konsole
-git clone https://github.com/Akava-Design/Akava-Konsole.git
-mv Akava-Konsole/Akava.colorscheme ~/.local/share/konsole/
-sudo rm -r Akava-Konsole
-# Colors Theme: https://github.com/Akava-Design/Akava-Colors
-git clone https://github.com/Akava-Design/Akava-Colors.git
-mkdir ~/.local/share/color-schemes
-mv Akava-Colors/Akava.colors ~/.local/share/color-schemes/
-sudo rm -r Akava-Colors
-echo ;;
-n|N)
-echo "Skipping..."
-echo ;;
-esac
-echo "[ CONFIGURING KWALLET CHROMIUM FLAGS ]"
+#while [[ ! "$yesnoakavathemes" =~ ^[yYnN]$ ]]; do read -n1 -p "Do you want to install Akava themes? [y/n] : " yesnoakavathemes && echo; done
+#case $yesnoakavathemes in
+#y|Y)
+## BreezeBlurred: https://github.com/alex47/BreezeBlurred
+#sudo pacman -S --needed --noconfirm kdecoration qt5-declarative qt5-x11extras kcoreaddons kguiaddons kconfigwidgets kwindowsystem fftw cmake extra-cmake-modules
+#git clone https://github.com/alex47/BreezeBlurred
+#cd BreezeBlurred
+#mkdir build
+#cd build
+#cmake .. -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DKDE_INSTALL_LIBDIR=lib -DBUILD_TESTING=OFF -DKDE_INSTALL_USE_QT_SYS_PATHS=ON
+#sudo make install
+#kwin_x11 --replace &
+#cd ..
+#cd ..
+#sudo rm -r BreezeBlurred
+## Kvantum Theme: https://github.com/FabricioMeMa/Akava-Kv/tree/patch-1
+#git clone https://github.com/FabricioMeMa/Akava-Kv --branchpatch-1
+#sudo rm -r Akava-Kv
+## Desktop Theme: https://github.com/Akava-Design/Akava-Theme
+#git clone https://github.com/Akava-Design/Akava-Theme.git
+#mkdir ~/.local/share/plasma
+#mkdir ~/.local/share/plasma/desktoptheme
+#mv Akava-Theme/Akava ~/.local/share/plasma/desktoptheme/
+#sudo rm -r Akava-Theme
+## Konsole Theme: https://github.com/Akava-Design/Akava-Konsole
+#git clone https://github.com/Akava-Design/Akava-Konsole.git
+#mv Akava-Konsole/Akava.colorscheme ~/.local/share/konsole/
+#sudo rm -r Akava-Konsole
+## Colors Theme: https://github.com/Akava-Design/Akava-Colors
+#git clone https://github.com/Akava-Design/Akava-Colors.git
+#mkdir ~/.local/share/color-schemes
+#mv Akava-Colors/Akava.colors ~/.local/share/color-schemes/
+#sudo rm -r Akava-Colors
+#echo ;;
+#n|N)
+#echo "Skipping..."
+#echo ;;
+#esac
+echo "[ CONFIGURE KWALLET CHROMIUM FLAGS ]"
 cat << EOT >> /home/$USER/.config/chromium-flags.conf
 # This line will be ignored.
 # --password-store=<basic|gnome|kwallet>
@@ -139,12 +142,12 @@ sudo pacman -S --needed --noconfirm reflector
 sudo reflector --verbose -l 100 -a 24 -p http -p https --sort rate --save /etc/pacman.d/mirrorlist
 echo
 echo "------------------------------------------------------------------------------------------------"
-echo "REMOVING EXTRA SOFTWARE / FILES"
+echo "REMOVE EXTRA SOFTWARE / FILES"
 echo "------------------------------------------------------------------------------------------------"
 echo
-sudo pacman -Rns --noconfirm gnome-disk-utility
+#sudo pacman -Rns --noconfirm gnome-disk-utility
 echo
-sudo mkdir /home/$USER/Documents/Arch-Install
+sudo mkdir -p /home/$USER/Documents/Arch-Install
 sudo mv /home/$USER/*{gnome,kde,xfce,budgie,bedrock}* /home/$USER/Documents/Arch-Install
 sudo mv /home/$USER/.config/autostart/run*postinstall.desktop /home/$USER/Documents/Arch-Install
 echo
