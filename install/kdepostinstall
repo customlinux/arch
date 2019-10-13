@@ -33,24 +33,6 @@ echo "--------------------------------------------------------------------------
 echo "CONFIGURING MISCELLANEOUS SETTINGS"
 echo "------------------------------------------------------------------------------------------------"
 echo
-while [[ ! "$yesnousegrub" =~ ^[yYnN]$ ]]; do read -n1 -p "Do you want to use the grub os-selector at startup (for dualboot, etc.) ? [y/n] : " yesnousegrub && echo; done
-case $yesnousegrub in
-	y|Y)
-		echo "[ CONFIGURING GRUB SETTINGS ]"
-		echo
-		sudo sed -i '4s/0/2/' /etc/default/grub
-		sudo sed -i 's/GRUB_DEFAULT=0/GRUB_DEFAULT=saved/g' /etc/default/grub
-		sudo sed -i '/GRUB_SAVEDEFAULT/s/^#//g' /etc/default/grub
-		echo
-		echo "[ INSTALLING GRUB THEME: POLY DARK ]"
-		echo
-		wget -O - https://github.com/shvchk/poly-dark/raw/master/install.sh | bash
-		echo ;;
-	n|N)
-		echo
-		echo "Continuing..."
-		echo ;;
-esac
 while [[ ! "$yesnowindowapplets" =~ ^[yYnN]$ ]]; do read -n1 -p "Do you want to install window applets (title, appmenu, buttons)? [y/n] : " yesnowindowapplets && echo; done
 case $yesnowindowapplets in
 y|Y)
@@ -82,44 +64,6 @@ echo
 echo "Continuing..."
 echo ;;
 esac
-#while [[ ! "$yesnoakavathemes" =~ ^[yYnN]$ ]]; do read -n1 -p "Do you want to install Akava themes? [y/n] : " yesnoakavathemes && echo; done
-#case $yesnoakavathemes in
-#y|Y)
-## BreezeBlurred: https://github.com/alex47/BreezeBlurred
-#sudo pacman -S --needed --noconfirm kdecoration qt5-declarative qt5-x11extras kcoreaddons kguiaddons kconfigwidgets kwindowsystem fftw cmake extra-cmake-modules
-#git clone https://github.com/alex47/BreezeBlurred
-#cd BreezeBlurred
-#mkdir build
-#cd build
-#cmake .. -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DKDE_INSTALL_LIBDIR=lib -DBUILD_TESTING=OFF -DKDE_INSTALL_USE_QT_SYS_PATHS=ON
-#sudo make install
-#kwin_x11 --replace &
-#cd ..
-#cd ..
-#sudo rm -r BreezeBlurred
-## Kvantum Theme: https://github.com/FabricioMeMa/Akava-Kv/tree/patch-1
-#git clone https://github.com/FabricioMeMa/Akava-Kv --branchpatch-1
-#sudo rm -r Akava-Kv
-## Desktop Theme: https://github.com/Akava-Design/Akava-Theme
-#git clone https://github.com/Akava-Design/Akava-Theme.git
-#mkdir ~/.local/share/plasma
-#mkdir ~/.local/share/plasma/desktoptheme
-#mv Akava-Theme/Akava ~/.local/share/plasma/desktoptheme/
-#sudo rm -r Akava-Theme
-## Konsole Theme: https://github.com/Akava-Design/Akava-Konsole
-#git clone https://github.com/Akava-Design/Akava-Konsole.git
-#mv Akava-Konsole/Akava.colorscheme ~/.local/share/konsole/
-#sudo rm -r Akava-Konsole
-## Colors Theme: https://github.com/Akava-Design/Akava-Colors
-#git clone https://github.com/Akava-Design/Akava-Colors.git
-#mkdir ~/.local/share/color-schemes
-#mv Akava-Colors/Akava.colors ~/.local/share/color-schemes/
-#sudo rm -r Akava-Colors
-#echo ;;
-#n|N)
-#echo "Skipping..."
-#echo ;;
-#esac
 echo "[ CONFIGURE KWALLET CHROMIUM FLAGS ]"
 cat << EOT >> /home/$USER/.config/chromium-flags.conf
 # This line will be ignored.
