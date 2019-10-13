@@ -4,8 +4,8 @@ echo "CHECKING IF SCRIPT IS RUN AS ROOT"
 echo "----------------------------------------------------------------------"
 if [[ $EUID -ne 0 ]]
 then
-    echo "You must be a root user to run this." 2>&1
-    exit 1
+	echo "You must be a root user to run this." 2>&1
+	exit 1
 else
 	echo "Scipt is being run as root."
 	echo
@@ -13,7 +13,7 @@ fi
 echo "----------------------------------------------------------------------"
 echo "CHECK IF SYSTEM IS BOOTED IN EFI MODE"
 echo "----------------------------------------------------------------------"
-ls /sys/firmware/efi/efivars
+efivar --list # OLD: ls /sys/firmware/efi/efivars
 echo
 echo "[ IF A DIRECTORY EXISTS, PRESS 'ENTER' TO CONTINUE ]"
 read
@@ -62,10 +62,7 @@ mkfs.fat -F32 /dev/sda$efipartition
 echo
 mount /dev/sda$ospartition /mnt
 echo
-ls /mnt
-mkdir /mnt/boot
-ls /mnt
-echo "Press 'ENTER' to continue" && read
+mkdir -p /mnt/boot
 mount /dev/sda$efipartition /mnt/boot
 echo
 echo "----------------------------------------------------------------------"
@@ -76,8 +73,9 @@ reflector --verbose -l 100 -a 24 -p http -p https --sort rate --save /etc/pacman
 echo "----------------------------------------------------------------------"
 echo "PACSTRAP - BASE + BASE-DEVEL"
 echo "----------------------------------------------------------------------"
-# Extra Required Packages:    Kernel    Firmware       Root Text Ext234    WiFi           exFat       NTFS    Microcode   Download
-pacstrap /mnt base base-devel linux-zen linux-firmware sudo nano e2fsprogs networkmanager exfat-utils ntfs-3g intel-ucode wget
+# Packages:   Base Utils     |Kernel   |Firmware      |Root|Text|Ext234   |WiFi          |exFat      |NTFS   |Microcode  |Mirrors  |Download
+pacstrap /mnt base base-devel linux-zen linux-firmware sudo nano e2fsprogs networkmanager exfat-utils ntfs-3g intel-ucode reflector wget
+echo "Pacstrap finished... Press 'ENTER' to continue" && read
 echo
 echo "----------------------------------------------------------------------"
 echo "GENERATE FSTAB"
@@ -120,9 +118,6 @@ echo
 echo "[ SET ROOT PASSWORD ]"
 arch-chroot /mnt sh -c "echo 'root:$rootpass' | chpasswd"
 echo
-echo "[ INSTALLING OTHER PACKAGES ]"
-arch-chroot /mnt pacman -S --needed --noconfirm reflector
-echo
 echo "[ INSTALLING SYSTEMD-BOOT TO /boot ]"
 echo
 arch-chroot /mnt bootctl --path=/boot install
@@ -138,6 +133,34 @@ Description = Updating systemd-boot
 When = PostTransaction
 Exec = /usr/bin/bootctl update
 EOT
+echo
+echo "[ CONFIGURING SYSTEMD-BOOT ]"
+echo "/boot/loader/loader.conf"
+arch-chroot /mnt touch /boot/loader/loader.conf
+arch-chroot /mnt cat /boot/loader/loader.conf
+cat << EOT >> /mnt/boot/loader/loader.conf
+----------
+default arch
+timeout 5
+console-mode max
+auto-entries 1
+auto-firmware 1
+EOT
+arch-chroot /mnt nano /boot/loader/loader.conf
+echo
+echo "/boot/loader/entries/arch.conf"
+arch-chroot /mnt touch /boot/loader/entries/arch.conf
+arch-chroot /mnt cat /boot/loader/entries/arch.conf
+rootpartuuid=$(blkid -s PARTUUID -o value /dev/sda$ospartition)
+cat << EOT >> /mnt/boot/loader/entries/arch.conf
+----------
+title Arch Linux
+linux /vmlinuz-linux-zen
+initrd /intel-ucode.img
+initrd /initramfs-linux-zen.img
+options root=PARTUUID=$rootpartuuid rw
+EOT
+arch-chroot /mnt nano /boot/loader/entries/arch.conf
 echo
 echo "[ ENABLING NETWORK MANAGER ]"
 arch-chroot /mnt systemctl enable NetworkManager
