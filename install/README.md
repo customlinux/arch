@@ -8,7 +8,7 @@ wifi-menu (for wifi)
 
 pacman -Sy --noconfirm git
 
-git clone https://github.com/customlinux/arch --branch systemd-boot
+git clone https://github.com/customlinux/arch
 
 /bin/bash arch/install/base
 
