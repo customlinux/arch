@@ -1,6 +1,6 @@
 #!/bin/bash
 echo "----------------------------------------------------------------------"
-echo "CHECKING IF SCRIPT IS RUN AS ROOT"
+echo "CHECK IF SCRIPT IS RUNNING AS ROOT"
 echo "----------------------------------------------------------------------"
 if [[ $EUID -ne 0 ]]
 then
@@ -18,7 +18,7 @@ echo
 echo "[ IF A DIRECTORY EXISTS, PRESS 'ENTER' TO CONTINUE ]"
 read
 echo "----------------------------------------------------------------------"
-echo "UPDATING SYSTEM CLOCK"
+echo "UPDATE SYSTEM CLOCK"
 echo "----------------------------------------------------------------------"
 timedatectl set-ntp true
 #timedatectl set-local-rtc 1 --adjust-system-clock
@@ -66,7 +66,7 @@ mkdir -p /mnt/boot
 mount /dev/sda$efipartition /mnt/boot
 echo
 echo "----------------------------------------------------------------------"
-echo "INSTALLING REFLECTOR AND UPDATING MIRRORLIST"
+echo "INSTALL REFLECTOR AND UPDATE MIRRORLIST"
 echo "----------------------------------------------------------------------"
 pacman -S --needed --noconfirm reflector
 reflector --verbose -l 100 -a 24 -p http -p https --sort rate --save /etc/pacman.d/mirrorlist
@@ -98,27 +98,27 @@ echo
 echo "[ SET TIMEZONE TO US-PACIFIC ]"
 arch-chroot /mnt ln -sf /usr/share/zoneinfo/US/Pacific /etc/localtime
 echo
-echo "[ GENERATING /etc/adjtime ]"
+echo "[ GENERATE /etc/adjtime ]"
 # Generated with custom timedatectl command below
 #timedatectl set-local-rtc 1 --adjust-system-clock
 arch-chroot /mnt hwclock --systohc # --utc
 echo
-echo "[ SETTING LOCALE TO en_US.UTF-8 UTF-8 FOR AMERICAN-ENGLISH ]"
+echo "[ SET LOCALE TO en_US.UTF-8 UTF-8 FOR AMERICAN-ENGLISH ]"
 sed -i 's/^#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/g' /mnt/etc/locale.gen
 echo
-echo "[ GENERATING LOCALE ]"
+echo "[ GENERATE LOCALE ]"
 arch-chroot /mnt locale-gen
 echo
-echo "[ SETTING LANG VARIABLE TO LANG=en_US.UTF-8 ]"
+echo "[ SET LANG VARIABLE TO LANG=en_US.UTF-8 ]"
 echo "LANG=en_US.UTF-8" > /mnt/etc/locale.conf
 echo
-echo "[ SETTING HOSTNAME ]"
+echo "[ SET HOSTNAME ]"
 echo $hostname > /mnt/etc/hostname
 echo
 echo "[ SET ROOT PASSWORD ]"
 arch-chroot /mnt sh -c "echo 'root:$rootpass' | chpasswd"
 echo
-echo "[ INSTALLING SYSTEMD-BOOT TO /boot ]"
+echo "[ INSTALL SYSTEMD-BOOT TO /boot ]"
 echo
 arch-chroot /mnt bootctl --path=/boot install
 echo
@@ -134,48 +134,46 @@ When = PostTransaction
 Exec = /usr/bin/bootctl update
 EOT
 echo
-echo "[ CONFIGURING SYSTEMD-BOOT ]"
+echo "[ CONFIGURE SYSTEMD-BOOT ]"
 echo "/boot/loader/loader.conf"
 arch-chroot /mnt touch /boot/loader/loader.conf
 arch-chroot /mnt cat /boot/loader/loader.conf
-cat << EOT >> /mnt/boot/loader/loader.conf
-----------
+cat << EOT > /mnt/boot/loader/loader.conf
 default arch
 timeout 5
 console-mode max
 auto-entries 1
 auto-firmware 1
 EOT
-arch-chroot /mnt nano /boot/loader/loader.conf
+#arch-chroot /mnt nano /boot/loader/loader.conf
 echo
 echo "/boot/loader/entries/arch.conf"
 arch-chroot /mnt touch /boot/loader/entries/arch.conf
 arch-chroot /mnt cat /boot/loader/entries/arch.conf
 rootpartuuid=$(blkid -s PARTUUID -o value /dev/sda$ospartition)
-cat << EOT >> /mnt/boot/loader/entries/arch.conf
-----------
+cat << EOT > /mnt/boot/loader/entries/arch.conf
 title Arch Linux
 linux /vmlinuz-linux-zen
 initrd /intel-ucode.img
 initrd /initramfs-linux-zen.img
 options root=PARTUUID=$rootpartuuid rw
 EOT
-arch-chroot /mnt nano /boot/loader/entries/arch.conf
+#arch-chroot /mnt nano /boot/loader/entries/arch.conf
 echo
-echo "[ ENABLING NETWORK MANAGER ]"
+echo "[ ENABLE NETWORK MANAGER ]"
 arch-chroot /mnt systemctl enable NetworkManager
 echo
-echo "[ CREATING USER WITH ADMINISTRATOR PRIVILIGES ]"
+echo "[ CREATE USER WITH ADMINISTRATOR PRIVILIGES ]"
 arch-chroot /mnt useradd -m -g users -G wheel -s /bin/bash $username
 echo
 echo "[ SET USER PASSWORD ]"
 arch-chroot /mnt sh -c "echo '$username:$userpass' | chpasswd"
 echo
-echo "[ SETTING ADMINISTRATOR PRIVILIGES ]"
+echo "[ SET ADMINISTRATOR PRIVILIGES ]"
 sed -i 's/^# %wheel ALL=(ALL) ALL/ %wheel ALL=(ALL) ALL/g' /mnt/etc/sudoers
 echo
 echo "----------------------------------------------------------------------"
-echo "FINISHING INSTALL: MOVING DE FILES TO /mnt + REMOVING EXTRA FILES"
+echo "FINISH INSTALL: MOVE DE FILES TO /mnt + REMOVE EXTRA FILES"
 echo "----------------------------------------------------------------------"
 cp /root/arch/install/*{gnome,kde,xfce,budgie,bedrock}* /mnt/home/$username
 chmod +x /mnt/home/$username/*
@@ -183,7 +181,5 @@ rm -r /root/arch
 echo
 echo "[ UNMOUNT & REBOOT ]"
 echo
-echo "'Ctrl + c' to CANCEL reboot - OR - 'Enter' to CONTINUE reboot."
-read
 umount -R /mnt
 reboot
