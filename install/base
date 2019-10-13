@@ -75,7 +75,6 @@ echo "PACSTRAP - BASE + BASE-DEVEL"
 echo "----------------------------------------------------------------------"
 # Packages:   Base Utils     |Kernel   |Firmware      |Root|Text|Ext234   |WiFi          |exFat      |NTFS   |Microcode  |Mirrors  |Download
 pacstrap /mnt base base-devel linux-zen linux-firmware sudo nano e2fsprogs networkmanager exfat-utils ntfs-3g intel-ucode reflector wget
-echo "Pacstrap finished... Press 'ENTER' to continue" && read
 echo
 echo "----------------------------------------------------------------------"
 echo "GENERATE FSTAB"
