@@ -29,10 +29,6 @@ case $yesnodisplaysettings in
 		echo "Skipping..."
 		echo ;;
 esac
-echo "------------------------------------------------------------------------------------------------"
-echo "CONFIGURING MISCELLANEOUS SETTINGS"
-echo "------------------------------------------------------------------------------------------------"
-echo
 while [[ ! "$yesnowindowapplets" =~ ^[yYnN]$ ]]; do read -n1 -p "Do you want to install window applets (title, appmenu, buttons)? [y/n] : " yesnowindowapplets && echo; done
 case $yesnowindowapplets in
 y|Y)
@@ -64,6 +60,10 @@ echo
 echo "Continuing..."
 echo ;;
 esac
+echo "------------------------------------------------------------------------------------------------"
+echo "CONFIGURING MISCELLANEOUS SETTINGS"
+echo "------------------------------------------------------------------------------------------------"
+echo
 echo "[ CONFIGURE KWALLET CHROMIUM FLAGS ]"
 cat << EOT >> /home/$USER/.config/chromium-flags.conf
 # This line will be ignored.
@@ -84,6 +84,412 @@ echo "[ PACMAN MIRRORLIST - REFLECTOR ]"
 echo
 sudo pacman -S --needed --noconfirm reflector
 sudo reflector --verbose -l 100 -a 24 -p http -p https --sort rate --save /etc/pacman.d/mirrorlist
+echo
+echo "[ CONFIG - GTK3 - SETTINGS.INI ]"
+gtk3_settings="/home/$USER/.config/gtk-3.0/settings.ini"
+touch $gtk3_settings
+cat << EOT > $gtk3_settings
+[Settings]
+gtk-application-prefer-dark-theme=false
+gtk-button-images=0
+gtk-cursor-theme-name=breeze_cursors
+gtk-fallback-icon-theme=Adwaita
+gtk-font-name=Noto Sans Regular 10
+gtk-icon-theme-name=breeze-dark
+gtk-menu-images=0
+gtk-modules=appmenu-gtk-module
+gtk-primary-button-warps-slider=0
+gtk-shell-shows-menubar=1
+gtk-theme-name=Breeze-Dark
+gtk-toolbar-style=GTK_TOOLBAR_ICONS
+
+EOT
+echo
+echo "[ CONFIG - LATTE - CUSTOM.LAYOUT.LATTE ]"
+latte_customlayout="/home/$USER/.config/latte/Custom.layout.latte"
+touch $latte_customlayout
+cat << EOT > $latte_customlayout
+[ActionPlugins][1]
+RightButton;NoModifier=org.kde.latte.contextmenu
+
+[Containments][1][Applets][2][Configuration][General]
+launchers59=applications:firefox.desktop,applications:org.kde.dolphin.desktop
+
+[Containments][11]
+activityId=
+formfactor=2
+immutability=1
+lastScreen=-1
+location=3
+plugin=org.kde.plasma.private.systemtray
+wallpaperplugin=org.kde.image
+
+[Containments][11][Applets][12]
+immutability=1
+plugin=org.kde.kdeconnect
+
+[Containments][11][Applets][14]
+immutability=1
+plugin=org.kde.plasma.volume
+
+[Containments][11][Applets][14][Configuration]
+PreloadWeight=100
+
+[Containments][11][Applets][15]
+immutability=1
+plugin=org.kde.plasma.devicenotifier
+
+[Containments][11][Applets][16]
+immutability=1
+plugin=org.kde.plasma.notifications
+
+[Containments][11][Applets][17]
+immutability=1
+plugin=org.kde.plasma.printmanager
+
+[Containments][11][Applets][18]
+immutability=1
+plugin=org.kde.plasma.clipboard
+
+[Containments][11][Applets][18][Configuration]
+PreloadWeight=75
+
+[Containments][11][Applets][19]
+immutability=1
+plugin=org.kde.plasma.battery
+
+[Containments][11][Applets][19][Configuration]
+PreloadWeight=80
+
+[Containments][11][Applets][19][Configuration][ConfigDialog]
+DialogHeight=540
+DialogWidth=720
+
+[Containments][11][Applets][19][Configuration][General]
+showPercentage=true
+
+[Containments][11][Applets][21]
+immutability=1
+plugin=org.kde.plasma.networkmanagement
+
+[Containments][11][Applets][21][Configuration]
+PreloadWeight=80
+
+[Containments][11][Applets][22]
+immutability=1
+plugin=org.kde.plasma.bluetooth
+
+[Containments][11][Applets][22][Configuration]
+PreloadWeight=95
+
+[Containments][11][Applets][51]
+immutability=1
+plugin=org.kde.discovernotifier
+
+[Containments][11][General]
+extraItems=org.kde.plasma.networkmanagement,org.kde.ktp-contactlist,org.kde.plasma.clipboard,org.kde.plasma.printmanager,org.kde.kdeconnect,org.kde.plasma.pkupdates,org.kde.plasma.battery,org.kde.plasma.bluetooth,org.kde.plasma.notifications,org.kde.plasma.devicenotifier,org.kde.plasma.volume,org.kde.plasma.mediacontroller,org.kde.discovernotifier
+knownItems=org.kde.plasma.networkmanagement,org.kde.ktp-contactlist,org.kde.plasma.clipboard,org.kde.plasma.printmanager,org.kde.kdeconnect,org.kde.plasma.pkupdates,org.kde.plasma.battery,org.kde.plasma.bluetooth,org.kde.plasma.notifications,org.kde.plasma.devicenotifier,org.kde.plasma.volume,org.kde.plasma.mediacontroller,org.kde.discovernotifier
+
+[Containments][4]
+activityId=
+byPassWM=false
+dockWindowBehavior=true
+enableKWinEdges=true
+formfactor=2
+immutability=1
+isPreferredForShortcuts=false
+lastScreen=-1
+location=3
+onPrimary=true
+plugin=org.kde.latte.containment
+raiseOnActivityChange=false
+raiseOnDesktopChange=false
+settingsComplexity=4
+timerHide=700
+timerShow=200
+viewType=1
+visibility=0
+wallpaperplugin=org.kde.image
+
+[Containments][4][Applets][10]
+immutability=1
+plugin=org.kde.plasma.systemtray
+
+[Containments][4][Applets][10][Configuration]
+PreloadWeight=100
+SystrayContainmentId=11
+
+[Containments][4][Applets][24]
+immutability=1
+plugin=org.kde.plasma.userswitcher
+
+[Containments][4][Applets][25]
+immutability=1
+plugin=org.kde.plasma.digitalclock
+
+[Containments][4][Applets][25][Configuration]
+PreloadWeight=100
+
+[Containments][4][Applets][58]
+immutability=1
+plugin=org.kde.plasma.icontasks
+
+[Containments][4][Applets][58][Configuration][ConfigDialog]
+DialogHeight=540
+DialogWidth=720
+
+[Containments][4][Applets][58][Configuration][General]
+launchers=applications:org.kde.dolphin.desktop,applications:chromium.desktop,applications:org.kde.konsole.desktop,applications:systemsettings.desktop,applications:org.kde.ksysguard.desktop
+maxStripes=1
+middleClickAction=NewInstance
+showOnlyCurrentDesktop=false
+showToolTips=false
+wheelEnabled=false
+
+[Containments][4][Applets][59]
+immutability=1
+plugin=org.kde.plasma.lock_logout
+
+[Containments][4][Applets][59][Configuration][ConfigDialog]
+DialogHeight=540
+DialogWidth=720
+
+[Containments][4][Applets][59][Configuration][General]
+show_lockScreen=false
+
+[Containments][4][Applets][60]
+immutability=1
+plugin=org.kde.plasma.pager
+
+[Containments][4][Applets][61]
+immutability=1
+plugin=org.kde.windowappmenu
+
+[Containments][4][Applets][61][Configuration][ConfigDialog]
+DialogHeight=540
+DialogWidth=720
+
+[Containments][4][Applets][61][Configuration][General]
+containmentType=Latte
+windowTitleIsPresent=true
+
+[Containments][4][Applets][62]
+immutability=1
+plugin=org.kde.windowbuttons
+
+[Containments][4][Applets][62][Configuration][ConfigDialog]
+DialogHeight=540
+DialogWidth=720
+
+[Containments][4][Applets][62][Configuration][General]
+buttonSizePercentage=100
+buttons=3|4|5|10|2|9
+containmentType=Latte
+slideAnimation=true
+spacing=2
+visibility=ActiveMaximizedWindow
+
+[Containments][4][Applets][63]
+immutability=1
+plugin=org.kde.windowtitle
+
+[Containments][4][Applets][63][Configuration][ConfigDialog]
+DialogHeight=540
+DialogWidth=720
+
+[Containments][4][Applets][63][Configuration][General]
+appMenuIsPresent=true
+containmentType=Latte
+filterActivityInfo=true
+showIcon=false
+
+[Containments][4][Applets][8]
+immutability=1
+plugin=org.kde.plasma.kickoff
+
+[Containments][4][Applets][8][Configuration]
+PreloadWeight=100
+
+[Containments][4][Applets][8][Configuration][ConfigDialog]
+DialogHeight=540
+DialogWidth=720
+
+[Containments][4][Applets][8][Configuration][General]
+favorites=preferred://browser,systemsettings.desktop,org.kde.dolphin.desktop,org.kde.kate.desktop,org.kde.discover.desktop
+favoritesPortedToKAstats=true
+menuItems=bookmark:t,application:t,used:t,leave:t,oftenUsed:f,computer:f
+systemApplications=systemsettings.desktop,org.kde.kinfocenter.desktop
+
+[Containments][4][Applets][8][Shortcuts]
+global=Alt+F1
+
+[Containments][4][ConfigDialog]
+DialogHeight=944
+DialogWidth=539
+
+[Containments][4][General]
+activeWindowFilter=FromAllScreens
+advanced=false
+animationLauncherBouncing=false
+animationWindowAddedInGroup=false
+animationWindowInAttention=false
+animationsEnabled=false
+appletOrder=8;58;63;61;60;10;25;59;62
+autoDecreaseIconSize=false
+backgroundOnlyOnMaximized=true
+blurEnabled=false
+dragActiveWindowEnabled=true
+durationTime=x1
+iconSize=28
+inConfigureAppletsMode=true
+mouseWheelActions=false
+panelPosition=10
+panelShadows=false
+panelSize=100
+panelTransparency=0
+plasmaBackgroundForPopups=true
+shadowOpacity=55
+shadowSize=40
+shadows=None
+shrinkThickMargins=true
+solidBackgroundForMaximized=true
+splitterPosition=3
+splitterPosition2=5
+titleTooltips=false
+zoomLevel=0
+
+[Containments][4][Indicator]
+customType=
+enabled=false
+enabledForApplets=false
+padding=0.07999999821186066
+type=org.kde.latte.default
+
+[Containments][4][Indicator][org.kde.latte.default][General]
+activeStyle=Dot
+
+[Containments][4][Indicator][org.kde.latte.plasma][General]
+reversed=true
+
+[LayoutSettings]
+activities=d5dc1607-1b8f-4c97-bfdb-d42b6463e490
+background=
+color=red
+disableBordersForMaximizedWindows=true
+lastUsedActivity=d5dc1607-1b8f-4c97-bfdb-d42b6463e490
+launchers=
+preferredForShortcutsTouched=true
+sharedLayout=
+showInMenu=true
+textColor=fcfcfc
+version=2
+
+EOT
+echo
+echo "[ CONFIG - BREEZERC ]"
+config_breezerc="/home/$USER/.config/breezerc"
+touch $config_breezerc
+cat << EOT > $config_breezerc
+[Common]
+OutlineCloseButton=false
+ShadowSize=ShadowSmall
+
+[Style]
+MenuOpacity=30
+TabBarDrawCenteredTabs=true
+ToolBarDrawItemSeparator=false
+
+[Windeco]
+DrawBackgroundGradient=false
+DrawBorderOnMaximizedWindows=true
+DrawSizeGrip=true
+
+EOT
+echo
+echo "[ CONFIG - DOLPHINRC  ]"
+config_dolphinrc="/home/$USER/.config/dolphinrc"
+touch $config_dolphinrc
+cat << EOT > $config_dolphinrc
+Height 768=739
+MenuBar=Disabled
+State=AAAA/wAAAAD9AAAAAwAAAAAAAAC4AAACvfwCAAAAAvsAAAAWAGYAbwBsAGQAZQByAHMARABvAGMAawAAAAAA/////wAAAAoBAAAD+wAAABQAcABsAGEAYwBlAHMARABvAGMAawEAAAAmAAACvQAAAFoBAAADAAAAAQAAAAAAAAAA/AIAAAAB+wAAABAAaQBuAGYAbwBEAG8AYwBrAAAAAAD/////AAAACgEAAAMAAAADAAAAAAAAAAD8AQAAAAH7AAAAGAB0AGUAcgBtAGkAbgBhAGwARABvAGMAawAAAAAA/////wAAAAoBAAADAAAB7gAAAr0AAAAEAAAABAAAAAgAAAAI/AAAAAEAAAACAAAAAQAAABYAbQBhAGkAbgBUAG8AbwBsAEIAYQByAQAAAAD/////AAAAAAAAAAA=
+Width 1366=679
+
+[CompactMode]
+FontWeight=50
+
+[Desktop Entry]
+DefaultProfile=Kustom.profile
+
+[DetailsMode]
+FontWeight=50
+
+[Favorite Profiles]
+Favorites=
+
+[General]
+AutoExpandFolders=true
+BrowseThroughArchives=true
+ShowFullPath=true
+UseTabForSwitchingSplitView=true
+Version=200
+ViewPropsTimestamp=2019,10,12,22,30,1
+
+[IconsMode]
+FontWeight=50
+
+[MainWindow]
+Height 1050=478
+Height 768=480
+MenuBar=Disabled
+State=AAAA/wAAAAD9AAAAAwAAAAAAAABqAAAB3vwCAAAAAvsAAAAWAGYAbwBsAGQAZQByAHMARABvAGMAawAAAAAA/////wAAAAoBAAAD+wAAABQAcABsAGEAYwBlAHMARABvAGMAawEAAAAAAAAB3gAAAFoBAAADAAAAAQAAAAAAAAAA/AIAAAAB+wAAABAAaQBuAGYAbwBEAG8AYwBrAAAAAAD/////AAAACgEAAAMAAAADAAACWgAAAL78AQAAAAH7AAAAGAB0AGUAcgBtAGkAbgBhAGwARABvAGMAawAAAAAAAAACWgAAAAoBAAADAAACrwAAAd4AAAAEAAAABAAAAAgAAAAI/AAAAAEAAAABAAAAAQAAABYAbQBhAGkAbgBUAG8AbwBsAEIAYQByAwAAAAD/////AAAAAAAAAAA=
+ToolBarsMovable=Disabled
+Width 1366=640
+Width 1680=832
+
+[MainWindow][Toolbar mainToolBar]
+ToolButtonStyle=IconOnly
+
+[Open-with settings]
+CompletionMode=1
+History=kate
+
+[PreviewSettings]
+Plugins=appimagethumbnail,audiothumbnail,comicbookthumbnail,djvuthumbnail,ebookthumbnail,exrthumbnail,directorythumbnail,fontthumbnail,imagethumbnail,jpegthumbnail,kraorathumbnail,windowsexethumbnail,windowsimagethumbnail,opendocumentthumbnail,svgthumbnail
+
+[SettingsDialog]
+Height 768=462
+Width 1366=560
+
+EOT
+echo
+echo "[ CONFIG -  ]"
+="/home/$USER/.config/"
+touch $
+cat << EOT > $
+
+EOT
+echo
+echo "[ CONFIG -  ]"
+="/home/$USER/.config/"
+touch $
+cat << EOT > $
+
+EOT
+echo
+echo "[ CONFIG -  ]"
+="/home/$USER/.config/"
+touch $
+cat << EOT > $
+
+EOT
+echo
+echo "[ CONFIG -  ]"
+="/home/$USER/.config/"
+touch $
+cat << EOT > $
+
+EOT
 echo
 echo "------------------------------------------------------------------------------------------------"
 echo "REMOVE EXTRA SOFTWARE / FILES"
