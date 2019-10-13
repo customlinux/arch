@@ -1,3 +1,3 @@
 ## Install
 
-https://github.com/customlinux/arch/tree/non-grub/install
+https://github.com/customlinux/arch/tree/systemd-boot/install
