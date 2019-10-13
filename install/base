@@ -183,6 +183,7 @@ rm -r /root/arch
 echo
 echo "[ UNMOUNT & REBOOT ]"
 echo
-echo "'Ctrl + c' to CANCEL reboot - OR - 'Enter' to CONTINUE reboot." && read
+echo "'Ctrl + c' to CANCEL reboot - OR - 'Enter' to CONTINUE reboot."
+read
 umount -R /mnt
 reboot
