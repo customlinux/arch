@@ -84,6 +84,13 @@ echo "[ SET APPS TO AUTOSTART ]"
 libinput-gestures-setup autostart
 mkdir /home/$USER/.config/autostart
 echo
+echo "[ SET SDDM STARTUP SCRIPT ]"
+sudo bash -c 'cat << EOT >> /etc/sddm.conf
+[X11]
+DisplayCommand=/usr/share/sddm/scripts/Xsetup
+EOT'
+sed -i "s/replaceWithUserName/$USER/g" /home/$USER/kdepostinstall
+echo
 echo "----------------------------------------------------------------------"
 echo "SET UP POST INSTALL SCRIPT TO RUN AFTER REBOOT"
 echo "----------------------------------------------------------------------"
