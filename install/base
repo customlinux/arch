@@ -73,8 +73,8 @@ reflector --verbose -l 100 -a 24 -p http -p https --sort rate --save /etc/pacman
 echo "----------------------------------------------------------------------"
 echo "PACSTRAP - BASE + BASE-DEVEL"
 echo "----------------------------------------------------------------------"
-# Packages:   Base Utils     |Kernel   |Firmware      |Root|Text|Ext234   |WiFi          |exFat      |NTFS   |Microcode  |Mirrors  |Download
-pacstrap /mnt base base-devel linux-zen linux-firmware sudo nano e2fsprogs networkmanager exfat-utils ntfs-3g intel-ucode reflector wget
+# Packages:   Base Utils     |Kernel   |Firmware      |Root|Text|Tree|Ext234   |WiFi          |exFat      |NTFS   |Microcode  |Mirrors  |Download
+pacstrap /mnt base base-devel linux-zen linux-firmware sudo tree nano e2fsprogs networkmanager exfat-utils ntfs-3g intel-ucode reflector wget
 echo
 echo "----------------------------------------------------------------------"
 echo "GENERATE FSTAB"
@@ -139,12 +139,11 @@ arch-chroot /mnt touch /boot/loader/loader.conf
 arch-chroot /mnt cat /boot/loader/loader.conf
 cat << EOT > /mnt/boot/loader/loader.conf
 default arch
-timeout 0
+timeout 3
 console-mode max
 auto-entries 1
 auto-firmware 1
 EOT
-#arch-chroot /mnt nano /boot/loader/loader.conf
 echo
 echo "/boot/loader/entries/arch.conf"
 arch-chroot /mnt touch /boot/loader/entries/arch.conf
@@ -157,7 +156,6 @@ initrd /intel-ucode.img
 initrd /initramfs-linux-zen.img
 options root=PARTUUID=$rootpartuuid rw
 EOT
-#arch-chroot /mnt nano /boot/loader/entries/arch.conf
 echo
 echo "[ ENABLE NETWORK MANAGER ]"
 arch-chroot /mnt systemctl enable NetworkManager
