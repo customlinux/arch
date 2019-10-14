@@ -90,7 +90,7 @@ sudo bash -c 'cat << EOT >> /etc/sddm.conf
 [X11]
 DisplayCommand=/usr/share/sddm/scripts/Xsetup
 EOT'
-sed -i "s/replaceWithUserName/$USER/g" /home/$USER/kdepostinstall
+sed -i "s/replaceWithUserNameXsetup/$USER/g" /home/$USER/kdepostinstall
 echo
 echo "----------------------------------------------------------------------"
 echo "SET UP POST INSTALL SCRIPT TO RUN AFTER REBOOT"
