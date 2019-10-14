@@ -90,6 +90,7 @@ git config --global credential.helper 'cache --timeout=1800'
 git config --global core.autocrlf input
 echo
 echo "[ PACMAN MIRRORLIST - REFLECTOR ]"
+sudo mkdir -p /etc/pacman.d/hooks
 sudo touch /etc/pacman.d/hooks/mirrorupgrade.hook
 sudo bash -c 'cat << EOT > /etc/pacman.d/hooks/mirrorupgrade.hook
 [Trigger]
@@ -115,6 +116,7 @@ wget -P /home/$USER/myScripts https://raw.githubusercontent.com/customlinux/file
 sed -i "s/replaceWithUserNameKsysguard/$USER/g" /home/$USER/myScripts/ksysguardCustomSystemload
 chmod +x /home/$USER/myScripts/ksysguardCustomSystemload
 /home/$USER/myScripts/ksysguardCustomSystemload
+sudo mkdir -p /etc/pacman.d/hooks
 sudo touch /etc/pacman.d/hooks/ksysguardsystemloadupgrade.hook
 sudo bash -c 'cat << EOT > /etc/pacman.d/hooks/ksysguardsystemloadupgrade.hook
 [Trigger]
