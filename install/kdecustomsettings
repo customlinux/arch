@@ -68,3 +68,11 @@ ToolButtonStyle=IconOnly
 CompletionMode=1
 
 EOT
+echo "[ CONFIG - KCMINPUTRC ]"
+configKcminputrc="/home/$USER/.config/kcminputrc"
+touch $configKcminputrc
+cat << EOT > $configKcminputrc
+[Mouse]
+cursorTheme=breeze_cursors
+
+EOT
