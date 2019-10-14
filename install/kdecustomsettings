@@ -1,5 +1,5 @@
 #!/bin/bash
-echo "[ CONFIG - GTK3 - SETTINGS ]"
+echo "[ CONFIG - GTK3 - SETTINGS.INI ]"
 gtk3Settings="/home/$USER/.config/gtk-3.0/settings.ini"
 touch $gtk3Settings
 cat << EOT > $gtk3Settings
@@ -16,4 +16,24 @@ gtk-primary-button-warps-slider=0
 gtk-shell-shows-menubar=1
 gtk-theme-name=Breeze-Dark
 gtk-toolbar-style=GTK_TOOLBAR_ICONS
+
+EOT
+echo "[ CONFIG - BREEZERC ]"
+configBreezerc="/home/$USER/.config/breezerc"
+touch $configBreezerc
+cat << EOT > $configBreezerc
+[Common]
+OutlineCloseButton=false
+ShadowSize=ShadowSmall
+
+[Style]
+MenuOpacity=30
+TabBarDrawCenteredTabs=true
+ToolBarDrawItemSeparator=false
+
+[Windeco]
+DrawBackgroundGradient=false
+DrawBorderOnMaximizedWindows=true
+DrawSizeGrip=true
+
 EOT
