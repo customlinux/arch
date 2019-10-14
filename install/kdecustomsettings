@@ -1,0 +1,17 @@
+#!/bin/bash
+while [[ ! "$yesnoruncustomsettingsscript" =~ ^[yYnN]$ ]]; do read -n1 -p "Do you want to run this custom settings script right now? [y/n] : " yesnoruncustomsettingsscript && echo; done
+case $yesnoruncustomsettingsscript in
+	y|Y)
+		echo "Continuing..."
+		echo ;;
+	n|N)
+		echo "Exiting..."
+		exit 0 ;;
+esac
+echo "[ CHROMIUM FLAGS ]"
+cat << EOT >> /home/$USER/.config/chromium-flags.conf
+# This line will be ignored.
+# --password-store=<basic|gnome|kwallet>
+--flag-switches-begin --enable-dom-distiller --enable-smooth-scrolling --enable-features=AutomaticPasswordGeneration,FocusMode,OverlayScrollbar,ParallelDownloading,SecurityInterstitialsDarkMode,UsernameFirstFlow,google-password-manager --flag-switches-end
+EOT
+echo
