@@ -23,8 +23,8 @@ sudo timedatectl set-ntp true
 echo "----------------------------------------------------------------------"
 echo "INSTALL KDE"
 echo "----------------------------------------------------------------------"
-# Package Info: Don't reinstall|Don't Confirm (y/n)|Github|Disk-Partition Utility|KDE           |Display Manager         |File Manager|Dialog Viewer|Terminal|User Management|Bluetooth Management          |Power Management|Screen Management|Wallet Management         |KDE Connect     |KDE Info   |KDE RunAsRoot|GTK Management           |Screenshot|View Images|Network + Audio Applets|Default Home Directories|Chrome Integration        |Web Browser|Extract|Display Settings|Latte Dock
-sudo pacman -S  --needed        --noconfirm         git    gnome-disk-utility     plasma-desktop sddm sddm-kcm xorg-xinit dolphin ark  kdialog       konsole  user-manager    bluedevil pulseaudio-bluetooth powerdevil       kscreen           kwallet-pam kwalletmanager kdeconnect sshfs kinfocenter kdesu         kde-gtk-config breeze-gtk spectacle  gwenview    plasma-nm plasma-pa     xdg-user-dirs            plasma-browser-integration chromium    unzip   xorg-xrandr      latte-dock
+# Package Info: Don't reinstall|Don't Confirm (y/n)|Disk Partition Utilities  |KDE           |Display Manager         |File Manager|Dialog Viewer|Terminal|Editor|User Management|Bluetooth Management          |Power Management|Screen Management|Wallet Management         |KDE Connect     |KDE Info   |KDE RunAsRoot|GTK Management           |Screenshot|View Images|Network + Audio Applets|Default Home Directories|Chrome Integration        |Web Browser|Extract|Display Settings|Latte Dock
+sudo pacman -S  --needed        --noconfirm         gnome-disk-utility gparted plasma-desktop sddm sddm-kcm xorg-xinit dolphin ark  kdialog       konsole  kwrite user-manager    bluedevil pulseaudio-bluetooth powerdevil       kscreen           kwallet-pam kwalletmanager kdeconnect sshfs kinfocenter kdesu         kde-gtk-config breeze-gtk spectacle  gwenview    plasma-nm plasma-pa     xdg-user-dirs            plasma-browser-integration chromium    unzip   xorg-xrandr      latte-dock
 # Not needed: Wallpapers (plasma-workspace-wallpapers) - Wallpapers aren't that good.
 # Not needed: Monospace Font (ttf-hack) - Better mono font available.
 # Not needed: KDE Partition Manager (partitionmanager) - Gnome Disk Utility is better?
@@ -44,7 +44,7 @@ pikaur -S       --needed        --noconfirm         chromium-widevine      libin
 # Not needed: AUR GUI Frontend (pamac-aur)
 # Not needed: MacOS like Icon Theme (la-capitaine-icon-theme)
 # Not needed: MacOS like Cursor Theme (capitaine-cursors)
-# Not needed: Sublime Text Editor (sublime-text-dev) - Kate is better?
+# Not needed: Sublime Text Editor (sublime-text-dev) - KWrite is better.
 echo
 echo "[ ENABLE DISPLAY MANAGER ]"
 sudo systemctl enable sddm
@@ -86,6 +86,7 @@ mkdir /home/$USER/.config/autostart
 echo
 echo "[ SET SDDM STARTUP SCRIPT ]"
 sudo bash -c 'cat << EOT >> /etc/sddm.conf
+
 [X11]
 DisplayCommand=/usr/share/sddm/scripts/Xsetup
 EOT'
