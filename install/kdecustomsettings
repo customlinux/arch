@@ -1,8 +1,7 @@
 #!/bin/bash
 echo "[ CONFIG - GTK3 - SETTINGS.INI ]"
-gtk3Settings="/home/$USER/.config/gtk-3.0/settings.ini"
-touch $gtk3Settings
-cat << EOT > $gtk3Settings
+touch /home/$USER/.config/gtk-3.0/settings.ini
+cat << EOT > /home/$USER/.config/gtk-3.0/settings.ini
 [Settings]
 gtk-application-prefer-dark-theme=false
 gtk-button-images=0
@@ -19,9 +18,8 @@ gtk-toolbar-style=GTK_TOOLBAR_ICONS
 
 EOT
 echo "[ CONFIG - BREEZERC ]"
-configBreezerc="/home/$USER/.config/breezerc"
-touch $configBreezerc
-cat << EOT > $configBreezerc
+touch /home/$USER/.config/breezerc
+cat << EOT > /home/$USER/.config/breezerc
 [Common]
 OutlineCloseButton=false
 ShadowSize=ShadowSmall
@@ -38,9 +36,8 @@ DrawSizeGrip=true
 
 EOT
 echo "[ CONFIG - DOLPHINRC  ]"
-configDolphinrc="/home/$USER/.config/dolphinrc"
-touch $configDolphinrc
-cat << EOT > $configDolphinrc
+touch /home/$USER/.config/dolphinrc
+cat << EOT > /home/$USER/.config/dolphinrc
 MenuBar=Disabled
 State=AAAA/wAAAAD9AAAAAwAAAAAAAAC4AAACvfwCAAAAAvsAAAAWAGYAbwBsAGQAZQByAHMARABvAGMAawAAAAAA/////wAAAAoBAAAD+wAAABQAcABsAGEAYwBlAHMARABvAGMAawEAAAAmAAACvQAAAFoBAAADAAAAAQAAAAAAAAAA/AIAAAAB+wAAABAAaQBuAGYAbwBEAG8AYwBrAAAAAAD/////AAAACgEAAAMAAAADAAAAAAAAAAD8AQAAAAH7AAAAGAB0AGUAcgBtAGkAbgBhAGwARABvAGMAawAAAAAA/////wAAAAoBAAADAAAB7gAAAr0AAAAEAAAABAAAAAgAAAAI/AAAAAEAAAACAAAAAQAAABYAbQBhAGkAbgBUAG8AbwBsAEIAYQByAQAAAAD/////AAAAAAAAAAA=
 
@@ -69,17 +66,15 @@ CompletionMode=1
 
 EOT
 echo "[ CONFIG - KCMINPUTRC ]"
-configKcminputrc="/home/$USER/.config/kcminputrc"
-touch $configKcminputrc
-cat << EOT > $configKcminputrc
+touch /home/$USER/.config/kcminputrc
+cat << EOT > /home/$USER/.config/kcminputrc
 [Mouse]
 cursorTheme=breeze_cursors
 
 EOT
 echo "[ CONFIG - KDEGLOBALS ]"
-configKdeglobals="/home/$USER/.config/kdeglobals"
-touch $configKdeglobals
-cat << EOT > $configKdeglobals
+touch /home/$USER/.config/kdeglobals
+cat << EOT > /home/$USER/.config/kdeglobals
 [General]
 ColorScheme=BreezeDark
 Name=Breeze Dark
@@ -131,5 +126,471 @@ MaximumRemoteSize=0
 [Toolbar style]
 ToolButtonStyle=TextBesideIcon
 ToolButtonStyleOtherToolbars=TextBesideIcon
+
+EOT
+echo "[ CONFIG - KIORC ]"
+touch /home/$USER/.config/kiorc
+cat << EOT > /home/$USER/.config/kiorc
+[Confirmations]
+ConfirmDelete=true
+ConfirmEmptyTrash=true
+ConfirmTrash=false
+
+[Executable scripts]
+behaviourOnLaunch=alwaysAsk
+
+EOT
+echo "[ CONFIG - KONSOLERC ]"
+touch /home/$USER/.config/konsolerc
+cat << EOT > /home/$USER/.config/konsolerc
+[Desktop Entry]
+DefaultProfile=Kustom.profile
+
+[Favorite Profiles]
+Favorites=Kustom.profile
+
+[KonsoleWindow]
+SaveGeometryOnExit=false
+ShowMenuBarByDefault=false
+ShowWindowTitleOnTitleBar=true
+
+[MainWindow]
+State=AAAA/wAAAAD9AAAAAAAAApYAAAF8AAAABAAAAAQAAAAIAAAACPwAAAAA
+ToolBarsMovable=Disabled
+
+[TabBar]
+ExpandTabWidth=true
+NewTabButton=true
+
+EOT
+echo "[ CONFIG - KSERVICEMENURC ]"
+touch /home/$USER/.config/kservicemenurc
+cat << EOT > /home/$USER/.config/kservicemenurc
+[Show]
+compressfileitemaction=true
+extractfileitemaction=true
+installFont=true
+kactivitymanagerd_fileitem_linking_plugin=true
+kdeconnectsendfile=false
+openTerminalHere=true
+runInKonsole=true
+sharefileitemaction=false
+slideshow=false
+tagsfileitemaction=false
+
+EOT
+echo "[ CONFIG - KSPLASHRC ]"
+touch /home/$USER/.config/ksplashrc
+cat << EOT > /home/$USER/.config/ksplashrc
+[KSplash]
+Engine=none
+Theme=None
+
+EOT
+echo "[ CONFIG - KWINRC ]"
+touch /home/$USER/.config/kwinrc
+cat << EOT > /home/$USER/.config/kwinrc
+[Compositing]
+AnimationSpeed=2
+Backend=OpenGL
+Enabled=true
+GLCore=false
+GLPreferBufferSwap=a
+GLTextureFilter=2
+HiddenPreviews=5
+OpenGLIsUnsafe=false
+WindowsBlockCompositing=true
+XRenderSmoothScale=false
+
+[Desktops]
+Number=4
+Rows=2
+
+[Effect-Blur]
+NoiseStrength=0
+
+[Effect-CoverSwitch]
+TabBox=false
+TabBoxAlternative=false
+
+[Effect-Cube]
+BorderActivate=9
+BorderActivateCylinder=9
+BorderActivateSphere=9
+TouchBorderActivate=9
+TouchBorderActivateCylinder=9
+TouchBorderActivateSphere=9
+
+[Effect-DesktopGrid]
+BorderActivate=9
+BorderWidth=0
+LayoutMode=1
+TouchBorderActivate=9
+
+[Effect-FlipSwitch]
+TabBox=false
+TabBoxAlternative=false
+
+[Effect-PresentWindows]
+BorderActivate=9
+BorderActivateAll=9
+BorderActivateClass=9
+DrawWindowCaptions=false
+MiddleButtonDesktop=3
+MiddleButtonWindow=4
+RightButtonDesktop=2
+ShowPanel=true
+TouchBorderActivate=7
+TouchBorderActivateAll=9
+TouchBorderActivateClass=9
+
+[Effect-Resize]
+Outline=true
+TextureScale=false
+
+[Effect-Slide]
+HorizontalGap=0
+VerticalGap=0
+
+[ElectricBorders]
+Bottom=None
+BottomLeft=None
+BottomRight=None
+Left=None
+Right=None
+Top=None
+TopLeft=None
+TopRight=None
+
+[ModifierOnlyShortcuts]
+Meta=org.kde.lattedock,/Latte,org.kde.LatteDock,activateLauncherMenu
+
+[Plugins]
+contrastEnabled=false
+desktopchangeosdEnabled=false
+highlightwindowEnabled=true
+windowgeometryEnabled=false
+
+[Script-desktopchangeosd]
+PopupHideDelay=1000
+TextOnly=false
+
+[TabBox]
+ActivitiesMode=1
+ApplicationsMode=0
+BorderActivate=9
+BorderAlternativeActivate=9
+DesktopLayout=org.kde.breeze.desktop
+DesktopListLayout=org.kde.breeze.desktop
+DesktopMode=1
+HighlightWindows=true
+LayoutName=org.kde.breezedark.desktop
+MinimizedMode=0
+MultiScreenMode=0
+ShowDesktopMode=0
+ShowTabBox=true
+SwitchingMode=0
+TouchBorderActivate=9
+TouchBorderAlternativeActivate=9
+
+[TabBoxAlternative]
+ActivitiesMode=1
+ApplicationsMode=0
+DesktopMode=1
+HighlightWindows=true
+LayoutName=org.kde.breeze.desktop
+MinimizedMode=0
+MultiScreenMode=0
+ShowDesktopMode=0
+ShowTabBox=true
+SwitchingMode=0
+
+[TouchEdges]
+Bottom=None
+Left=None
+Right=None
+Top=None
+
+[Windows]
+ActiveMouseScreen=false
+AutoRaise=false
+AutoRaiseInterval=0
+AutogroupInForeground=true
+AutogroupSimilarWindows=false
+BorderSnapZone=10
+BorderlessMaximizedWindows=true
+CenterSnapZone=25
+ClickRaise=true
+DelayFocusInterval=0
+ElectricBorderCooldown=350
+ElectricBorderCornerRatio=0.25
+ElectricBorderDelay=150
+ElectricBorderMaximize=true
+ElectricBorderTiling=true
+ElectricBorders=0
+FocusPolicy=ClickToFocus
+FocusStealingPreventionLevel=1
+GeometryTip=false
+HideUtilityWindowsForInactive=true
+InactiveTabsSkipTaskbar=false
+MaximizeButtonLeftClickCommand=Maximize
+MaximizeButtonMiddleClickCommand=Maximize (vertical only)
+MaximizeButtonRightClickCommand=Maximize (horizontal only)
+NextFocusPrefersMouse=false
+Placement=Smart
+RollOverDesktops=false
+SeparateScreenFocus=false
+ShadeHover=false
+ShadeHoverInterval=250
+SnapOnlyWhenOverlapping=false
+TitlebarDoubleClickCommand=Maximize
+WindowSnapZone=10
+
+[org.kde.kdecoration2]
+BorderSize=Normal
+ButtonsOnLeft=MS
+ButtonsOnRight=HIAX
+CloseOnDoubleClickOnMenu=false
+ShowToolTips=true
+library=org.kde.breeze
+theme=Breeze
+
+EOT
+echo "[ CONFIG - LATTEDOCKRC ]"
+touch /home/$USER/.config/lattedockrc
+cat << EOT > /home/$USER/.config/lattedockrc
+[PlasmaThemeExtended]
+outlineWidth=1
+
+[PlasmaTransientsConfig]
+PreloadWeight=26
+enableKWinEdges=true
+raiseOnActivityChange=false
+raiseOnDesktopChange=false
+timerHide=700
+timerShow=200
+
+[ScreenConnectors]
+10=HDMI-1
+11=eDP-1
+
+[UniversalSettings]
+badges3DStyle=false
+canDisableBorders=true
+currentLayout=Custom
+downloadWindowSize=800,550
+lastNonAssignedLayout=Extended
+launchers=
+layoutsColumnWidths=104,59,62,83
+layoutsWindowSize=1680,1022
+memoryUsage=0
+metaPressAndHoldEnabled=true
+mouseSensitivity=0
+screenTrackerInterval=1000
+showInfoWindow=false
+
+EOT
+echo "[ CONFIG - PLASMANOTIFYRC ]"
+touch /home/$USER/.config/plasmanotifyrc
+cat << EOT > /home/$USER/.config/plasmanotifyrc
+[Notifications]
+PopupTimeout=3500
+
+EOT
+echo "[ CONFIG - PLASMARC ]"
+touch /home/$USER/.config/plasmarc
+cat << EOT > /home/$USER/.config/plasmarc
+[OSD]
+Enabled=false
+
+[PlasmaToolTips]
+Delay=0.7
+
+[Theme]
+name=breeze-dark
+
+EOT
+echo "[ CONFIG - POWERDEVILRC ]"
+touch /home/$USER/.config/powerdevilrc
+cat << EOT > /home/$USER/.config/powerdevilrc
+[BatteryManagement]
+BatteryCriticalAction=1
+BatteryCriticalLevel=10
+BatteryLowLevel=15
+
+EOT
+echo "[ CONFIG - TOUCHPADXLIBINPUTRC ]"
+touch /home/$USER/.config/touchpadxlibinputrc
+cat << EOT > /home/$USER/.config/touchpadxlibinputrc
+[SYN1B7B:01 06CB:2969 Touchpad]
+clickMethodAreas=false
+clickMethodClickfinger=true
+naturalScroll=true
+tapToClick=true
+
+EOT
+echo "[ CONFIG - POWERMANAGEMENTPROFILESRC ]"
+touch /home/$USER/.config/powermanagementprofilesrc
+cat << EOT > /home/$USER/.config/powermanagementprofilesrc
+[AC]
+icon=battery-charging
+
+[AC][DPMSControl]
+idleTime=600
+
+[AC][DimDisplay]
+idleTime=300000
+
+[AC][HandleButtonEvents]
+lidAction=1
+powerButtonAction=16
+triggerLidActionWhenExternalMonitorPresent=true
+
+[Battery]
+icon=battery-060
+
+[Battery][DPMSControl]
+idleTime=300
+
+[Battery][DimDisplay]
+idleTime=120000
+
+[Battery][HandleButtonEvents]
+lidAction=1
+powerButtonAction=16
+triggerLidActionWhenExternalMonitorPresent=true
+
+[Battery][SuspendSession]
+idleTime=600000
+suspendType=1
+
+[LowBattery]
+icon=battery-low
+
+[LowBattery][BrightnessControl]
+value=30
+
+[LowBattery][DPMSControl]
+idleTime=120
+
+[LowBattery][DimDisplay]
+idleTime=60000
+
+[LowBattery][HandleButtonEvents]
+lidAction=1
+powerButtonAction=16
+triggerLidActionWhenExternalMonitorPresent=true
+
+[LowBattery][SuspendSession]
+idleTime=300000
+suspendType=1
+
+[migration]
+kdedShortcutMigration=true
+
+EOT
+echo "[ KDE4 - SHARE - CONFIG - KDEGLOBALS ]"
+touch /home/$USER/.kde4/share/config/kdeglobals
+cat << EOT > /home/$USER/.kde4/share/config/kdeglobals
+[General]
+ColorScheme=Breeze Dark
+Name=Breeze Dark
+font=Noto Sans,10,-1,5,50,0,0,0,0,0,Regular
+menuFont=Noto Sans,10,-1,5,50,0,0,0,0,0,Regular
+shadeSortColumn=true
+smallestReadableFont=Noto Sans,10,-1,5,50,0,0,0,0,0,Regular
+toolBarFont=Noto Sans,10,-1,5,50,0,0,0,0,0,Regular
+widgetStyle=Breeze
+
+[Icons]
+Theme=breeze-dark
+
+[KDE]
+ColorScheme=Breeze
+LookAndFeelPackage=org.kde.breezedark.desktop
+ShowDeleteCommand=false
+ShowIconsInMenuItems=true
+ShowIconsOnPushButtons=true
+SingleClick=false
+contrast=4
+widgetStyle=breeze
+
+[Toolbar style]
+ToolButtonStyle=TextBesideIcon
+ToolButtonStyleOtherToolbars=TextBesideIcon
+
+EOT
+echo "[ KDE4 - SHARE - CONFIG - BREEZERC ]"
+touch /home/$USER/.kde4/share/config/breezerc
+cat << EOT > /home/$USER/.kde4/share/config/breezerc
+[Common]
+OutlineCloseButton=false
+ShadowSize=ShadowSmall
+
+[Style]
+MenuOpacity=30
+TabBarDrawCenteredTabs=true
+ToolBarDrawItemSeparator=false
+
+[Windeco]
+DrawBackgroundGradient=false
+DrawBorderOnMaximizedWindows=true
+DrawSizeGrip=true
+
+EOT
+echo "[ LOCAL - SHARE - KONSOLE - KUSTOM ]"
+touch /home/$USER/.local/share/konsole/Kustom.profile
+cat << EOT > /home/$USER/.local/share/konsole/Kustom.profile
+[Appearance]
+ColorScheme=Breeze
+Font=Hack,10,-1,7,50,0,0,0,0,0,Regular
+
+[Cursor Options]
+CursorShape=1
+
+[General]
+Name=Kustom
+Parent=FALLBACK/
+TerminalCenter=true
+
+[Interaction Options]
+MiddleClickPasteMode=1
+UnderlineFilesEnabled=true
+
+[Terminal Features]
+BlinkingCursorEnabled=true
+
+EOT
+echo "[ LOCAL - SHARE - DOLPHIN - VIEWPROPERTIES - GLOBAL - DIRECTORY ]"
+touch /home/$USER/.local/share/dolphin/view_properties/global/.directory
+cat << EOT > /home/$USER/.local/share/dolphin/view_properties/global/.directory
+[Dolphin]
+
+[Settings]
+HiddenFilesShown=true
+
+EOT
+echo "[ USER - GTKRC2 ]"
+touch /home/$USER/.gtkrc-2.0
+cat << EOT > /home/$USER/.gtkrc-2.0
+# File created by KDE Gtk Config
+# Configs for GTK2 programs 
+
+include "/usr/share/themes/Breeze-Dark/gtk-2.0/gtkrc"
+style "user-font" 
+{
+	font_name="Noto Sans Regular"
+}
+widget_class "*" style "user-font"
+gtk-font-name="Noto Sans Regular 10"
+gtk-theme-name="Breeze-Dark"
+gtk-icon-theme-name="breeze-dark"
+gtk-fallback-icon-theme="Adwaita"
+gtk-cursor-theme-name="breeze_cursors"
+gtk-toolbar-style=GTK_TOOLBAR_ICONS
+gtk-menu-images=0
+gtk-button-images=0
+gtk-primary-button-warps-slider=0
+gtk-modules=appmenu-gtk-module
 
 EOT
