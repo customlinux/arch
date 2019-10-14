@@ -53,6 +53,7 @@ echo "[ ENABLE BLUETOOTH ]"
 sudo systemctl enable bluetooth
 echo
 echo "[ CUSTOMIZE TOUCHPAD GESTURES ]"
+mkdir -p /home/$USER/.config
 touch /home/$USER/.config/libinput-gestures.conf
 cat << EOT > /home/$USER/.config/libinput-gestures.conf
 # Go to workspace left
@@ -82,13 +83,14 @@ sudo gpasswd -a $USER input
 echo
 echo "[ SET APPS TO AUTOSTART ]"
 libinput-gestures-setup autostart
-mkdir /home/$USER/.config/autostart
+mkdir -p /home/$USER/.config/autostart
 echo
 echo "[ SET SDDM STARTUP SCRIPT ]"
 sudo bash -c 'cat << EOT >> /etc/sddm.conf
 
 [X11]
 DisplayCommand=/usr/share/sddm/scripts/Xsetup
+
 EOT'
 sed -i "s/replaceWithUserNameXsetup/$USER/g" /home/$USER/kdepostinstall
 echo
