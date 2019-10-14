@@ -95,6 +95,8 @@ echo
 echo "----------------------------------------------------------------------"
 echo "SET UP POST INSTALL SCRIPT TO RUN AFTER REBOOT"
 echo "----------------------------------------------------------------------"
+echo "[ ADDING $USER TO SCRIPT ]"
+sed -i "s/replaceWithUserNameKsysguardSystemloadUpgradeHook/$USER/g" /home/$USER/kdepostinstall
 cat << EOT >> /home/$USER/.config/autostart/runkdepostinstall.desktop
 [Desktop Entry]
 Type=Application
