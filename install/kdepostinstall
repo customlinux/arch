@@ -78,6 +78,9 @@ echo "--------------------------------------------------------------------------
 echo " CONFIGURING MISCELLANEOUS SETTINGS"
 echo "------------------------------------------------------------------------------------------------"
 echo
+echo "[ KRUNNER 'SUPER' KEY ]"
+kwriteconfig5 --file kwinrc --group ModifierOnlyShortcuts --key Meta "org.kde.kglobalaccel,/component/krunner,,invokeShortcut,run command"
+echo
 echo "[ CHROMIUM FLAGS ]"
 chromium_flags="/home/$USER/.config/chromium-flags.conf"
 touch $chromium_flags
