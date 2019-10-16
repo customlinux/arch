@@ -82,7 +82,9 @@ echo " CONFIGURING MISCELLANEOUS SETTINGS"
 echo "------------------------------------------------------------------------------------------------"
 echo
 echo "[ KRUNNER 'SUPER' KEY ]"
-kwriteconfig5 --file kwinrc --group ModifierOnlyShortcuts --key Meta "org.kde.kglobalaccel,/component/krunner,,invokeShortcut,run command"
+#kwriteconfig5 --file kwinrc --group ModifierOnlyShortcuts --key Meta "org.kde.kglobalaccel,/component/krunner,,invokeShortcut,run command"
+kwriteconfig5 --file ~/.config/kwinrc --group ModifierOnlyShortcuts --key Meta "org.kde.kglobalaccel,/component/krunner,org.kde.kglobalaccel.Component,invokeShortcut,run command"
+qdbus org.kde.KWin /KWin reconfigure
 echo
 echo "[ CHROMIUM FLAGS ]"
 chromium_flags="/home/$USER/.config/chromium-flags.conf"
@@ -125,25 +127,6 @@ sudo bash -c 'cat << EOT >> /usr/share/sddm/scripts/Xsetup
 /home/replaceWithUserNameXsetup/myScripts/displaySetup.sh
 EOT'
 echo
-#echo "[ KSYSGUARD - SYSTEMLOAD ]"
-#wget -P /home/$USER/myScripts https://raw.githubusercontent.com/customlinux/files/master/scripts/ksysguardCustomSystemload
-#sed -i "s/replaceWithUserNameKsysguard/$USER/g" /home/$USER/myScripts/ksysguardCustomSystemload
-#chmod +x /home/$USER/myScripts/ksysguardCustomSystemload
-#/home/$USER/myScripts/ksysguardCustomSystemload
-#sudo mkdir -p /etc/pacman.d/hooks
-#sudo touch /etc/pacman.d/hooks/ksysguardsystemloadupgrade.hook
-#sudo bash -c 'cat << EOT > /etc/pacman.d/hooks/ksysguardsystemloadupgrade.hook
-#[Trigger]
-#Operation = Upgrade
-#Type = Package
-#Target = ksysguard
-#[Action]
-#Description = Updating systemload2.sgrd with custom settings...
-#When = PostTransaction
-#Exec = /bin/sh -c "/home/replaceWithUserNameKsysguardSystemloadUpgradeHook/myScripts/ksysguardCustomSystemload"
-#
-#EOT'
-#echo
 echo "------------------------------------------------------------------------------------------------"
 echo "REMOVE EXTRA SOFTWARE / FILES"
 echo "------------------------------------------------------------------------------------------------"
