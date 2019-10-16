@@ -41,7 +41,7 @@ case $yesnoinstallsublime in
 		echo ;;
 esac
 echo "------------------------------------------------------------------------------------------------"
-echo " INSTALLING LATTE WINDOW APPLETS"
+echo " INSTALLING LATTE APPLETS"
 echo "------------------------------------------------------------------------------------------------"
 echo
 # Window Title: https://github.com/psifidotos/applet-window-title
@@ -65,6 +65,14 @@ cd applet-window-buttons
 sh install.sh
 cd ..
 sudo rm -r applet-window-buttons
+# Chili Clock: https://github.com/MarianArlt/kde-plasmoid-chiliclock
+LOCATIONCHILICLOCK=$(curl -s https://api.github.com/repos/MarianArlt/kde-plasmoid-chiliclock/releases/latest \
+| grep "tag_name" \
+| awk '{print "https://github.com/MarianArlt/kde-plasmoid-chiliclock/archive/" substr($2, 2, length($2)-3) ".zip"}') \
+; curl -L -o kdePlasmoidChiliClock.zip $LOCATIONCHILICLOCK
+unzip kdePlasmoidChiliClock.zip
+mv kde-plasmoid-chiliclock*/org.kde.plasma.inlineClock/ .local/share/plasma/plasmoids/
+rm -r kde-plasmoid-chiliclock* kdePlasmoidChiliClock*
 echo
 echo "------------------------------------------------------------------------------------------------"
 echo " CONFIGURING MISCELLANEOUS SETTINGS"
