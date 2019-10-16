@@ -24,6 +24,8 @@ case $yesnodisplaysettings in
 		wget -P /home/$USER/myScripts https://raw.githubusercontent.com/customlinux/files/master/scripts/displaySetup.sh
 		chmod +x /home/$USER/myScripts/displaySetup.sh
 		/home/$USER/myScripts/displaySetup.sh
+		sudo touch /usr/share/sddm/scripts/Xsetup
+		sudo bash -c 'echo "/home/replaceWithUserNameXsetup/myScripts/displaySetup.sh" >> /usr/share/sddm/scripts/Xsetup'
 		echo ;;
 	n|N)
 		echo "Skipping..."
@@ -66,13 +68,11 @@ sh install.sh
 cd ..
 sudo rm -r applet-window-buttons
 # Chili Clock: https://github.com/MarianArlt/kde-plasmoid-chiliclock
-LOCATIONCHILICLOCK=$(curl -s https://api.github.com/repos/MarianArlt/kde-plasmoid-chiliclock/releases/latest \
-| grep "tag_name" \
-| awk '{print "https://github.com/MarianArlt/kde-plasmoid-chiliclock/archive/" substr($2, 2, length($2)-3) ".zip"}') \
-; curl -L -o kdePlasmoidChiliClock.zip $LOCATIONCHILICLOCK
-unzip kdePlasmoidChiliClock.zip
-mv kde-plasmoid-chiliclock*/org.kde.plasma.inlineClock/ .local/share/plasma/plasmoids/
-rm -r kde-plasmoid-chiliclock* kdePlasmoidChiliClock*
+sudo pacman -S --needed --noconfirm wget gawk curl grep
+git clone https://github.com/MarianArlt/kde-plasmoid-chiliclock.git
+mkdir -p .local/share/plasma/plasmoids
+mv kde-plasmoid-chiliclock/org.kde.plasma.chiliclock/ .local/share/plasma/plasmoids/
+sudo rm -r kde-plasmoid-chiliclock
 echo
 # Custom Dual Layout
 wget -P /home/$USER/.config/latte https://raw.githubusercontent.com/customlinux/files/master/configs/LatteCustomDual.layout.latte
@@ -81,10 +81,10 @@ echo "--------------------------------------------------------------------------
 echo " CONFIGURING MISCELLANEOUS SETTINGS"
 echo "------------------------------------------------------------------------------------------------"
 echo
-echo "[ KRUNNER 'SUPER' KEY ]"
-#kwriteconfig5 --file kwinrc --group ModifierOnlyShortcuts --key Meta "org.kde.kglobalaccel,/component/krunner,,invokeShortcut,run command"
-kwriteconfig5 --file ~/.config/kwinrc --group ModifierOnlyShortcuts --key Meta "org.kde.kglobalaccel,/component/krunner,org.kde.kglobalaccel.Component,invokeShortcut,run command"
-qdbus org.kde.KWin /KWin reconfigure
+#echo "[ KRUNNER 'SUPER' KEY ]"
+##kwriteconfig5 --file kwinrc --group ModifierOnlyShortcuts --key Meta "org.kde.kglobalaccel,/component/krunner,,invokeShortcut,run command"
+#kwriteconfig5 --file ~/.config/kwinrc --group ModifierOnlyShortcuts --key Meta "org.kde.kglobalaccel,/component/krunner,org.kde.kglobalaccel.Component,invokeShortcut,run command"
+#qdbus org.kde.KWin /KWin reconfigure
 echo
 echo "[ CHROMIUM FLAGS ]"
 chromium_flags="/home/$USER/.config/chromium-flags.conf"
@@ -119,12 +119,6 @@ Description = Updating pacman-mirrorlist with reflector and removing pacnew...
 When = PostTransaction
 Depends = reflector
 Exec = /bin/sh -c "reflector -l 100 -a 24 -p http -p https --sort rate --save /etc/pacman.d/mirrorlist; rm -f /etc/pacman.d/mirrorlist.pacnew"
-EOT'
-echo
-echo "[ ROOT - USR - SHARE - SDDM - SCRIPTS - XSETUP ]"
-sudo touch /usr/share/sddm/scripts/Xsetup
-sudo bash -c 'cat << EOT >> /usr/share/sddm/scripts/Xsetup
-/home/replaceWithUserNameXsetup/myScripts/displaySetup.sh
 EOT'
 echo
 echo "------------------------------------------------------------------------------------------------"
