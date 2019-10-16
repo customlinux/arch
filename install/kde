@@ -24,11 +24,12 @@ echo "----------------------------------------------------------------------"
 echo "INSTALL KDE"
 echo "----------------------------------------------------------------------"
 # Package Info: Don't reinstall|Don't Confirm (y/n)|Disk Partition Utilities  |KDE           |Display Manager         |File Manager|Dialog Viewer|Terminal|Editor|User Management|Bluetooth Management          |Power Management|Screen Management|Wallet Management         |KDE Connect     |KDE Info   |KDE RunAsRoot|GTK Management           |Screenshot|View Images|Network + Audio Applets|Default Home Directories|Chrome Integration        |Web Browser|Extract|Display Settings|Latte Dock
-sudo pacman -S  --needed        --noconfirm         gnome-disk-utility gparted plasma-desktop sddm sddm-kcm xorg-xinit dolphin ark  kdialog       konsole  kwrite user-manager    bluedevil pulseaudio-bluetooth powerdevil       kscreen           kwallet-pam kwalletmanager kdeconnect sshfs kinfocenter kdesu         kde-gtk-config breeze-gtk spectacle  gwenview    plasma-nm plasma-pa     xdg-user-dirs            plasma-browser-integration chromium    unzip   xorg-xrandr      latte-dock
-# Not needed: Wallpapers (plasma-workspace-wallpapers) - Wallpapers aren't that good.
-# Not needed: Monospace Font (ttf-hack) - Better mono font available.
-# Not needed: KDE Partition Manager (partitionmanager) - Gnome Disk Utility is better?
-# Not needed: Kvantum Theme Manager (kvantum-qt5) - Not required for normal usage.
+sudo pacman -S  --needed        --noconfirm         gnome-disk-utility gparted plasma-desktop sddm sddm-kcm xorg-xinit dolphin ark  kdialog       konsole  kate   user-manager    bluedevil pulseaudio-bluetooth powerdevil       kscreen           kwallet-pam kwalletmanager kdeconnect sshfs kinfocenter kdesu         kde-gtk-config breeze-gtk spectacle  gwenview    plasma-nm plasma-pa     xdg-user-dirs            plasma-browser-integration chromium    unzip   xorg-xrandr      latte-dock
+# Removed: Wallpapers (plasma-workspace-wallpapers) - Wallpapers aren't that good.
+# Removed: Monospace Font (ttf-hack) - Better mono font available.
+# Removed: KDE Partition Manager (partitionmanager) - Gnome Disk Utility is better?
+# Removed: Kvantum Theme Manager (kvantum-qt5) - Not required for normal usage.
+# Removed: Kwrite (kwrite) - Better options available (Sublime / Kate).
 echo
 echo "[ INSTALL PIKAUR: AN AUR HELPER ]"
 git clone https://aur.archlinux.org/pikaur.git
@@ -38,13 +39,12 @@ cd /home/$USER
 sudo rm -r pikaur
 echo
 echo "[ INSTALL AUR PACKAGES ]"
-# Package Info: Don't reinstall|Don't Confirm (y/n)|Browser Plugin for DRM|Touchpad Gestures
-pikaur -S       --needed        --noconfirm         chromium-widevine      libinput-gestures
+# Package Info: Don't reinstall|Don't Confirm (y/n)|Browser Plugin for DRM|Touchpad Gestures|Text Editor
+pikaur -S       --needed        --noconfirm         chromium-widevine      libinput-gestures sublime-text-dev
 # Not needed: AppImage Launcher (appimagelauncher)
 # Not needed: AUR GUI Frontend (pamac-aur)
 # Not needed: MacOS like Icon Theme (la-capitaine-icon-theme)
 # Not needed: MacOS like Cursor Theme (capitaine-cursors)
-# Not needed: Sublime Text Editor (sublime-text-dev) - KWrite is better.
 echo
 echo "[ ENABLE DISPLAY MANAGER ]"
 sudo systemctl enable sddm
