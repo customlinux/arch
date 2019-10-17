@@ -57,10 +57,10 @@ echo "[ CUSTOMIZE TOUCHPAD GESTURES ]"
 mkdir -p /home/$USER/.config
 touch /home/$USER/.config/libinput-gestures.conf
 cat << EOT > /home/$USER/.config/libinput-gestures.conf
-# Go to workspace left
-gesture swipe right 3 xdotool set_desktop --relative -- -1
-# Go to workspace right
+# Go to next workspace
 gesture swipe left 3 xdotool set_desktop --relative 1
+# Go to previous workspace
+gesture swipe right 3 xdotool set_desktop --relative -- -1
 # Go forward
 gesture swipe up 3 xdotool key alt+Right
 # Go back
