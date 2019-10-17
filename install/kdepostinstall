@@ -1,22 +1,4 @@
 #!/bin/bash
-while [[ ! "$yesnorunpostinstallscript" =~ ^[yYnN]$ ]]; do read -n1 -p "Do you want to run this post install script right now? [y/n] : " yesnorunpostinstallscript && echo; done
-case $yesnorunpostinstallscript in
-	y|Y)
-		echo "Continuing..."
-		echo ;;
-	n|N)
-		echo "Exiting..."
-		exit 0 ;;
-esac
-while [[ ! "$yesnoautomountpartitions" =~ ^[yYnN]$ ]]; do read -n1 -p "Do you want to automount any partitions at startup? [y/n] : " yesnoautomountpartitions && echo; done
-case $yesnoautomountpartitions in
-	y|Y)
-		gnome-disks
-		echo ;;
-	n|N)
-		echo "Skipping..."
-		echo ;;
-esac
 while [[ ! "$yesnodisplaysettings" =~ ^[yYnN]$ ]]; do read -n1 -p "Do you want configure the display settings? [y/n] : " yesnodisplaysettings && echo; done
 case $yesnodisplaysettings in
 	y|Y)
@@ -26,6 +8,15 @@ case $yesnodisplaysettings in
 		/home/$USER/myScripts/displaySetup.sh
 		sudo touch /usr/share/sddm/scripts/Xsetup
 		sudo bash -c 'echo "/home/replaceWithUserNameXsetup/myScripts/displaySetup.sh" >> /usr/share/sddm/scripts/Xsetup'
+		echo ;;
+	n|N)
+		echo "Skipping..."
+		echo ;;
+esac
+while [[ ! "$yesnoautomountpartitions" =~ ^[yYnN]$ ]]; do read -n1 -p "Do you want to automount any partitions at startup? [y/n] : " yesnoautomountpartitions && echo; done
+case $yesnoautomountpartitions in
+	y|Y)
+		gnome-disks
 		echo ;;
 	n|N)
 		echo "Skipping..."
@@ -133,7 +124,7 @@ sudo mv /home/$USER/.config/autostart/run*postinstall.desktop /home/$USER/Docume
 echo
 echo "[ Installation scripts have been moved into directory '/home/$USER/Documents/Arch-Install'. ]"
 echo
-echo "[ ( OPTIONAL ) Run /home/$USER/Documents/Arch-Install/kdecustomsettings to enable custom settings. ]"
+echo "[ OPTIONAL: Run /home/$USER/Documents/Arch-Install/kdecustomsettings to enable custom settings. ]"
 echo
 echo "[ PRESS 'ENTER' TO REBOOT ]"
 echo
