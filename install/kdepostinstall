@@ -101,7 +101,6 @@ cat << EOT >> $chromium_flags
 # This line will be ignored.
 # --password-store=<basic|gnome|kwallet>
 --flag-switches-begin
---enable-dom-distiller
 --enable-smooth-scrolling
 --enable-features=AutomaticPasswordGeneration,FocusMode,OverlayScrollbar,ParallelDownloading,SecurityInterstitialsDarkMode,UsernameFirstFlow,google-password-manager
 --flag-switches-end
@@ -109,7 +108,7 @@ EOT
 echo
 echo "[ GIT SETTINGS ]"
 echo
-git config --global core.editor "subl3 -n -w"
+git config --global core.editor "subl -n -w"
 git config --global credential.helper 'cache --timeout=1800'
 git config --global core.autocrlf input
 echo
