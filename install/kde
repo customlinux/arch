@@ -66,11 +66,11 @@ gesture swipe up 3 xdotool key alt+Right
 # Go back
 gesture swipe down 3 xdotool key alt+Left
 # Toggle maximize window
-gesture swipe left_up 3 xdotool key super+Page_Up
+gesture swipe right_up 3 xdotool key super+Page_Up
 # Open windows overview
-gesture swipe right_up 3 xdotool key ctrl+F9
+gesture swipe left_down 3 xdotool key ctrl+F9
 # Minimize current window
-gesture swipe left_down 3 xdotool key super+Page_Down
+gesture swipe left_up 3 xdotool key super+Page_Down
 # Open workspaces grid view
 gesture swipe right_down 3 xdotool key ctrl+F8
 # Tile window to the right
