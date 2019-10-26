@@ -66,7 +66,7 @@ mv kde-plasmoid-chiliclock/org.kde.plasma.chiliclock/ .local/share/plasma/plasmo
 sudo rm -r kde-plasmoid-chiliclock
 echo
 # Custom Dual Layout
-#wget -P /home/$USER/.config/latte https://raw.githubusercontent.com/customlinux/files/master/configs/LatteCustom.layout.latte
+wget -P /home/$USER/.config/latte https://raw.githubusercontent.com/customlinux/files/master/configs/CustomLatte.layout.latte
 echo
 echo "------------------------------------------------------------------------------------------------"
 echo " CONFIGURING MISCELLANEOUS SETTINGS"
