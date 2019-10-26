@@ -109,7 +109,7 @@ EOT
 chmod +x /home/$USER/.config/autostart/runkdepostinstall.desktop
 echo
 echo "[ DEBUG STUFF ]"
-systemd-analyze plot > firstArchBoot.svg
+systemd-analyze plot > baseArchBoot.svg
 echo
 echo "----------------------------------------------------------------------"
 echo "REBOOT"
