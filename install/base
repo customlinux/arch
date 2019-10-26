@@ -13,7 +13,7 @@ fi
 echo "----------------------------------------------------------------------"
 echo "CHECK IF SYSTEM IS BOOTED IN EFI MODE"
 echo "----------------------------------------------------------------------"
-efivar --list # OLD: ls /sys/firmware/efi/efivars
+efivar --list
 echo
 echo "[ IF A DIRECTORY EXISTS, PRESS 'ENTER' TO CONTINUE ]"
 read
@@ -21,7 +21,6 @@ echo "----------------------------------------------------------------------"
 echo "UPDATE SYSTEM CLOCK"
 echo "----------------------------------------------------------------------"
 timedatectl set-ntp true
-#timedatectl set-local-rtc 1 --adjust-system-clock
 echo "----------------------------------------------------------------------"
 echo "PARTITION THE DRIVE"
 echo "----------------------------------------------------------------------"
@@ -73,8 +72,8 @@ reflector --verbose -l 100 -a 24 -p http -p https --sort rate --save /etc/pacman
 echo "----------------------------------------------------------------------"
 echo "PACSTRAP - BASE + BASE-DEVEL"
 echo "----------------------------------------------------------------------"
-# Packages:   Base Utils     |Kernel   |Firmware      |Root|Text|Tree|Ext234   |WiFi          |exFat      |NTFS   |Microcode  |xInput     |Mirrors  |Download
-pacstrap /mnt base base-devel linux-zen linux-firmware sudo tree nano e2fsprogs networkmanager exfat-utils ntfs-3g intel-ucode xorg-xinput reflector wget git
+# Packages:   Base Utils     |Kernels        |Firmware      |Root|Text|Tree|Ext 2 3 4|WiFi          |exFat      |NTFS   |Microcode  |xInput     |Mirrors  |Download
+pacstrap /mnt base base-devel linux linux-lts linux-firmware sudo tree nano e2fsprogs networkmanager exfat-utils ntfs-3g intel-ucode xorg-xinput reflector wget git
 echo
 echo "----------------------------------------------------------------------"
 echo "GENERATE FSTAB"
@@ -151,9 +150,21 @@ arch-chroot /mnt cat /boot/loader/entries/arch.conf
 rootpartuuid=$(blkid -s PARTUUID -o value /dev/sda$ospartition)
 cat << EOT > /mnt/boot/loader/entries/arch.conf
 title Arch Linux
-linux /vmlinuz-linux-zen
+linux /vmlinuz-linux
 initrd /intel-ucode.img
-initrd /initramfs-linux-zen.img
+initrd /initramfs-linux.img
+options root=PARTUUID=$rootpartuuid rw
+EOT
+echo
+echo "/boot/loader/entries/archlts.conf"
+arch-chroot /mnt touch /boot/loader/entries/archlts.conf
+arch-chroot /mnt cat /boot/loader/entries/archlts.conf
+rootpartuuid=$(blkid -s PARTUUID -o value /dev/sda$ospartition)
+cat << EOT > /mnt/boot/loader/entries/archlts.conf
+title Arch Linux LTS
+linux /vmlinuz-linux-lts
+initrd /intel-ucode.img
+initrd /initramfs-linux-lts.img
 options root=PARTUUID=$rootpartuuid rw
 EOT
 echo
