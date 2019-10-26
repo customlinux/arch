@@ -120,7 +120,9 @@ echo "[ INSTALL SYSTEMD-BOOT TO /boot ]"
 echo
 arch-chroot /mnt bootctl --path=/boot install
 echo
-cat << EOT >> /mnt/etc/pacman.d/hooks/100-systemd-boot.hook
+arch-chroot /mnt touch /mnt/etc/pacman.d/hooks/systemd-boot.hook
+arch-chroot /mnt cat /mnt/etc/pacman.d/hooks/systemd-boot.hook
+cat << EOT > /mnt/etc/pacman.d/hooks/systemd-boot.hook
 [Trigger]
 Type = Package
 Operation = Upgrade
