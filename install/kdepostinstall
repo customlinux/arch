@@ -73,26 +73,33 @@ echo " CONFIGURING MISCELLANEOUS SETTINGS"
 echo "------------------------------------------------------------------------------------------------"
 echo
 echo "[ 'SUPER' KEY KRUNNER TOGGLE ]"
-#mkdir -p /home/$USER/myScripts
-#krunner_toggle="/home/$USER/myScripts/krunnerToggle.sh"
-#touch $krunner_toggle
-#cat << 'EOT' >> $krunner_toggle
-##!/bin/bash
-#krunnerWindow=$(xdotool getwindowfocus getwindowname)
-#if [[ $krunnerWindow == *"krunner"* ]]; then
-#	xdotool key 'Escape'
-#	exit 0
-#else
-#	qdbus org.kde.krunner /App display
-#	exit 0
-#fi
-#EOT
-#
-# Create custom shortcut: https://gist.github.com/navtojchahal/962002019233dc6a82a472dc91bccb27
-#
-#krunner_Script_Shortcut_Uuid=$(grep -A 2 Ctrl+Alt+Shift+K /home/$USER/.config/khotkeysrc | grep 'Uuid=' | grep -o '{.*}')
-#kwriteconfig5 --file ~/.config/kwinrc --group ModifierOnlyShortcuts --key Meta "org.kde.kglobalaccel,/component/khotkeys,org.kde.kglobalaccel.Component,invokeShortcut,$krunner_Script_Shortcut_Uuid"
-#qdbus org.kde.KWin /KWin reconfigure
+mkdir -p /home/$USER/myScripts
+krunner_toggle="/home/$USER/myScripts/krunnerToggle.sh"
+touch $krunner_toggle
+cat << 'EOT' >> $krunner_toggle
+#!/bin/bash
+krunnerWindow=$(xdotool getwindowfocus getwindowname)
+if [[ $krunnerWindow == *"krunner"* ]]; then
+	xdotool key 'Escape'
+	exit 0
+else
+	qdbus org.kde.krunner /App display
+	exit 0
+fi
+EOT
+echo
+echo "Read the instructions below to create a custom global shortcut for KRunner."
+echo
+echo "System Settings > Shortcuts > Custom Shortcuts > Edit > New > Global Shortcut > Command/URL"
+echo "Comment : Run a script to get 'toggle' ability for KRunner."
+echo "Trigger : Ctrl+Alt+Shift+K"
+echo "Action  : /home/$USER/myScripts/krunnerToggle.sh"
+echo "Hit 'Apply' to SAVE CHANGES."
+echo
+echo "Press 'Enter' to open settings..."
+krunner_Script_Shortcut_Uuid=$(grep -A 2 Ctrl+Alt+Shift+K /home/$USER/.config/khotkeysrc | grep 'Uuid=' | grep -o '{.*}')
+kwriteconfig5 --file ~/.config/kwinrc --group ModifierOnlyShortcuts --key Meta "org.kde.kglobalaccel,/component/khotkeys,org.kde.kglobalaccel.Component,invokeShortcut,$krunner_Script_Shortcut_Uuid"
+qdbus org.kde.KWin /KWin reconfigure
 echo
 echo "[ CHROMIUM FLAGS ]"
 chromium_flags="/home/$USER/.config/chromium-flags.conf"
