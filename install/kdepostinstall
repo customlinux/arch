@@ -88,7 +88,7 @@ else
 fi
 EOT
 echo
-echo "Read the instructions below to create a custom global shortcut for KRunner."
+echo "Follow the instructions below to create a custom global shortcut for KRunner."
 echo
 echo "System Settings > Shortcuts > Custom Shortcuts > Edit > New > Global Shortcut > Command/URL"
 echo "Comment : Run a script to get 'toggle' ability for KRunner."
@@ -97,6 +97,11 @@ echo "Action  : /home/$USER/myScripts/krunnerToggle.sh"
 echo "Hit 'Apply' to SAVE CHANGES."
 echo
 echo "Press 'Enter' to open settings..."
+read
+systemsettings5 > /dev/null 2>&1
+echo
+echo "Press 'Enter' to continue..."
+read
 krunner_Script_Shortcut_Uuid=$(grep -A 2 Ctrl+Alt+Shift+K /home/$USER/.config/khotkeysrc | grep 'Uuid=' | grep -o '{.*}')
 kwriteconfig5 --file ~/.config/kwinrc --group ModifierOnlyShortcuts --key Meta "org.kde.kglobalaccel,/component/khotkeys,org.kde.kglobalaccel.Component,invokeShortcut,$krunner_Script_Shortcut_Uuid"
 qdbus org.kde.KWin /KWin reconfigure
@@ -119,7 +124,7 @@ git config --global core.editor "subl -n -w"
 git config --global credential.helper 'cache --timeout=1800'
 git config --global core.autocrlf input
 echo
-echo "[ PACMAN MIRRORLIST - REFLECTOR ]"
+echo "[ PACMAN HOOKS - REFLECTOR ]"
 sudo mkdir -p /etc/pacman.d/hooks
 sudo touch /etc/pacman.d/hooks/mirrorupgrade.hook
 sudo bash -c 'cat << EOT > /etc/pacman.d/hooks/mirrorupgrade.hook
