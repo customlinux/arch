@@ -42,8 +42,6 @@ read -p "efipartition # (/dev/sda#) = /dev/sda" efipartition
 echo
 read -p "ospartition # (/dev/sda#) = /dev/sda" ospartition
 echo
-read -p "Enter bootloader-id: " bootloaderid
-echo
 read -p "Enter hostname: " hostname
 echo
 read -p "Enter username: " username
@@ -120,8 +118,8 @@ echo "[ INSTALL SYSTEMD-BOOT TO /boot ]"
 echo
 arch-chroot /mnt bootctl --path=/boot install
 echo
-arch-chroot /mnt touch /mnt/etc/pacman.d/hooks/systemd-boot.hook
-arch-chroot /mnt cat /mnt/etc/pacman.d/hooks/systemd-boot.hook
+arch-chroot /mnt touch /etc/pacman.d/hooks/systemd-boot.hook
+arch-chroot /mnt cat /etc/pacman.d/hooks/systemd-boot.hook
 cat << EOT > /mnt/etc/pacman.d/hooks/systemd-boot.hook
 [Trigger]
 Type = Package
