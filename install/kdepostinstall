@@ -87,10 +87,12 @@ else
 	exit 0
 fi
 EOT
+chmod +x $krunner_toggle
 echo
 echo "Follow the instructions below to create a custom global shortcut for KRunner."
 echo
 echo "System Settings > Shortcuts > Custom Shortcuts > Edit > New > Global Shortcut > Command/URL"
+echo "Name    : KRunner Toggle"
 echo "Comment : Run a script to get 'toggle' ability for KRunner."
 echo "Trigger : Ctrl+Alt+Shift+K"
 echo "Action  : /home/$USER/myScripts/krunnerToggle.sh"
@@ -142,6 +144,7 @@ EOT'
 echo
 echo "[ DEBUG STUFF ]"
 systemd-analyze plot > kdeArchBoot.svg
+sudo mv /home/$USER/baseArchBoot.svg /home/$USER/Documents/Arch-Install
 echo
 echo "------------------------------------------------------------------------------------------------"
 echo "REMOVE EXTRA SOFTWARE / FILES"
