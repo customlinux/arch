@@ -126,8 +126,8 @@ git config --global core.autocrlf input
 echo
 echo "[ PACMAN HOOKS - REFLECTOR ]"
 sudo mkdir -p /etc/pacman.d/hooks
-sudo touch /etc/pacman.d/hooks/mirrorupgrade.hook
-sudo bash -c 'cat << EOT > /etc/pacman.d/hooks/mirrorupgrade.hook
+sudo touch /etc/pacman.d/hooks/reflectorMirrorlistUpdate.hook
+sudo bash -c 'cat << EOT > /etc/pacman.d/hooks/reflectorMirrorlistUpdate.hook
 [Trigger]
 Operation = Upgrade
 Type = Package
