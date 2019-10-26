@@ -94,7 +94,7 @@ echo "System Settings > Shortcuts > Custom Shortcuts > Edit > New > Global Short
 echo "Comment : Run a script to get 'toggle' ability for KRunner."
 echo "Trigger : Ctrl+Alt+Shift+K"
 echo "Action  : /home/$USER/myScripts/krunnerToggle.sh"
-echo "Hit 'Apply' to SAVE CHANGES."
+echo "Hit 'Apply' to SAVE CHANGES and CLOSE settings."
 echo
 echo "Press 'Enter' to open settings..."
 read
