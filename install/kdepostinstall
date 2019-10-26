@@ -140,6 +140,9 @@ Depends = reflector
 Exec = /bin/sh -c "reflector -l 100 -a 24 -p http -p https --sort rate --save /etc/pacman.d/mirrorlist; rm -f /etc/pacman.d/mirrorlist.pacnew"
 EOT'
 echo
+echo "[ DEBUG STUFF ]"
+systemd-analyze plot > kdeArchBoot.svg
+echo
 echo "------------------------------------------------------------------------------------------------"
 echo "REMOVE EXTRA SOFTWARE / FILES"
 echo "------------------------------------------------------------------------------------------------"
