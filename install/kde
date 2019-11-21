@@ -29,7 +29,7 @@ sudo pacman -S  --needed        --noconfirm         gnome-disk-utility gparted p
 # Removed: Monospace Font (ttf-hack) - Better mono font available.
 # Removed: KDE Partition Manager (partitionmanager) - Gnome Disk Utility is better?
 # Removed: Kvantum Theme Manager (kvantum-qt5) - Not required for normal usage.
-# Removed: Kwrite (kwrite) - Better options available (Sublime / Kate).
+# Removed: Kwrite (kwrite) - Better options available (Sublime).
 echo
 echo "[ INSTALL PIKAUR: AN AUR HELPER ]"
 git clone https://aur.archlinux.org/pikaur.git
