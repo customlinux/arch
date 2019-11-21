@@ -99,14 +99,14 @@ echo "[ GENERATE /etc/adjtime ]"
 #timedatectl set-local-rtc 1 --adjust-system-clock
 arch-chroot /mnt hwclock --systohc # --utc
 echo
-echo "[ SET LOCALE TO en_US.UTF-8 UTF-8 FOR AMERICAN-ENGLISH ]"
-sed -i 's/^#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/g' /mnt/etc/locale.gen
+echo "[ SET LOCALE TO en_US.UTF-8 UTF-8 FOR CANADIAN-ENGLISH ]"
+sed -i 's/^#en_CA.UTF-8 UTF-8/en_CA.UTF-8 UTF-8/g' /mnt/etc/locale.gen
 echo
 echo "[ GENERATE LOCALE ]"
 arch-chroot /mnt locale-gen
 echo
-echo "[ SET LANG VARIABLE TO LANG=en_US.UTF-8 ]"
-echo "LANG=en_US.UTF-8" > /mnt/etc/locale.conf
+echo "[ SET LANG VARIABLE TO LANG=en_CA.UTF-8 ]"
+echo "LANG=en_CA.UTF-8" > /mnt/etc/locale.conf
 echo
 echo "[ SET HOSTNAME ]"
 echo $hostname > /mnt/etc/hostname
