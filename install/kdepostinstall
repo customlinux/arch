@@ -102,10 +102,10 @@ touch $chromium_flags
 cat << EOT >> $chromium_flags
 # This line will be ignored.
 # --password-store=<basic|gnome|kwallet>
---flag-switches-begin
---enable-smooth-scrolling
---enable-features=AutomaticPasswordGeneration,FocusMode,OverlayScrollbar,ParallelDownloading,SecurityInterstitialsDarkMode,UsernameFirstFlow,google-password-manager
---flag-switches-end
+#--flag-switches-begin
+#--enable-smooth-scrolling
+#--enable-features=AutomaticPasswordGeneration,FocusMode,OverlayScrollbar,ParallelDownloading,SecurityInterstitialsDarkMode,UsernameFirstFlow,google-password-manager
+#--flag-switches-end
 EOT
 echo
 echo "[ GIT SETTINGS ]"
