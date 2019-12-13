@@ -7,7 +7,7 @@ then
 	echo "You must be a root user to run this." 2>&1
 	exit 1
 else
-	echo "Scipt is being run as root."
+	echo "Script is being run as root."
 	echo
 fi
 echo "----------------------------------------------------------------------"
@@ -92,7 +92,8 @@ echo "  |_______|  |_|   |_|  |_|   \_\  |_______|  |_______|     |_|      "
 echo "---------------------------------------------------------------------"
 echo
 echo "[ SET TIMEZONE TO US-PACIFIC ]"
-arch-chroot /mnt ln -sf /usr/share/zoneinfo/US/Pacific /etc/localtime
+#arch-chroot /mnt curl https://ipapi.co/timezone | timedatectl set-timezone
+arch-chroot /mnt ln -sf /usr/share/zoneinfo/America/Vancouver /etc/localtime
 echo
 echo "[ GENERATE /etc/adjtime ]"
 # Generated with custom timedatectl command below
