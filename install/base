@@ -30,7 +30,7 @@ lsblk
 echo
 echo "[ CFDISK - PRESS 'ENTER' TO CONTINUE ]"
 read
-cfdisk
+cfdisk /dev/nvme0n1
 fdisk -l
 echo
 lsblk
