@@ -38,9 +38,9 @@ echo
 echo "----------------------------------------------------------------------"
 echo "INPUT VARIABLE VALUES"
 echo "----------------------------------------------------------------------"
-read -p "efipartition # (/dev/sda#) = /dev/sda" efipartition
+read -p "efipartition # (/dev/nvme0n1p#) = /dev/nvme0n1p" efipartition
 echo
-read -p "ospartition # (/dev/sda#) = /dev/sda" ospartition
+read -p "ospartition # (/dev/nvme0n1p#) = /dev/nvme0n1p" ospartition
 echo
 read -p "Enter hostname: " hostname
 echo
@@ -53,14 +53,14 @@ echo
 echo "----------------------------------------------------------------------"
 echo "FORMAT + MOUNT [/] & [efi] PARTITIONS"
 echo "----------------------------------------------------------------------"
-mkfs.ext4 /dev/sda$ospartition
+mkfs.ext4 /dev/nvme0n1p$ospartition
 echo
-mkfs.fat -F32 /dev/sda$efipartition
+mkfs.fat -F32 /dev/nvme0n1p$efipartition
 echo
-mount /dev/sda$ospartition /mnt
+mount /dev/nvme0n1p$ospartition /mnt
 echo
 mkdir -p /mnt/boot
-mount /dev/sda$efipartition /mnt/boot
+mount /dev/nvme0n1p$efipartition /mnt/boot
 echo
 echo "----------------------------------------------------------------------"
 echo "INSTALL REFLECTOR AND UPDATE MIRRORLIST"
@@ -149,7 +149,7 @@ echo
 echo "/boot/loader/entries/arch.conf"
 arch-chroot /mnt touch /boot/loader/entries/arch.conf
 arch-chroot /mnt cat /boot/loader/entries/arch.conf
-rootpartuuid=$(blkid -s PARTUUID -o value /dev/sda$ospartition)
+rootpartuuid=$(blkid -s PARTUUID -o value /dev/nvme0n1p$ospartition)
 cat << EOT > /mnt/boot/loader/entries/arch.conf
 title Arch Linux
 linux /vmlinuz-linux
@@ -161,7 +161,7 @@ echo
 echo "/boot/loader/entries/archlts.conf"
 arch-chroot /mnt touch /boot/loader/entries/archlts.conf
 arch-chroot /mnt cat /boot/loader/entries/archlts.conf
-rootpartuuid=$(blkid -s PARTUUID -o value /dev/sda$ospartition)
+rootpartuuid=$(blkid -s PARTUUID -o value /dev/nvme0n1p$ospartition)
 cat << EOT > /mnt/boot/loader/entries/archlts.conf
 title Arch Linux LTS
 linux /vmlinuz-linux-lts
