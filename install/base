@@ -53,6 +53,13 @@ echo
 echo "----------------------------------------------------------------------"
 echo "FORMAT + MOUNT [/] & [efi] PARTITIONS"
 echo "----------------------------------------------------------------------"
+#
+fdisk -l
+echo
+echo "Press 'Enter' to continue..."
+echo
+read
+#
 mkfs.ext4 /dev/nvme0n1p$ospartition
 echo
 mkfs.fat -F32 /dev/nvme0n1p$efipartition
