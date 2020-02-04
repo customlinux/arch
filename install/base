@@ -103,9 +103,7 @@ echo "[ SET TIMEZONE TO US-PACIFIC ]"
 arch-chroot /mnt ln -sf /usr/share/zoneinfo/America/Vancouver /etc/localtime
 echo
 echo "[ GENERATE /etc/adjtime ]"
-# Generated with custom timedatectl command below
-#timedatectl set-local-rtc 1 --adjust-system-clock
-arch-chroot /mnt hwclock --systohc # --utc
+arch-chroot /mnt hwclock --systohc --utc
 echo
 echo "[ SET LOCALE TO en_US.UTF-8 UTF-8 FOR CANADIAN-ENGLISH ]"
 sed -i 's/^#en_CA.UTF-8 UTF-8/en_CA.UTF-8 UTF-8/g' /mnt/etc/locale.gen
