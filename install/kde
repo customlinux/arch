@@ -23,8 +23,8 @@ sudo timedatectl set-ntp true
 echo "----------------------------------------------------------------------"
 echo "INSTALL KDE"
 echo "----------------------------------------------------------------------"
-# Package Info: Don't reinstall|Don't Confirm (y/n)|Disk Partition Utilities  |KDE           |Display Manager         |File Manager|Dialog Viewer|Terminal|User Management|Bluetooth Management          |Power Management|Screen Management|Wallet Management         |KDE Connect     |KDE Info   |KDE RunAsRoot|GTK Management           |Screenshot|View Images|Network + Audio Applets|Default Home Directories|Chrome Integration        |Web Browser|Extract|Display Settings|Latte Dock|SysInfo |Torrent |PDF   |Media
-sudo pacman -S  --needed        --noconfirm         gnome-disk-utility gparted plasma-desktop sddm sddm-kcm xorg-xinit dolphin ark  kdialog       konsole  user-manager    bluedevil pulseaudio-bluetooth powerdevil       kscreen           kwallet-pam kwalletmanager kdeconnect sshfs kinfocenter kdesu         kde-gtk-config breeze-gtk spectacle  gwenview    plasma-nm plasma-pa     xdg-user-dirs            plasma-browser-integration chromium    unzip   xorg-xrandr      latte-dock neofetch ktorrent okular vlc
+# Package Info: Don't reinstall|Don't Confirm (y/n)|Disk Partition Utilities  |KDE           |Display Manager         |File Manager|Dialog Viewer|Terminal|User Management|Bluetooth Management          |Power Management|Screen Management|Wallet Management         |KDE Connect     |KDE Info   |KDE RunAsRoot|GTK Management           |Screenshot|View Images|Network + Audio Applets|Default Home Directories|Chrome Integration        |Web Browser|Extract|Display Settings|Latte Dock|SysInfo |Torrent    |PDF   |Media
+sudo pacman -S  --needed        --noconfirm         gnome-disk-utility gparted plasma-desktop sddm sddm-kcm xorg-xinit dolphin ark  kdialog       konsole  user-manager    bluedevil pulseaudio-bluetooth powerdevil       kscreen           kwallet-pam kwalletmanager kdeconnect sshfs kinfocenter kdesu         kde-gtk-config breeze-gtk spectacle  gwenview    plasma-nm plasma-pa     xdg-user-dirs            plasma-browser-integration chromium    unzip   xorg-xrandr      latte-dock neofetch qbittorrent okular vlc
 # Removed: Wallpapers (plasma-workspace-wallpapers) - Wallpapers aren't that good.
 # Removed: Monospace Font (ttf-hack) - Better mono font available.
 # Removed: KDE Partition Manager (partitionmanager) - Gnome Disk Utility is better?
@@ -58,46 +58,46 @@ mkdir -p /home/$USER/.config
 touch /home/$USER/.config/libinput-gestures.conf
 cat << EOT > /home/$USER/.config/libinput-gestures.conf
 # Go to next workspace
-gesture swipe left 3 xdotool set_desktop --relative 1
+#gesture swipe left 3 xdotool set_desktop --relative 1
 # Go to previous workspace
-gesture swipe right 3 xdotool set_desktop --relative -- -1
-# Go forward
-gesture swipe up 3 xdotool key alt+Right
-# Go back
-gesture swipe down 3 xdotool key alt+Left
-# Toggle maximize window
-gesture swipe right_up 3 xdotool key super+Page_Up
-# Open windows overview
-gesture swipe left_down 3 xdotool key ctrl+F9
-# Minimize current window
-gesture swipe left_up 3 xdotool key super+Page_Down
-# Open workspaces grid view
-gesture swipe right_down 3 xdotool key ctrl+F8
-# Tile window to the right
-gesture pinch clockwise 2 xdotool key super+Right
-# Tile window to the left
-gesture pinch anticlockwise 2 xdotool key super+Left
-#
+#gesture swipe right 3 xdotool set_desktop --relative -- -1
 # Go forward
 #gesture swipe up 3 xdotool key alt+Right
 # Go back
 #gesture swipe down 3 xdotool key alt+Left
-# Tile window to the left
-#gesture swipe left 3 xdotool key super+Left
-# Tile window to the right
-#gesture swipe right 3 xdotool key super+Right
-# Minimize current window
-#gesture pinch in 4 xdotool key super+Page_Down
 # Toggle maximize window
-#gesture pinch out 4 xdotool key super+Page_Up
-# Go to next workspace
-#gesture swipe left 4 xdotool set_desktop --relative 1
-# Go to previous workspace
-#gesture swipe right 4 xdotool set_desktop --relative -- -1
+#gesture swipe right_up 3 xdotool key super+Page_Up
 # Open windows overview
-#gesture swipe down 4 xdotool key ctrl+F8
+#gesture swipe left_down 3 xdotool key ctrl+F9
+# Minimize current window
+#gesture swipe left_up 3 xdotool key super+Page_Down
 # Open workspaces grid view
-#gesture swipe up 4 xdotool key ctrl+F9
+#gesture swipe right_down 3 xdotool key ctrl+F8
+# Tile window to the right
+#gesture pinch clockwise 2 xdotool key super+Right
+# Tile window to the left
+#gesture pinch anticlockwise 2 xdotool key super+Left
+#
+# Go forward
+gesture swipe up 3 xdotool key alt+Right
+# Go back
+gesture swipe down 3 xdotool key alt+Left
+# Tile window to the left
+gesture swipe left 3 xdotool key super+Left
+# Tile window to the right
+gesture swipe right 3 xdotool key super+Right
+# Minimize current window
+gesture pinch in 4 xdotool key super+Page_Down
+# Toggle maximize window
+gesture pinch out 4 xdotool key super+Page_Up
+# Go to next workspace
+gesture swipe left 4 xdotool set_desktop --relative 1
+# Go to previous workspace
+gesture swipe right 4 xdotool set_desktop --relative -- -1
+# Open windows overview
+gesture swipe down 4 xdotool key ctrl+F8
+# Open workspaces grid view
+gesture swipe up 4 xdotool key ctrl+F9
 # Toggle Super # Conflicts with pinch in/out 4
 #gesture pinch in 3 xdotool key super
 #gesture pinch out 3 xdotool key super
