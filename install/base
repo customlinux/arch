@@ -188,6 +188,9 @@ arch-chroot /mnt sh -c "echo '$username:$userpass' | chpasswd"
 echo
 echo "[ SET ADMINISTRATOR PRIVILIGES ]"
 sed -i 's/^# %wheel ALL=(ALL) ALL/ %wheel ALL=(ALL) ALL/g' /mnt/etc/sudoers
+echo "[ DISABLE PACKAGE COMPRESSION ]"
+sed -i "s/PKGEXT='.pkg.tar.xz'/PKGEXT='.pkg.tar'/g" /mnt/etc/makepkg.conf
+sed -i "s/SRCEXT='.src.tar.gz'/SRCEXT='.src.tar'/g" /mnt/etc/makepkg.conf
 echo
 echo "----------------------------------------------------------------------"
 echo "FINISH INSTALL: MOVE DE FILES TO /mnt + REMOVE EXTRA FILES"
