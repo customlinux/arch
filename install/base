@@ -157,6 +157,7 @@ arch-chroot /mnt cat /boot/loader/loader.conf
 cat << EOT > /mnt/boot/loader/loader.conf
 default arch
 timeout 0
+editor yes
 console-mode max
 auto-entries 1
 auto-firmware 1
@@ -171,7 +172,7 @@ title Arch Linux
 linux /vmlinuz-linux
 initrd /intel-ucode.img
 initrd /initramfs-linux.img
-options root=PARTUUID=$rootpartuuid rw
+options root=PARTUUID=$rootpartuuid rw module_blacklist=psmouse
 EOT
 echo
 echo "/boot/loader/entries/archlts.conf"
