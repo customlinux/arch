@@ -58,6 +58,9 @@ fdisk -l
 echo
 lsblk
 echo
+echo "EFI  : /dev/nvme0n1p$efipartition : /mnt/boot"
+echo "ROOT : /dev/nvme0n1p$ospartition  : /mnt"
+echo
 echo "Press 'Enter' to continue..."
 echo
 read
