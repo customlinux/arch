@@ -83,10 +83,12 @@ echo "----------------------------------------------------------------------"
 echo "PACSTRAP - BASE + BASE-DEVEL"
 echo "----------------------------------------------------------------------"
 echo
-echo "[ DISABLE PACKAGE COMPRESSION ]"
+echo "[ PACMAN CUSTOMIZATIONS ]"
 echo
 sed -i "s/PKGEXT='.pkg.tar.xz'/PKGEXT='.pkg.tar'/g" /etc/makepkg.conf
 sed -i "s/SRCEXT='.src.tar.gz'/SRCEXT='.src.tar'/g" /etc/makepkg.conf
+sed -i "s/#TotalDownload/TotalDownload/g" /etc/pacman.conf
+sed -i "s/#Color/Color/g" /etc/pacman.conf
 echo
 # Packages:   Base Utils     |Kernels        |Firmware      |Root|Text|Tree|Ext 2 3 4|WiFi          |exFat      |NTFS   |Microcode  |xInput     |Mirrors  |Download
 pacstrap /mnt base base-devel linux linux-lts linux-firmware sudo tree nano e2fsprogs networkmanager exfat-utils ntfs-3g intel-ucode xorg-xinput reflector wget git
