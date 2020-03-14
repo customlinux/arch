@@ -61,13 +61,21 @@ echo
 echo "EFI  : /dev/nvme0n1p$efipartition : /mnt/boot"
 echo "ROOT : /dev/nvme0n1p$ospartition  : /mnt"
 echo
+while [[ ! "$yesnoformatefipartition" =~ ^[yYnN]$ ]]; do read -n1 -p "Do you want to format the efi partition? [y/n] : " yesnoformatefipartition && echo; done
+case $yesnoformatefipartition in
+	y|Y)
+		echo "Formatting efi partition..."
+		mkfs.fat -F32 /dev/nvme0n1p$efipartition
+		echo ;;
+	n|N)
+		echo "Skipping..."
+		echo ;;
+esac
 echo "Press 'Enter' to continue..."
 echo
 read
 #
 mkfs.ext4 /dev/nvme0n1p$ospartition
-echo
-mkfs.fat -F32 /dev/nvme0n1p$efipartition
 echo
 mount /dev/nvme0n1p$ospartition /mnt
 echo
@@ -173,7 +181,7 @@ title Arch Linux
 linux /vmlinuz-linux
 initrd /intel-ucode.img
 initrd /initramfs-linux.img
-options root=PARTUUID=$rootpartuuid rw module_blacklist=psmouse
+options root=PARTUUID=$rootpartuuid rw module_blacklist=psmouse quiet loglevel=0 systemd.show_status=0 rd.udev.log_priority=0
 EOT
 echo
 echo "/boot/loader/entries/archlts.conf"
