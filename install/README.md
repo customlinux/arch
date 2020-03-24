@@ -1,6 +1,6 @@
 ## USE AT YOUR OWN RISK. 
 
-**My setup: Lenovo X1 Carbon SSD (GPT-UEFI)**
+**My setup: 512 GB SSD (GPT-UEFI)**
 
 **Boot into the arch install media and run the following commands.**
 
