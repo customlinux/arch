@@ -178,7 +178,7 @@ title Arch Linux
 linux /vmlinuz-linux
 initrd /intel-ucode.img
 initrd /initramfs-linux.img
-options root=PARTUUID=$rootpartuuid rw module_blacklist=psmouse quiet loglevel=0 systemd.show_status=0 rd.udev.log_priority=0
+options root=PARTUUID=$rootpartuuid rootflags=rw,noatime module_blacklist=psmouse quiet loglevel=0 systemd.show_status=0 rd.udev.log_priority=0 systemd.restore_state=0
 EOT
 echo
 echo "/boot/loader/entries/archlts.conf"
@@ -190,7 +190,7 @@ title Arch Linux LTS
 linux /vmlinuz-linux-lts
 initrd /intel-ucode.img
 initrd /initramfs-linux-lts.img
-options root=PARTUUID=$rootpartuuid rw
+options root=PARTUUID=$rootpartuuid rw module_blacklist=psmouse
 EOT
 echo
 echo "[ ENABLE NETWORK MANAGER ]"
@@ -211,6 +211,7 @@ sed -i "s/#TotalDownload/TotalDownload/g" /mnt/etc/pacman.conf
 sed -i "s/#Color/Color/g" /mnt/etc/pacman.conf
 echo "[ SYSTEM CUSTOMIZATIONS ]"
 arch-chroot /mnt systemctl enable fstrim.timer
+arch-chroot /mnt nano /etc/fstab
 echo
 echo "----------------------------------------------------------------------"
 echo "FINISH INSTALL: MOVE DE FILES TO /mnt + REMOVE EXTRA FILES"
