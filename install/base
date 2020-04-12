@@ -33,14 +33,14 @@ case $nvmeorsda in
 	1)
 		echo "System Drive: Solid State Drive"
 		systemDrive="nvme0n1p"
-		echo "[ CFDISK - PRESS 'ENTER' TO CONTINUE ]"
+		echo "[ CFDISK /dev/nvme0n1 - PRESS 'ENTER' TO CONTINUE ]"
 		read
 		cfdisk /dev/nvme0n1
 		echo ;;
 	2)
 		echo "System Drive: Hard Disk Drive"
 		systemDrive="sda"
-		echo "[ CFDISK - PRESS 'ENTER' TO CONTINUE ]"
+		echo "[ CFDISK /dev/$systemDrive - PRESS 'ENTER' TO CONTINUE ]"
 		read
 		cfdisk /dev/$systemDrive
 		echo ;;
@@ -78,7 +78,7 @@ echo
 echo "EFI  : /dev/$systemDrive$efipartition : /mnt/boot"
 echo "ROOT : /dev/$systemDrive$ospartition  : /mnt"
 echo
-while [[ ! "$yesnoformatefipartition" =~ ^[yYnN]$ ]]; do read -n1 -p "Do you want to format the efi partition? (y/n) : " yesnoformatefipartition && echo; done
+while [[ ! "$yesnoformatefipartition" =~ ^[yYnN]$ ]]; do read -n1 -p "Format efi partition: (y/n) : " yesnoformatefipartition && echo; done
 case $yesnoformatefipartition in
 	y|Y)
 		echo "Formatting efi partition..."
@@ -123,24 +123,20 @@ genfstab -U /mnt >> /mnt/etc/fstab
 echo
 cat /mnt/etc/fstab
 echo
-echo "[ SET TIMEZONE TO US-PACIFIC ]"
-#arch-chroot /mnt curl https://ipapi.co/timezone | timedatectl set-timezone
-getTimezone=$(arch-chroot /mnt curl https://ipapi.co/timezone)
-arch-chroot /mnt ln -sf /usr/share/zoneinfo/$getTimezone /etc/localtime
+echo "[ SET TIMEZONE TO America/Vancouver ]"
+arch-chroot /mnt ln -sf /usr/share/zoneinfo/America/Vancouver /etc/localtime
 echo
 echo "[ GENERATE /etc/adjtime ]"
 arch-chroot /mnt hwclock --systohc --utc
 echo
-getLocale=$(arch-chroot /mnt curl https://ipapi.co/country_code)
-getCountryName=$(arch-chroot /mnt curl https://ipapi.co/country_name)
-echo "[ SET LOCALE TO en_$getLocale.UTF-8 UTF-8 FOR $getCountryName-ENGLISH ]"
-sed -i 's/^#en_$getLocale.UTF-8 UTF-8/en_$getLocale.UTF-8 UTF-8/g' /mnt/etc/locale.gen
+echo "[ SET LOCALE TO en_CA.UTF-8 UTF-8 FOR CANADIAN-ENGLISH ]"
+sed -i 's/^#en_CA.UTF-8 UTF-8/en_CA.UTF-8 UTF-8/g' /mnt/etc/locale.gen
 echo
 echo "[ GENERATE LOCALE ]"
 arch-chroot /mnt locale-gen
 echo
-echo "[ SET LANG VARIABLE TO LANG=en_$getLocale.UTF-8 ]"
-echo "LANG=en_$getLocale.UTF-8" > /mnt/etc/locale.conf
+echo "[ SET LANG VARIABLE TO LANG=en_CA.UTF-8 ]"
+echo "LANG=en_CA.UTF-8" > /mnt/etc/locale.conf
 echo
 echo "[ SET HOSTNAME ]"
 echo $hostname > /mnt/etc/hostname
@@ -215,11 +211,13 @@ arch-chroot /mnt sh -c "echo '$username:$userpass' | chpasswd"
 echo
 echo "[ SET ADMINISTRATOR PRIVILIGES ]"
 sed -i 's/^# %wheel ALL=(ALL) ALL/ %wheel ALL=(ALL) ALL/g' /mnt/etc/sudoers
+echo
 echo "[ PACMAN CUSTOMIZATIONS ]"
 sed -i "s/PKGEXT='.pkg.tar.xz'/PKGEXT='.pkg.tar'/g" /mnt/etc/makepkg.conf
 sed -i "s/SRCEXT='.src.tar.gz'/SRCEXT='.src.tar'/g" /mnt/etc/makepkg.conf
 sed -i "s/#TotalDownload/TotalDownload/g" /mnt/etc/pacman.conf
 sed -i "s/#Color/Color/g" /mnt/etc/pacman.conf
+echo
 echo "[ SYSTEM CUSTOMIZATIONS ]"
 arch-chroot /mnt systemctl enable fstrim.timer
 arch-chroot /mnt nano /etc/fstab
