@@ -108,20 +108,22 @@ cat /mnt/etc/fstab
 echo
 echo "[ SET TIMEZONE TO US-PACIFIC ]"
 #arch-chroot /mnt curl https://ipapi.co/timezone | timedatectl set-timezone
-getTimezone=$(curl https://ipapi.co/timezone)
+getTimezone=$(arch-chroot /mnt curl https://ipapi.co/timezone)
 arch-chroot /mnt ln -sf /usr/share/zoneinfo/$getTimezone /etc/localtime
 echo
 echo "[ GENERATE /etc/adjtime ]"
 arch-chroot /mnt hwclock --systohc --utc
 echo
-echo "[ SET LOCALE TO en_US.UTF-8 UTF-8 FOR CANADIAN-ENGLISH ]"
-sed -i 's/^#en_CA.UTF-8 UTF-8/en_CA.UTF-8 UTF-8/g' /mnt/etc/locale.gen
+getLocale=$(arch-chroot /mnt curl https://ipapi.co/country_code)
+getCountryName=$(arch-chroot /mnt curl https://ipapi.co/country_name)
+echo "[ SET LOCALE TO en_$getLocale.UTF-8 UTF-8 FOR $getCountryName-ENGLISH ]"
+sed -i 's/^#en_$getLocale.UTF-8 UTF-8/en_$getLocale.UTF-8 UTF-8/g' /mnt/etc/locale.gen
 echo
 echo "[ GENERATE LOCALE ]"
 arch-chroot /mnt locale-gen
 echo
-echo "[ SET LANG VARIABLE TO LANG=en_CA.UTF-8 ]"
-echo "LANG=en_CA.UTF-8" > /mnt/etc/locale.conf
+echo "[ SET LANG VARIABLE TO LANG=en_$getLocale.UTF-8 ]"
+echo "LANG=en_$getLocale.UTF-8" > /mnt/etc/locale.conf
 echo
 echo "[ SET HOSTNAME ]"
 echo $hostname > /mnt/etc/hostname
@@ -156,7 +158,7 @@ cat << EOT > /mnt/boot/loader/loader.conf
 default arch
 timeout 0
 editor yes
-console-mode max
+console-mode auto
 auto-entries 1
 auto-firmware 1
 EOT
