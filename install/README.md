@@ -1,6 +1,6 @@
 ## USE AT YOUR OWN RISK. 
 
-**My setup: 512 GB SSD (GPT-UEFI)**
+**My setup: 512 GB DRIVE (GPT-UEFI)**
 
 **Boot into the arch install media and run the following commands.**
 
