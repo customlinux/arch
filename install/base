@@ -87,9 +87,6 @@ case $yesnoformatefipartition in
 	n|N)
 		echo "Skipping..."
 		echo ;;
-	*)
-		echo "Error! Input y for YES or n for NO."
-		echo;;
 esac
 mkfs.ext4 /dev/$systemDrive$ospartition
 echo
@@ -221,7 +218,14 @@ sed -i "s/#TotalDownload/TotalDownload/g" /mnt/etc/pacman.conf
 sed -i "s/#Color/Color/g" /mnt/etc/pacman.conf
 echo
 echo "[ SYSTEM CUSTOMIZATIONS ]"
-arch-chroot /mnt systemctl enable fstrim.timer
+case $nvmeorsda in
+	1)
+		arch-chroot /mnt systemctl enable fstrim.timer
+		echo ;;
+	2)
+		echo "Skipping..."
+		echo ;;
+esac
 arch-chroot /mnt nano /etc/fstab
 echo
 echo "----------------------------------------------------------------------"
