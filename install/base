@@ -111,6 +111,8 @@ sed -i "s/PKGEXT='.pkg.tar.xz'/PKGEXT='.pkg.tar'/g" /etc/makepkg.conf
 sed -i "s/SRCEXT='.src.tar.gz'/SRCEXT='.src.tar'/g" /etc/makepkg.conf
 sed -i "s/#TotalDownload/TotalDownload/g" /etc/pacman.conf
 sed -i "s/#Color/Color/g" /etc/pacman.conf
+sed -i "s/# Misc options/# Misc options\nILoveCandy/" /etc/pacman.conf
+sed -i "s/## Defaults specification/## Defaults specification\nDefaults insults/" /etc/sudoers
 echo
 # Packages:   Base Utils     |Kernels        |Firmware      |Root|Text|Tree|Ext 2 3 4|WiFi          |Utils: exFat USB    |NTFS   |Microcode  |xInput     |Mirrors  |Download
 pacstrap /mnt base base-devel linux linux-lts linux-firmware sudo tree nano e2fsprogs networkmanager exfat-utils usbutils ntfs-3g intel-ucode xorg-xinput reflector curl wget git
@@ -216,6 +218,8 @@ sed -i "s/PKGEXT='.pkg.tar.xz'/PKGEXT='.pkg.tar'/g" /mnt/etc/makepkg.conf
 sed -i "s/SRCEXT='.src.tar.gz'/SRCEXT='.src.tar'/g" /mnt/etc/makepkg.conf
 sed -i "s/#TotalDownload/TotalDownload/g" /mnt/etc/pacman.conf
 sed -i "s/#Color/Color/g" /mnt/etc/pacman.conf
+sed -i "s/# Misc options/# Misc options\nILoveCandy/" /mnt/etc/pacman.conf
+sed -i "s/## Defaults specification/## Defaults specification\nDefaults insults/" /mnt/etc/sudoers
 echo
 echo "[ SYSTEM CUSTOMIZATIONS ]"
 case $nvmeorsda in
