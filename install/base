@@ -28,7 +28,7 @@ fdisk -l
 echo
 lsblk
 echo
-while [[ ! "$nvmeorsda" =~ ^[12]$ ]]; do read -n1 -p "System Drive: [1] SSD [2] HDD : (1/2) " nvmeorsda && echo; done
+while [[ ! "$nvmeorsda" =~ ^[12]$ ]]; do read -n1 -p "System Drive: [1] SSD [2] HDD : (1/2) : " nvmeorsda && echo; done
 case $nvmeorsda in
 	1)
 		echo "System Drive: Solid State Drive"
@@ -102,7 +102,9 @@ echo "----------------------------------------------------------------------"
 echo "INSTALL REFLECTOR AND UPDATE MIRRORLIST"
 echo "----------------------------------------------------------------------"
 pacman -S --needed --noconfirm reflector
-reflector --verbose -l 150 -a 24 -p http -p https --sort rate --save /etc/pacman.d/mirrorlist
+reflector -l 150 -a 24 -p http -p https --sort rate --save /etc/pacman.d/mirrorlist
+cat /etc/pacman.d/mirrorlist
+echo
 echo "----------------------------------------------------------------------"
 echo "PACSTRAP - BASE + BASE-DEVEL"
 echo "----------------------------------------------------------------------"
