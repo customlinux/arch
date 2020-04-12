@@ -66,6 +66,22 @@ DisplayCommand=/usr/share/sddm/scripts/Xsetup
 EOT'
 sed -i "s/replaceWithUserNameXsetup/$USER/g" /home/$USER/kdepostinstall
 echo
+echo "[ SET SDDM TOUCHPAD CONFIGURATION ]"
+sudo touch /etc/X11/xorg.conf.d/20-touchpad.conf
+sudo cat << EOT > /etc/X11/xorg.conf.d/20-touchpad.conf
+Section "InputClass"
+	Identifier "libinput touchpad catchall"
+	MatchIsTouchpad "on"
+	MatchDevicePath "/dev/input/event*"
+	Driver "libinput"
+
+	Option "Tapping" "on"
+	Option "ClickMethod" "clickfinger"
+	Option "NaturalScrolling" "true"
+	Option "ScrollMethod" "twofinger"
+	Option "DisableWhileTyping" "true"
+EndSection
+EOT
 echo "----------------------------------------------------------------------"
 echo "SET UP POST INSTALL SCRIPT TO RUN AFTER REBOOT"
 echo "----------------------------------------------------------------------"
