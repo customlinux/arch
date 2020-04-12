@@ -28,9 +28,26 @@ fdisk -l
 echo
 lsblk
 echo
-echo "[ CFDISK - PRESS 'ENTER' TO CONTINUE ]"
-read
-cfdisk /dev/nvme0n1
+while [[ ! "$nvmeorsda" =~ ^[12]$ ]]; do read -n1 -p "System Drive: [1] SSD [2] HDD : (1/2) " nvmeorsda && echo; done
+case $nvmeorsda in
+	1)
+		echo "System Drive: Solid State Drive"
+		systemDrive="nvme0n1p"
+		echo "[ CFDISK - PRESS 'ENTER' TO CONTINUE ]"
+		read
+		cfdisk /dev/nvme0n1
+		echo ;;
+	2)
+		echo "System Drive: Hard Disk Drive"
+		systemDrive="sda"
+		echo "[ CFDISK - PRESS 'ENTER' TO CONTINUE ]"
+		read
+		cfdisk /dev/$systemDrive
+		echo ;;
+	*)
+		echo "Error! Input 1 for SSD or 2 for HDD."
+		echo;;
+esac
 fdisk -l
 echo
 lsblk
@@ -38,9 +55,9 @@ echo
 echo "----------------------------------------------------------------------"
 echo "INPUT VARIABLE VALUES"
 echo "----------------------------------------------------------------------"
-read -p "efipartition # (/dev/nvme0n1p#) = /dev/nvme0n1p" efipartition
+read -p "efipartition # (/dev/$systemDrive#) = /dev/$systemDrive" efipartition
 echo
-read -p "ospartition # (/dev/nvme0n1p#) = /dev/nvme0n1p" ospartition
+read -p "ospartition # (/dev/$systemDrive#) = /dev/$systemDrive" ospartition
 echo
 read -p "Enter hostname: " hostname
 echo
@@ -58,14 +75,14 @@ fdisk -l
 echo
 lsblk
 echo
-echo "EFI  : /dev/nvme0n1p$efipartition : /mnt/boot"
-echo "ROOT : /dev/nvme0n1p$ospartition  : /mnt"
+echo "EFI  : /dev/$systemDrive$efipartition : /mnt/boot"
+echo "ROOT : /dev/$systemDrive$ospartition  : /mnt"
 echo
-while [[ ! "$yesnoformatefipartition" =~ ^[yYnN]$ ]]; do read -n1 -p "Do you want to format the efi partition? [y/n] : " yesnoformatefipartition && echo; done
+while [[ ! "$yesnoformatefipartition" =~ ^[yYnN]$ ]]; do read -n1 -p "Do you want to format the efi partition? (y/n) : " yesnoformatefipartition && echo; done
 case $yesnoformatefipartition in
 	y|Y)
 		echo "Formatting efi partition..."
-		mkfs.fat -F32 /dev/nvme0n1p$efipartition
+		mkfs.fat -F32 /dev/$systemDrive$efipartition
 		echo ;;
 	n|N)
 		echo "Skipping..."
@@ -74,12 +91,12 @@ case $yesnoformatefipartition in
 		echo "Error! Input y for YES or n for NO."
 		echo;;
 esac
-mkfs.ext4 /dev/nvme0n1p$ospartition
+mkfs.ext4 /dev/$systemDrive$ospartition
 echo
-mount /dev/nvme0n1p$ospartition /mnt
+mount /dev/$systemDrive$ospartition /mnt
 echo
 mkdir -p /mnt/boot
-mount /dev/nvme0n1p$efipartition /mnt/boot
+mount /dev/$systemDrive$efipartition /mnt/boot
 echo
 echo "----------------------------------------------------------------------"
 echo "INSTALL REFLECTOR AND UPDATE MIRRORLIST"
@@ -166,7 +183,7 @@ echo
 echo "/boot/loader/entries/arch.conf"
 arch-chroot /mnt touch /boot/loader/entries/arch.conf
 arch-chroot /mnt cat /boot/loader/entries/arch.conf
-rootpartuuid=$(blkid -s PARTUUID -o value /dev/nvme0n1p$ospartition)
+rootpartuuid=$(blkid -s PARTUUID -o value /dev/$systemDrive$ospartition)
 cat << EOT > /mnt/boot/loader/entries/arch.conf
 title Arch Linux
 linux /vmlinuz-linux
@@ -178,7 +195,7 @@ echo
 echo "/boot/loader/entries/archlts.conf"
 arch-chroot /mnt touch /boot/loader/entries/archlts.conf
 arch-chroot /mnt cat /boot/loader/entries/archlts.conf
-rootpartuuid=$(blkid -s PARTUUID -o value /dev/nvme0n1p$ospartition)
+rootpartuuid=$(blkid -s PARTUUID -o value /dev/$systemDrive$ospartition)
 cat << EOT > /mnt/boot/loader/entries/archlts.conf
 title Arch Linux LTS
 linux /vmlinuz-linux-lts
