@@ -70,11 +70,10 @@ case $yesnoformatefipartition in
 	n|N)
 		echo "Skipping..."
 		echo ;;
+	*)
+		echo "Error! Input y for YES or n for NO."
+		echo;;
 esac
-echo "Press 'Enter' to continue..."
-echo
-read
-#
 mkfs.ext4 /dev/nvme0n1p$ospartition
 echo
 mount /dev/nvme0n1p$ospartition /mnt
@@ -86,7 +85,7 @@ echo "----------------------------------------------------------------------"
 echo "INSTALL REFLECTOR AND UPDATE MIRRORLIST"
 echo "----------------------------------------------------------------------"
 pacman -S --needed --noconfirm reflector
-reflector --verbose -l 100 -a 24 -p http -p https --sort rate --save /etc/pacman.d/mirrorlist
+reflector --verbose -l 150 -a 24 -p http -p https --sort rate --save /etc/pacman.d/mirrorlist
 echo "----------------------------------------------------------------------"
 echo "PACSTRAP - BASE + BASE-DEVEL"
 echo "----------------------------------------------------------------------"
@@ -98,7 +97,7 @@ sed -i "s/#TotalDownload/TotalDownload/g" /etc/pacman.conf
 sed -i "s/#Color/Color/g" /etc/pacman.conf
 echo
 # Packages:   Base Utils     |Kernels        |Firmware      |Root|Text|Tree|Ext 2 3 4|WiFi          |Utils: exFat USB    |NTFS   |Microcode  |xInput     |Mirrors  |Download
-pacstrap /mnt base base-devel linux linux-lts linux-firmware sudo tree nano e2fsprogs networkmanager exfat-utils usbutils ntfs-3g intel-ucode xorg-xinput reflector wget git
+pacstrap /mnt base base-devel linux linux-lts linux-firmware sudo tree nano e2fsprogs networkmanager exfat-utils usbutils ntfs-3g intel-ucode xorg-xinput reflector curl wget git
 echo
 echo "----------------------------------------------------------------------"
 echo "GENERATE FSTAB"
@@ -106,18 +105,11 @@ echo "----------------------------------------------------------------------"
 genfstab -U /mnt >> /mnt/etc/fstab
 echo
 cat /mnt/etc/fstab
-echo "---------------------------------------------------------------------"
-echo "   _______    _     _    _______    _______    _______    _______    "
-echo "  |  _____|  | |   | |  |  ___  |  |  ___  |  |  ___  |  |__   __|   "
-echo "  | |        | |___| |  | |___| |  | |   | |  | |   | |     | |      "
-echo "  | |        |  ___  |  |  _____|  | |   | |  | |   | |     | |      "
-echo "  | |_____   | |   | |  | |  \ \   | |___| |  | |___| |     | |      "
-echo "  |_______|  |_|   |_|  |_|   \_\  |_______|  |_______|     |_|      "
-echo "---------------------------------------------------------------------"
 echo
 echo "[ SET TIMEZONE TO US-PACIFIC ]"
 #arch-chroot /mnt curl https://ipapi.co/timezone | timedatectl set-timezone
-arch-chroot /mnt ln -sf /usr/share/zoneinfo/America/Vancouver /etc/localtime
+getTimezone=$(curl https://ipapi.co/timezone)
+arch-chroot /mnt ln -sf /usr/share/zoneinfo/$getTimezone /etc/localtime
 echo
 echo "[ GENERATE /etc/adjtime ]"
 arch-chroot /mnt hwclock --systohc --utc
