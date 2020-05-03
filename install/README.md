@@ -4,7 +4,7 @@
 
 **Boot into the arch install media and run the following commands.**
 
-wifi-menu (for wifi)
+wifi-menu (not required for ethernet)
 
 pacman -Sy --noconfirm git
 
