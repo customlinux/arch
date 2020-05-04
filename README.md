@@ -1,6 +1,10 @@
-## USE AT YOUR OWN RISK. 
+# Arch Linux
 
-**My setup: 512 GB DRIVE (GPT-UEFI)**
+## My Setup
+
+**Drive: 512 GB**
+**Partition Table: GPT**
+**Firmware Interface: UEFI**
 
 **Boot into the arch install media and run the following commands.**
 
