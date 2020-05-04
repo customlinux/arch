@@ -1,7 +1,7 @@
 # Arch Linux
+Semi-auto bash scripts for creating a minimal and clean Arch Linux setup.
 
 ## My Setup
-
 **Drive: 512 GB**
 **Partition Table: GPT**
 **Firmware Interface: UEFI**
