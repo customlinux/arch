@@ -21,8 +21,8 @@ Semi-auto bash scripts for creating a minimal and clean Arch Linux setup.
 
 **Login by entering your username and password.**
 
-ls
+1. ls
 
-./name_of_desktop_environment
+2. ./name_of_desktop_environment
 
-**You can now say "btw, i use arch" :)**
+**You can now say "i use arch btw" :)**
