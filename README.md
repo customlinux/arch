@@ -8,7 +8,7 @@ Semi-auto bash scripts for creating a minimal and clean Arch Linux setup.
 
 **Firmware Interface:** UEFI
 
-## Steps 
+## Steps | Terminal Commands
 **Boot into arch install media.**
 
 1. wifi-menu *(not required for ethernet)*
