@@ -9,15 +9,15 @@ Semi-auto bash scripts for creating a minimal and clean Arch Linux setup.
 **Firmware Interface:** UEFI
 
 ## Steps 
-(After booting into arch install media.)
+**Boot into arch install media.**
 
-2. wifi-menu *(not required for ethernet)*
+1. wifi-menu *(not required for ethernet)*
 
-pacman -Sy --noconfirm git
+2. pacman -Sy --noconfirm git
 
-git clone https://github.com/customlinux/arch
+3. git clone https://github.com/customlinux/arch
 
-/bin/bash arch/install/base
+4. /bin/bash arch/install/base
 
 **Login by entering your username and password.**
 
@@ -25,4 +25,4 @@ ls
 
 ./name_of_desktop_environment
 
-**Enjoy.**
+**You can now say "btw, i use arch" :)**
