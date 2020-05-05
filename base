@@ -268,31 +268,31 @@ systemdBootEntryArchLts="$(cat <<-EOT
 EOT
 )"
 
-# Run
+# Run (remove "read -r" when finished debugging)
 
-scriptRoot
-efiBoot
-updateSysClock
-ssdHdd
-partitionDrive
-inputVariables
-formatEfiRoot
-mountEfiRoot
-pacmanCustom "/"
-reflector
-pacstrap
-fstab
-setTimezone
-setLocale
-setHostname
-setRootPass
-installSystemdBoot
-configSystemdBoot
-enableNetworkManager
-createAdminUser
-setUserPass
-pacmanCustom "/mnt"
-enablePeriodicTRIM
-editFstab
-postInstallCleanup
+scriptRoot && read -r
+efiBoot && read -r
+updateSysClock && read -r
+ssdHdd && read -r
+partitionDrive && read -r
+inputVariables && read -r
+formatEfiRoot && read -r
+mountEfiRoot && read -r
+pacmanCustom "/" && read -r
+reflector && read -r
+pacstrap && read -r
+fstab && read -r
+setTimezone && read -r
+setLocale && read -r
+setHostname && read -r
+setRootPass && read -r
+installSystemdBoot && read -r
+configSystemdBoot && read -r
+enableNetworkManager && read -r
+createAdminUser && read -r
+setUserPass && read -r
+pacmanCustom "/mnt" && read -r
+enablePeriodicTRIM && read -r
+editFstab && read -r
+postInstallCleanup && read -r
 finish
