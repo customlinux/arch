@@ -62,10 +62,11 @@ partitionDrive() {
 }
 
 inputVariablesOne() {
-	read -rp "Enter hostname           : " hostname
-	read -rp "Enter username           : " username
-	read -rp "Enter user password      : " userpass
-	read -rp "Enter root password      : " rootpass
+	echo
+	read -rp "Enter system hostname : " hostname
+	read -rp "Enter your username   : " username
+	read -rp "Enter user password   : " userpass
+	read -rp "Enter root password   : " rootpass
 	echo
 }
 
