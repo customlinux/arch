@@ -71,14 +71,21 @@ inputVariables() {
 	statusDrivePart
 	read -rp "efipartition # /dev/$drive# : " efipartition
 	read -rp "ospartition  # /dev/$drive# : " ospartition
-	read -rp "Enter hostname            : " hostname
-	read -rp "Enter username            : " username
-	read -rp "Enter user password       : " userpass
-	read -rp "Enter root password       : " rootpass
+	read -rp "Enter hostname           : " hostname
+	read -rp "Enter username           : " username
+	read -rp "Enter user password      : " userpass
+	read -rp "Enter root password      : " rootpass
+}
+
+showEfiRootPartSelection() {
+	lsblk
+	echo "EFI  : /dev/$drive$efipartition"
+	echo "Root : /dev/$drive$ospartition"
+	echo
 }
 
 formatEfiRoot() {
-	statusDrivePart
+	showEfiRootPartSelection
 	while [[ ! "$yesnoformatefi" =~ ^[yYnN]$ ]]; do read -n1 -rp "Format efi partition: (y/n) : " yesnoformatefi && echo; done
 	case "$yesnoformatefi" in
 		y|Y )
@@ -91,7 +98,7 @@ formatEfiRoot() {
 
 mountEfiRoot() {
 	mount /dev/"$drive""$ospartition" "$rootMountDir"
-	mkdir -p "$rootMountDir""efiMountDir"
+	mkdir -p "$rootMountDir""$efiMountDir"
 	mount /dev/"$drive""$efipartition" "$rootMountDir""$efiMountDir"
 }
 
@@ -275,13 +282,13 @@ EOT
 
 # Run (remove "read -r" when finished debugging)
 
-scriptRoot && read -r
-efiBoot && read -r
-updateSysClock && read -r
-ssdHdd && read -r
-partitionDrive && read -r
-inputVariables && read -r
-formatEfiRoot && read -r
+scriptRoot
+efiBoot
+updateSysClock
+ssdHdd
+partitionDrive
+inputVariables
+formatEfiRoot
 mountEfiRoot && read -r
 pacmanCustom "/" && read -r
 reflector && read -r
