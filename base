@@ -90,7 +90,8 @@ formatEfiRoot() {
 				y|Y )
 					mkfs.fat -F32 /dev/"$drive""$efipartition";;
 				n|N )
-					echo "Skipping";;
+					echo "Skipping"
+					echo;;
 			esac;;
 		n|N )
 			echo "Skipping...";;
@@ -114,7 +115,7 @@ pacmanCustom() {
 }
 
 reflector() {
-	pacman -S --needed --noconfirm reflector
+	pacman -S --noconfirm reflector
 	reflector -c Canada -l 20 -a 12 -p https -f 10 --sort rate --save /etc/pacman.d/mirrorlist
 	cat /etc/pacman.d/mirrorlist
 }
@@ -291,7 +292,7 @@ ssdHdd
 partitionDrive
 inputVariables
 formatEfiRoot
-mountEfiRoot && read -r
+mountEfiRoot
 pacmanCustom "/"
 reflector && read -r
 pacstrap && read -r
