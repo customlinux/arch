@@ -8,7 +8,8 @@ Semi-auto bash scripts for creating a minimal and clean Arch Linux setup.
 
 **Firmware Interface:** UEFI
 
-**System:** 
+**System:**
+
             | Dell XPS 13 9300 Laptop  |
 
             | i7-1065G7 3.9 GHz        |
