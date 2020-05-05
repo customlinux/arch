@@ -14,24 +14,22 @@ solidStateDrive="nvme0n1p"
 # Functions
 
 scriptRoot() {
-	case "$EUID" in
-		! 0 )
-			echo
-			echo "Script is NOT being run as root." 2>&1
-			exit 1;;
-	esac
+	if [[ "$EUID" -ne 0 ]]; then
+		echo
+		echo "Script is NOT being run as root."
+		exit 1
+	fi
 }
 
 efiBoot() {
 	efivar --list
 	efiVarDir="1"
 	[[ -d /sys/firmware/efi/efivars ]] && efiVarDir="0"
-	case "$efiVarDir" in
-		1 )
-			echo
-			echo "Directory NOT found: /sys/firmware/efi/efivars"
-			exit 1;;
-	esac
+	if [[ "$efiVarDir" -eq 1 ]]; then
+		echo
+		echo "Directory NOT found: /sys/firmware/efi/efivars"
+		exit 1
+	fi
 }
 
 updateSysClock() {
