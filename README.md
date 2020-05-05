@@ -34,4 +34,4 @@ Semi-auto bash scripts for creating a minimal and clean Arch Linux setup.
 
 2. ./name_of_desktop_environment
 
-**Create github issue for help.**
+**Create github issues for help.**
