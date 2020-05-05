@@ -69,10 +69,12 @@ inputVariables() {
 	read -rp "Enter username           : " username
 	read -rp "Enter user password      : " userpass
 	read -rp "Enter root password      : " rootpass
+	echo
 }
 
 showEfiRootPartSelection() {
 	lsblk
+	echo
 	echo "EFI  : /dev/$drive$efipartition"
 	echo "Root : /dev/$drive$ospartition"
 	echo
@@ -83,7 +85,13 @@ formatEfiRoot() {
 	while [[ ! "$yesnoformatefi" =~ ^[yYnN]$ ]]; do read -n1 -rp "Format efi partition: (y/n) : " yesnoformatefi && echo; done
 	case "$yesnoformatefi" in
 		y|Y )
-			mkfs.fat -F32 /dev/"$drive""$efipartition";;
+			while [[ ! "$finalyesnoformatefi" =~ ^[yYnN]$ ]]; do read -n1 -rp "Are you sure: (y/n) : " finalyesnoformatefi && echo; done
+			case "$finalyesnoformatefi" in
+				y|Y )
+					mkfs.fat -F32 /dev/"$drive""$efipartition";;
+				n|N )
+					echo "Skipping";;
+			esac;;
 		n|N )
 			echo "Skipping...";;
 	esac
