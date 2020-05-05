@@ -115,7 +115,7 @@ pacmanCustom() {
 }
 
 reflector() {
-	pacman -S --needed --noconfirm reflector
+	# pacman -S --needed --noconfirm reflector
 	reflector -c Canada -l 20 -a 12 -p https -f 10 --sort rate --save /etc/pacman.d/mirrorlist
 	cat /etc/pacman.d/mirrorlist
 }
