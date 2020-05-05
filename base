@@ -214,7 +214,10 @@ editFstab() {
 }
 
 postInstallCleanup() {
+	ls /root/arch
 	cp /root/arch/*{kde,gnome,xfce,budgie,bedrock}* "$rootMountDir"/home/"$username"
+	ls /root/arch
+	ls /"$rootMountDir"/home/"$username"
 	chmod +x "$rootMountDir"/home/"$username"/*
 	rm -r /root/arch
 }
@@ -226,8 +229,10 @@ finish() {
 			umount -R "$rootMountDir"
 			reboot;;
 		n|N )
+			echo
 			echo "Unmount : umount -R $rootMountDir"
 			echo "Reboot  : reboot"
+			echo
 			exit 0;;
 	esac
 }
@@ -304,13 +309,13 @@ setLocale
 setHostname
 setRootPass
 installSystemdBoot
-configSystemdBoot && read -r
-enableNetworkManager && read -r
-createAdminUser && read -r
-setUserPass && read -r
-pacmanCustom "/mnt" && read -r
-enablePeriodicTRIM && read -r
-editFstab && read -r
+configSystemdBoot
+enableNetworkManager
+createAdminUser
+setUserPass
+pacmanCustom "/mnt/"
+enablePeriodicTRIM
+editFstab
 postInstallCleanup && read -r
 finish
 
