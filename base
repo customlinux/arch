@@ -22,11 +22,11 @@ scriptRoot() {
 }
 
 efiBoot() {
-	efivar --list
 	efiVarDir="1"
 	[[ -d /sys/firmware/efi/efivars ]] && efiVarDir="0"
 	if [[ "$efiVarDir" -eq 1 ]]; then
 		echo
+		efivar --list
 		echo "Directory NOT found: /sys/firmware/efi/efivars"
 		exit 1
 	fi
@@ -114,13 +114,13 @@ pacmanCustom() {
 	sed -i "s/## Defaults specification/## Defaults specification\nDefaults insults/" "$1"etc/sudoers
 }
 
-reflector() {
-	# pacman -S --needed --noconfirm reflector
+reflectorMirrors() {
+	pacman -S --needed --noconfirm reflector
 	reflector -c Canada -l 20 -a 12 -p https -f 10 --sort rate --save /etc/pacman.d/mirrorlist
 	cat /etc/pacman.d/mirrorlist
 }
 
-pacstrap() {
+runPacstrap() {
 	# Packages:      | Base Utils - Dev  | Kernels           | Firmware       | Root | Tree | Text | Ext 2 3 4 | WiFi           | Utils: exFat USB       | NTFS    | Microcode   | xInput      | Mirrors   | Download          |
 	pacstrapPackages=('base' 'base-devel' 'linux' 'linux-lts' 'linux-firmware' 'sudo' 'tree' 'nano' 'e2fsprogs' 'networkmanager' 'exfat-utils' 'usbutils' 'ntfs-3g' 'intel-ucode' 'xorg-xinput' 'reflector' 'curl' 'wget' 'git')
 	pacstrap "$rootMountDir" "${pacstrapPackages[@]}"
@@ -293,9 +293,9 @@ partitionDrive
 inputVariables
 formatEfiRoot
 mountEfiRoot
-reflector && read -r
 pacmanCustom "/" && read -r
-pacstrap && read -r
+reflectorMirrors && read -r
+runPacstrap && read -r
 fstab && read -r
 setTimezone && read -r
 setLocale && read -r
