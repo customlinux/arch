@@ -5,15 +5,15 @@ Semi-auto bash scripts for creating a minimal and clean Arch Linux setup.
 
 	| Dell XPS 13 9300 Laptop  |
 
-	| i7-1065G7 3.9 GHz        |
+	| i7-1065G7 3.9 GHz 8MB    |
 
 	| 16GB 3733MHz LPDDR4x RAM |
 
 	| 512GB M.2 PCIe NVMe SSD  |
 
-	| Partition Table : GPT    |
+	| Partition Table  :  GPT  |
 
-	| Firmware        : UEFI   |
+	| Firmware         :  UEFI |
 
 ## Steps - Terminal Commands
 **Boot into arch install media.**
