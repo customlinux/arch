@@ -15,10 +15,7 @@ solidStateDrive="nvme0n1p"
 
 scriptRoot() {
 	case "$EUID" in
-		0 )
-			echo
-			echo "Script is being run as root.";;
-		* )
+		! 0 )
 			echo
 			echo "Script is NOT being run as root." 2>&1
 			exit 1;;
@@ -30,9 +27,6 @@ efiBoot() {
 	efiVarDir="1"
 	[[ -d /sys/firmware/efi/efivars ]] && efiVarDir="0"
 	case "$efiVarDir" in
-		0 )
-			echo
-			echo "System is booted in efi mode.";;
 		1 )
 			echo
 			echo "Directory NOT found: /sys/firmware/efi/efivars"
@@ -62,6 +56,8 @@ ssdHdd() {
 
 partitionDrive() {
 	statusDrivePart
+	echo "cfdisk /dev/${drive//p}"
+	echo
 	echo "Press 'Enter' to continue."
 	read -r
 	cfdisk /dev/"${drive//p}"
@@ -290,7 +286,7 @@ partitionDrive
 inputVariables
 formatEfiRoot
 mountEfiRoot && read -r
-pacmanCustom "/" && read -r
+pacmanCustom "/"
 reflector && read -r
 pacstrap && read -r
 fstab && read -r
