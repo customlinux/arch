@@ -61,14 +61,18 @@ partitionDrive() {
 	cfdisk /dev/"${drive//p}"
 }
 
-inputVariables() {
-	statusDrivePart
-	read -rp "efipartition # /dev/$drive# : " efipartition
-	read -rp "ospartition  # /dev/$drive# : " ospartition
+inputVariablesOne() {
 	read -rp "Enter hostname           : " hostname
 	read -rp "Enter username           : " username
 	read -rp "Enter user password      : " userpass
 	read -rp "Enter root password      : " rootpass
+	echo
+}
+
+inputVariablesTwo() {
+	statusDrivePart
+	read -rp "efipartition # /dev/$drive# : " efipartition
+	read -rp "ospartition  # /dev/$drive# : " ospartition
 	echo
 }
 
@@ -294,10 +298,11 @@ EOT
 
 scriptRoot
 efiBoot
+inputVariablesOne
 updateSysClock
 ssdHdd
 partitionDrive
-inputVariables
+inputVariablesTwo
 formatEfiRoot
 mountEfiRoot
 pacmanCustom "/"
