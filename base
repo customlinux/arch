@@ -116,7 +116,8 @@ pacmanCustom() {
 
 reflectorMirrors() {
 	pacman -S --needed --noconfirm reflector
-	reflector -c Canada -l 20 -a 12 -p https -f 10 --sort rate --save /etc/pacman.d/mirrorlist
+	reflector -c Canada -l 100 -a 12 -p https -f 50 --sort rate --save /etc/pacman.d/mirrorlist
+	echo
 	cat /etc/pacman.d/mirrorlist
 }
 
@@ -293,7 +294,7 @@ partitionDrive
 inputVariables
 formatEfiRoot
 mountEfiRoot
-pacmanCustom "/" && read -r
+pacmanCustom "/"
 reflectorMirrors && read -r
 runPacstrap && read -r
 fstab && read -r
