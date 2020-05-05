@@ -5,7 +5,7 @@ Semi-auto bash scripts for creating a minimal and clean Arch Linux setup.
 
 	| Dell XPS 13 9300 Laptop  |
 
-	| i7-1065G7 3.9 GHz 8MB    |
+	| i7-1065G7 3.9 GHz 8MB 🖪 |
 
 	| 16GB 3733MHz LPDDR4x RAM |
 
