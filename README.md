@@ -8,7 +8,11 @@ Semi-auto bash scripts for creating a minimal and clean Arch Linux setup.
 
 **Firmware Interface:** UEFI
 
-**System:** Dell XPS 9300
+**System:** 
+| Dell XPS 13 9300 Laptop  |
+| i7-1065G7 3.9 GHz        |
+| 16GB 3733MHz LPDDR4x RAM |
+| 512GB M.2 PCIe NVMe SSD  |
 
 ## Steps - Terminal Commands
 **Boot into arch install media.**
