@@ -222,10 +222,7 @@ editFstab() {
 }
 
 postInstallCleanup() {
-	ls /root/arch
 	cp /root/arch/*{kde,gnome,xfce,budgie,bedrock}* "$rootMountDir"/home/"$username"
-	ls /root/arch
-	ls /"$rootMountDir"/home/"$username"
 	chmod +x "$rootMountDir"/home/"$username"/*
 	rm -r /root/arch
 }
@@ -332,7 +329,6 @@ finish
 : '
 set -e  : exits when any command fails
 set -u  : exits when unset variables found
-nounset : same as "set -u"
 line 249: drive: unbound variable
 line 261: drive: unbound variable
 
