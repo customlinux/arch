@@ -2,13 +2,6 @@
 Semi-auto bash scripts for creating a minimal and clean Arch Linux setup.
 
 ## My Configuration
-**Drive:** 512 GB
-
-**Partition Table:** GPT
-
-**Firmware Interface:** UEFI
-
-**System:**
 
             | Dell XPS 13 9300 Laptop  |
 
@@ -17,6 +10,10 @@ Semi-auto bash scripts for creating a minimal and clean Arch Linux setup.
             | 16GB 3733MHz LPDDR4x RAM |
 
             | 512GB M.2 PCIe NVMe SSD  |
+
+            | Partition Table : GPT    |
+
+            | Firmware        : UEFI   |
 
 ## Steps - Terminal Commands
 **Boot into arch install media.**
