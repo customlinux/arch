@@ -1,245 +1,298 @@
 #!/bin/bash
-echo "----------------------------------------------------------------------"
-echo "CHECK IF SCRIPT IS RUNNING AS ROOT"
-echo "----------------------------------------------------------------------"
-if [[ $EUID -ne 0 ]]
-then
-	echo "You must be a root user to run this." 2>&1
-	exit 1
-else
-	echo "Script is being run as root."
-	echo
-fi
-echo "----------------------------------------------------------------------"
-echo "CHECK IF SYSTEM IS BOOTED IN EFI MODE"
-echo "----------------------------------------------------------------------"
-efivar --list
-echo
-echo "[ IF A DIRECTORY EXISTS, PRESS 'ENTER' TO CONTINUE ]"
-read
-echo "----------------------------------------------------------------------"
-echo "UPDATE SYSTEM CLOCK"
-echo "----------------------------------------------------------------------"
-timedatectl set-ntp true
-echo "----------------------------------------------------------------------"
-echo "PARTITION THE DRIVE"
-echo "----------------------------------------------------------------------"
-fdisk -l
-echo
-lsblk
-echo
-while [[ ! "$nvmeorsda" =~ ^[12]$ ]]; do read -n1 -p "System Drive: [1] SSD [2] HDD : (1/2) : " nvmeorsda && echo; done
-case $nvmeorsda in
-	1)
-		echo "System Drive: Solid State Drive"
-		systemDrive="nvme0n1p"
-		echo "[ CFDISK /dev/nvme0n1 - PRESS 'ENTER' TO CONTINUE ]"
-		read
-		cfdisk /dev/nvme0n1
-		echo ;;
-	2)
-		echo "System Drive: Hard Disk Drive"
-		systemDrive="sda"
-		echo "[ CFDISK /dev/$systemDrive - PRESS 'ENTER' TO CONTINUE ]"
-		read
-		cfdisk /dev/$systemDrive
-		echo ;;
-	*)
-		echo "Error! Input 1 for SSD or 2 for HDD."
-		echo;;
-esac
-fdisk -l
-echo
-lsblk
-echo
-echo "----------------------------------------------------------------------"
-echo "INPUT VARIABLE VALUES"
-echo "----------------------------------------------------------------------"
-read -p "efipartition # (/dev/$systemDrive#) = /dev/$systemDrive" efipartition
-echo
-read -p "ospartition # (/dev/$systemDrive#) = /dev/$systemDrive" ospartition
-echo
-read -p "Enter hostname: " hostname
-echo
-read -p "Enter username: " username
-echo
-read -rp "Enter user password: " userpass
-echo
-read -rp "Enter root password: " rootpass
-echo
-echo "----------------------------------------------------------------------"
-echo "FORMAT + MOUNT [/] & [efi] PARTITIONS"
-echo "----------------------------------------------------------------------"
-#
-fdisk -l
-echo
-lsblk
-echo
-echo "EFI  : /dev/$systemDrive$efipartition : /mnt/boot"
-echo "ROOT : /dev/$systemDrive$ospartition  : /mnt"
-echo
-while [[ ! "$yesnoformatefipartition" =~ ^[yYnN]$ ]]; do read -n1 -p "Format efi partition: (y/n) : " yesnoformatefipartition && echo; done
-case $yesnoformatefipartition in
-	y|Y)
-		echo "Formatting efi partition..."
-		mkfs.fat -F32 /dev/$systemDrive$efipartition
-		echo ;;
-	n|N)
-		echo "Skipping..."
-		echo ;;
-esac
-mkfs.ext4 /dev/$systemDrive$ospartition
-echo
-mount /dev/$systemDrive$ospartition /mnt
-echo
-mkdir -p /mnt/boot
-mount /dev/$systemDrive$efipartition /mnt/boot
-echo
-echo "----------------------------------------------------------------------"
-echo "INSTALL REFLECTOR AND UPDATE MIRRORLIST"
-echo "----------------------------------------------------------------------"
-pacman -S --needed --noconfirm reflector
-reflector -l 150 -a 24 -p http -p https --sort rate --save /etc/pacman.d/mirrorlist
-cat /etc/pacman.d/mirrorlist
-echo
-echo "----------------------------------------------------------------------"
-echo "PACSTRAP - BASE + BASE-DEVEL"
-echo "----------------------------------------------------------------------"
-echo
-echo "[ PACMAN CUSTOMIZATIONS ]"
-sed -i "s/PKGEXT='.pkg.tar.xz'/PKGEXT='.pkg.tar'/g" /etc/makepkg.conf
-sed -i "s/SRCEXT='.src.tar.gz'/SRCEXT='.src.tar'/g" /etc/makepkg.conf
-sed -i "s/#TotalDownload/TotalDownload/g" /etc/pacman.conf
-sed -i "s/#Color/Color/g" /etc/pacman.conf
-sed -i "s/# Misc options/# Misc options\nILoveCandy/" /etc/pacman.conf
-sed -i "s/## Defaults specification/## Defaults specification\nDefaults insults/" /etc/sudoers
-echo
-# Packages:   Base Utils     |Kernels        |Firmware      |Root|Text|Tree|Ext 2 3 4|WiFi          |Utils: exFat USB    |NTFS   |Microcode  |xInput     |Mirrors  |Download
-pacstrap /mnt base base-devel linux linux-lts linux-firmware sudo tree nano e2fsprogs networkmanager exfat-utils usbutils ntfs-3g intel-ucode xorg-xinput reflector curl wget git
-echo
-echo "----------------------------------------------------------------------"
-echo "GENERATE FSTAB"
-echo "----------------------------------------------------------------------"
-genfstab -U /mnt >> /mnt/etc/fstab
-echo
-cat /mnt/etc/fstab
-echo
-echo "[ SET TIMEZONE TO America/Vancouver ]"
-arch-chroot /mnt ln -sf /usr/share/zoneinfo/America/Vancouver /etc/localtime
-echo
-echo "[ GENERATE /etc/adjtime ]"
-arch-chroot /mnt hwclock --systohc --utc
-echo
-echo "[ SET LOCALE TO en_CA.UTF-8 UTF-8 FOR CANADIAN-ENGLISH ]"
-sed -i 's/^#en_CA.UTF-8 UTF-8/en_CA.UTF-8 UTF-8/g' /mnt/etc/locale.gen
-echo
-echo "[ GENERATE LOCALE ]"
-arch-chroot /mnt locale-gen
-echo
-echo "[ SET LANG VARIABLE TO LANG=en_CA.UTF-8 ]"
-echo "LANG=en_CA.UTF-8" > /mnt/etc/locale.conf
-echo
-echo "[ SET HOSTNAME ]"
-echo $hostname > /mnt/etc/hostname
-echo
-echo "[ SET ROOT PASSWORD ]"
-arch-chroot /mnt sh -c "echo 'root:$rootpass' | chpasswd"
-echo
-echo "[ INSTALL SYSTEMD-BOOT TO /boot ]"
-echo
-arch-chroot /mnt bootctl --path=/boot install
-echo
-arch-chroot /mnt mkdir -p /etc/pacman.d/hooks
-arch-chroot /mnt touch /etc/pacman.d/hooks/systemd-boot.hook
-arch-chroot /mnt cat /etc/pacman.d/hooks/systemd-boot.hook
-cat << EOT > /mnt/etc/pacman.d/hooks/systemd-boot.hook
-[Trigger]
-Type = Package
-Operation = Upgrade
-Target = systemd
+set -euo nounset pipefail
+IFS=$'\n\t'
 
-[Action]
-Description = Updating systemd-boot
-When = PostTransaction
-Exec = /usr/bin/bootctl update
+# Variables
+rootMountDir="/mnt"
+efiMountDir="/boot"
+myTimeZone="America/Vancouver"
+myLocale="en_CA"
+myLocaleFallback="en_US"
+hardDiskDrive="sda"
+solidStateDrive="nvme0n1p"
+
+# Functions
+
+scriptRoot() {
+	case "$EUID" in
+		0 )
+			echo "Script is being run as root.";;
+		* )
+			echo "Script is NOT being run as root." 2>&1
+			exit 1;;
+	esac
+}
+
+efiBoot() {
+	efivar --list
+	efiVarDir="1"
+	[[ -d /sys/firmware/efi/efivars ]] && efiVarDir="0"
+	case "$efiVarDir" in
+		0 )
+			echo "System is booted in efi mode.";;
+		1 )
+			echo "Directory NOT found: /sys/firmware/efi/efivars"
+			exit 1;;
+	esac
+}
+
+updateSysClock() {
+	timedatectl set-ntp true
+}
+
+statusDrivePart() {
+	fdisk -l
+	lsblk
+}
+
+ssdHdd() {
+	rotational=$(cat /sys/block/sda/queue/rotational)
+	case "$rotational" in
+		0 )
+			drive="$solidStateDrive";;
+		1 )
+			drive="$hardDiskDrive";;
+	esac
+}
+
+partitionDrive() {
+	statusDrivePart
+	echo "Press 'Enter' to continue."
+	read -r
+	cfdisk /dev/"${drive//p}"
+}
+
+inputVariables() {
+	statusDrivePart
+	read -rp "efipartition # /dev/$drive# : " efipartition
+	read -rp "ospartition  # /dev/$drive# : " ospartition
+	read -rp "Enter hostname              : " hostname
+	read -rp "Enter username              : " username
+	read -rp "Enter user password         : " userpass
+	read -rp "Enter root password         : " rootpass
+}
+
+formatEfiRoot() {
+	statusDrivePart
+	while [[ ! "$yesnoformatefi" =~ ^[yYnN]$ ]]; do read -n1 -rp "Format efi partition: (y/n) : " yesnoformatefi && echo; done
+	case "$yesnoformatefi" in
+		y|Y )
+			mkfs.fat -F32 /dev/"$drive""$efipartition";;
+		n|N )
+			echo "Skipping...";;
+	esac
+	mkfs.ext4 /dev/"$drive""$ospartition"
+}
+
+mountEfiRoot() {
+	mount /dev/"$drive""$ospartition" "$rootMountDir"
+	mkdir -p "$rootMountDir""efiMountDir"
+	mount /dev/"$drive""$efipartition" "$rootMountDir""$efiMountDir"
+}
+
+pacmanCustom() {
+	sed -i "s/PKGEXT='.pkg.tar.xz'/PKGEXT='.pkg.tar'/g" "$1"etc/makepkg.conf
+	sed -i "s/SRCEXT='.src.tar.gz'/SRCEXT='.src.tar'/g" "$1"etc/makepkg.conf
+	sed -i "s/#TotalDownload/TotalDownload/g" "$1"etc/pacman.conf
+	sed -i "s/#Color/Color/g" "$1"etc/pacman.conf
+	sed -i "s/# Misc options/# Misc options\nILoveCandy/" "$1"etc/pacman.conf
+	sed -i "s/## Defaults specification/## Defaults specification\nDefaults insults/" "$1"etc/sudoers
+}
+
+reflector() {
+	pacman -S --needed --noconfirm reflector
+	reflector -l 150 -a 24 -p http -p https --sort rate --save /etc/pacman.d/mirrorlist
+	cat /etc/pacman.d/mirrorlist
+}
+
+pacstrap() {
+	# Packages:      | Base Utils - Dev  | Kernels           | Firmware       | Root | Tree | Text | Ext 2 3 4 | WiFi           | Utils: exFat USB       | NTFS    | Microcode   | xInput      | Mirrors   | Download          |
+	pacstrapPackages=('base' 'base-devel' 'linux' 'linux-lts' 'linux-firmware' 'sudo' 'tree' 'nano' 'e2fsprogs' 'networkmanager' 'exfat-utils' 'usbutils' 'ntfs-3g' 'intel-ucode' 'xorg-xinput' 'reflector' 'curl' 'wget' 'git')
+	pacstrap "$rootMountDir" "${pacstrapPackages[@]}"
+}
+
+fstab() {
+	genfstab -U "$rootMountDir" >> "$rootMountDir"/etc/fstab
+	cat "$rootMountDir"/etc/fstab
+}
+
+setTimezone() {
+	arch-chroot "$rootMountDir" ln -sf /usr/share/zoneinfo/"$myTimeZone" /etc/localtime
+	arch-chroot "$rootMountDir" hwclock --systohc --utc
+}
+
+setLocale() {
+	sed -i "s/^#$myLocale.UTF-8 UTF-8/$myLocale.UTF-8 UTF-8/g" "$rootMountDir"/etc/locale.gen
+	arch-chroot "$rootMountDir" locale-gen
+	echo "LANG=$myLocale.UTF-8" > "$rootMountDir"/etc/locale.conf
+	echo "LANGUAGE=$myLocale:$myLocaleFallback:en" >> "$rootMountDir"/etc/locale.conf
+}
+
+setHostname() {
+	echo "$hostname" > "$rootMountDir"/etc/hostname
+}
+
+setRootPass() {
+	arch-chroot "$rootMountDir" sh -c "echo 'root:$rootpass' | chpasswd"
+}
+
+installSystemdBoot() {
+	arch-chroot "$rootMountDir" bootctl --path="$efiMountDir" install
+}
+
+configSystemdBootHook() {
+	arch-chroot "$rootMountDir" mkdir -p "$systemdBootHookFileDir"
+	arch-chroot "$rootMountDir" touch "$systemdBootHookFileDir$systemdBootHookFileName"
+	arch-chroot "$rootMountDir" cat "$systemdBootHookFileDir$systemdBootHookFileName"
+	echo "$systemdBootHook" > "$rootMountDir$systemdBootHookFileDir$systemdBootHookFileName"
+}
+
+configSystemdBootLoader() {
+	arch-chroot "$rootMountDir" touch "$systemdBootLoaderFileDir$systemdBootLoaderFileName"
+	arch-chroot "$rootMountDir" cat "$systemdBootLoaderFileDir$systemdBootLoaderFileName"
+	echo "$systemdBootLoader" > "$rootMountDir$systemdBootLoaderFileDir$systemdBootLoaderFileName"
+}
+
+configSystemdBootEntryArch() {
+	arch-chroot "$rootMountDir" touch "$systemdBootEntryArchFileDir$systemdBootEntryArchFileName"
+	arch-chroot "$rootMountDir" cat "$systemdBootEntryArchFileDir$systemdBootEntryArchFileName"
+	echo "$systemdBootEntryArch" > "$rootMountDir$systemdBootEntryArchFileDir$systemdBootEntryArchFileName"
+}
+
+configSystemdBootEntryArchLts() {
+	arch-chroot "$rootMountDir" touch "$systemdBootEntryArchLtsFileDir$systemdBootEntryArchLtsFileName"
+	arch-chroot "$rootMountDir" cat "$systemdBootEntryArchLtsFileDir$systemdBootEntryArchLtsFileName"
+	echo "$systemdBootEntryArchLts" > "$rootMountDir$systemdBootEntryArchLtsFileDir$systemdBootEntryArchLtsFileName"
+}
+
+configSystemdBoot() {
+	configSystemdBootHook
+	configSystemdBootLoader
+	configSystemdBootEntryArch
+	configSystemdBootEntryArchLts
+}
+
+enableNetworkManager() {
+	arch-chroot "$rootMountDir" systemctl enable NetworkManager
+}
+
+createAdminUser() {
+	arch-chroot "$rootMountDir" useradd -m -g users -G wheel -s /bin/bash "$username"
+	sed -i 's/^# %wheel ALL=(ALL) ALL/ %wheel ALL=(ALL) ALL/g' "$rootMountDir"/etc/sudoers
+}
+
+setUserPass() {
+	arch-chroot "$rootMountDir" sh -c "echo '$username:$userpass' | chpasswd"
+}
+
+enablePeriodicTRIM() {
+	case "$drive" in
+		"$solidStateDrive")
+			arch-chroot "$rootMountDir" systemctl enable fstrim.timer;;
+	esac
+}
+
+editFstab() {
+	arch-chroot "$rootMountDir" nano /etc/fstab
+}
+
+postInstallCleanup() {
+	cp /root/arch/*{kde,gnome,xfce,budgie,bedrock}* "$rootMountDir"/home/"$username"
+	chmod +x "$rootMountDir"/home/"$username"/*
+	rm -r /root/arch
+}
+
+finish() {
+	while [[ ! "$unmountReboot" =~ ^[yYnN]$ ]]; do read -n1 -rp "Unmount and reboot: (y/n) : " unmountReboot && echo; done
+	case "$unmountReboot" in
+		y|Y )
+			umount -R "$rootMountDir"
+			reboot;;
+		n|N )
+			echo "Unmount : umount -R $rootMountDir"
+			echo "Reboot  : reboot"
+			exit 0;;
+	esac
+}
+
+# Configuration Files
+
+systemdBootHookFileDir="/etc/pacman.d/hooks/"
+systemdBootHookFileName="systemd-boot.hook"
+systemdBootHook="$(cat <<-EOT
+	[Trigger]
+	Type = Package
+	Operation = Upgrade
+	Target = systemd
+
+	[Action]
+	Description = Updating systemd-boot
+	When = PostTransaction
+	Exec = /usr/bin/bootctl update
 EOT
-echo
-echo "[ CONFIGURE SYSTEMD-BOOT ]"
-echo "/boot/loader/loader.conf"
-arch-chroot /mnt touch /boot/loader/loader.conf
-arch-chroot /mnt cat /boot/loader/loader.conf
-cat << EOT > /mnt/boot/loader/loader.conf
-default arch
-timeout 0
-editor yes
-console-mode auto
-auto-entries 1
-auto-firmware 1
+)"
+
+systemdBootLoaderFileDir="$efiMountDir/loader/"
+systemdBootLoaderFileName="loader.conf"
+systemdBootLoader="$(cat <<-EOT
+	default arch
+	timeout 0
+	editor yes
+	console-mode auto
+	auto-entries 1
+	auto-firmware 1
 EOT
-echo
-echo "/boot/loader/entries/arch.conf"
-arch-chroot /mnt touch /boot/loader/entries/arch.conf
-arch-chroot /mnt cat /boot/loader/entries/arch.conf
-rootpartuuid=$(blkid -s PARTUUID -o value /dev/$systemDrive$ospartition)
-cat << EOT > /mnt/boot/loader/entries/arch.conf
-title Arch Linux
-linux /vmlinuz-linux
-initrd /intel-ucode.img
-initrd /initramfs-linux.img
-options root=PARTUUID=$rootpartuuid rw rootflags=noatime module_blacklist=psmouse quiet loglevel=0 systemd.show_status=0 rd.udev.log_priority=0 systemd.restore_state=0
+)"
+
+systemdBootEntryArchFileDir="$rootMountDir$efiMountDir/loader/entries/"
+systemdBootEntryArchFileName="arch.conf"
+rootpartuuid=$(blkid -s PARTUUID -o value /dev/"$drive""$ospartition")
+systemdBootEntryArch="$(cat <<-EOT
+	title Arch Linux
+	linux /vmlinuz-linux
+	initrd /intel-ucode.img
+	initrd /initramfs-linux.img
+	options root=PARTUUID="$rootpartuuid" rw rootflags=noatime module_blacklist=psmouse quiet loglevel=0 systemd.show_status=0 rd.udev.log_priority=0 systemd.restore_state=0
 EOT
-echo
-echo "/boot/loader/entries/archlts.conf"
-arch-chroot /mnt touch /boot/loader/entries/archlts.conf
-arch-chroot /mnt cat /boot/loader/entries/archlts.conf
-rootpartuuid=$(blkid -s PARTUUID -o value /dev/$systemDrive$ospartition)
-cat << EOT > /mnt/boot/loader/entries/archlts.conf
-title Arch Linux LTS
-linux /vmlinuz-linux-lts
-initrd /intel-ucode.img
-initrd /initramfs-linux-lts.img
-options root=PARTUUID=$rootpartuuid rw module_blacklist=psmouse
+)"
+
+systemdBootEntryArchLtsFileDir="$rootMountDir$efiMountDir/loader/entries/"
+systemdBootEntryArchLtsFileName="archlts.conf"
+rootpartuuid=$(blkid -s PARTUUID -o value /dev/"$drive""$ospartition")
+systemdBootEntryArchLts="$(cat <<-EOT
+	title Arch Linux LTS
+	linux /vmlinuz-linux-lts
+	initrd /intel-ucode.img
+	initrd /initramfs-linux-lts.img
+	options root=PARTUUID="$rootpartuuid" rw module_blacklist=psmouse
 EOT
-echo
-echo "[ ENABLE NETWORK MANAGER ]"
-arch-chroot /mnt systemctl enable NetworkManager
-echo
-echo "[ CREATE USER WITH ADMINISTRATOR PRIVILIGES ]"
-arch-chroot /mnt useradd -m -g users -G wheel -s /bin/bash $username
-echo
-echo "[ SET USER PASSWORD ]"
-arch-chroot /mnt sh -c "echo '$username:$userpass' | chpasswd"
-echo
-echo "[ SET ADMINISTRATOR PRIVILIGES ]"
-sed -i 's/^# %wheel ALL=(ALL) ALL/ %wheel ALL=(ALL) ALL/g' /mnt/etc/sudoers
-echo
-echo "[ PACMAN CUSTOMIZATIONS ]"
-sed -i "s/PKGEXT='.pkg.tar.xz'/PKGEXT='.pkg.tar'/g" /mnt/etc/makepkg.conf
-sed -i "s/SRCEXT='.src.tar.gz'/SRCEXT='.src.tar'/g" /mnt/etc/makepkg.conf
-sed -i "s/#TotalDownload/TotalDownload/g" /mnt/etc/pacman.conf
-sed -i "s/#Color/Color/g" /mnt/etc/pacman.conf
-sed -i "s/# Misc options/# Misc options\nILoveCandy/" /mnt/etc/pacman.conf
-sed -i "s/## Defaults specification/## Defaults specification\nDefaults insults/" /mnt/etc/sudoers
-echo
-echo "[ SYSTEM CUSTOMIZATIONS ]"
-case $nvmeorsda in
-	1)
-		arch-chroot /mnt systemctl enable fstrim.timer
-		echo ;;
-	2)
-		echo "Skipping..."
-		echo ;;
-esac
-arch-chroot /mnt nano /etc/fstab
-echo
-echo "----------------------------------------------------------------------"
-echo "FINISH INSTALL: MOVE DE FILES TO /mnt + REMOVE EXTRA FILES"
-echo "----------------------------------------------------------------------"
-cp /root/arch/install/*{gnome,kde,xfce,budgie,bedrock}* /mnt/home/$username
-chmod +x /mnt/home/$username/*
-rm -r /root/arch
-echo
-echo "[ UNMOUNT & REBOOT ]"
-echo
-umount -R /mnt
-reboot
+)"
+
+# Run
+
+scriptRoot
+efiBoot
+updateSysClock
+ssdHdd
+partitionDrive
+inputVariables
+formatEfiRoot
+mountEfiRoot
+pacmanCustom "/"
+reflector
+pacstrap
+fstab
+setTimezone
+setLocale
+setHostname
+setRootPass
+installSystemdBoot
+configSystemdBoot
+enableNetworkManager
+createAdminUser
+setUserPass
+pacmanCustom "/mnt"
+enablePeriodicTRIM
+editFstab
+postInstallCleanup
+finish

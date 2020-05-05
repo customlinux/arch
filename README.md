@@ -17,7 +17,9 @@ Semi-auto bash scripts for creating a minimal and clean Arch Linux setup.
 
 3. git clone https://github.com/customlinux/arch
 
-4. /bin/bash arch/install/base
+4. chmod +x arch/*
+
+5. arch/install/base
 
 **Login by entering your username and password.**
 
