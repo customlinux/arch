@@ -117,10 +117,9 @@ pacmanCustom() {
 reflectorMirrors() {
 	pacman -S --needed --noconfirm reflector
 	echo
-	echo "Getting mirrors..."
+	echo "Getting fresh mirrors..."
 	reflector -l 100 -a 24 -p https -f 50 --sort rate --save /etc/pacman.d/mirrorlist
 	echo
-	cat /etc/pacman.d/mirrorlist
 }
 
 runPacstrap() {
