@@ -8,6 +8,8 @@ Semi-auto bash scripts for creating a minimal and clean Arch Linux setup.
 
 **Firmware Interface:** UEFI
 
+**System:** Dell XPS 9300
+
 ## Steps - Terminal Commands
 **Boot into arch install media.**
 
