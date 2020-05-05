@@ -26,7 +26,7 @@ Semi-auto bash scripts for creating a minimal and clean Arch Linux setup.
 
 4. chmod +x arch/*
 
-5. arch/install/base
+5. arch/base
 
 **Login by entering your username and password.**
 
