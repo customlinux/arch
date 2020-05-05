@@ -1,5 +1,5 @@
 #!/bin/bash
-set -uo nounset pipefail
+set -o pipefail
 IFS=$'\n\t'
 
 # Variables
@@ -16,8 +16,10 @@ solidStateDrive="nvme0n1p"
 scriptRoot() {
 	case "$EUID" in
 		0 )
+			echo
 			echo "Script is being run as root.";;
 		* )
+			echo
 			echo "Script is NOT being run as root." 2>&1
 			exit 1;;
 	esac
@@ -29,8 +31,10 @@ efiBoot() {
 	[[ -d /sys/firmware/efi/efivars ]] && efiVarDir="0"
 	case "$efiVarDir" in
 		0 )
+			echo
 			echo "System is booted in efi mode.";;
 		1 )
+			echo
 			echo "Directory NOT found: /sys/firmware/efi/efivars"
 			exit 1;;
 	esac
@@ -43,6 +47,7 @@ updateSysClock() {
 statusDrivePart() {
 	fdisk -l
 	lsblk
+	echo
 }
 
 ssdHdd() {
@@ -66,10 +71,10 @@ inputVariables() {
 	statusDrivePart
 	read -rp "efipartition # /dev/$drive# : " efipartition
 	read -rp "ospartition  # /dev/$drive# : " ospartition
-	read -rp "Enter hostname              : " hostname
-	read -rp "Enter username              : " username
-	read -rp "Enter user password         : " userpass
-	read -rp "Enter root password         : " rootpass
+	read -rp "Enter hostname            : " hostname
+	read -rp "Enter username            : " username
+	read -rp "Enter user password       : " userpass
+	read -rp "Enter root password       : " rootpass
 }
 
 formatEfiRoot() {
@@ -296,3 +301,14 @@ enablePeriodicTRIM && read -r
 editFstab && read -r
 postInstallCleanup && read -r
 finish
+
+# Debug
+: '
+set -e  : exits when any command fails
+set -u  : exits when unset variables found
+nounset : same as "set -u"
+line 249: drive: unbound variable
+line 261: drive: unbound variable
+
+
+'
