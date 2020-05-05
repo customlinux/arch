@@ -116,7 +116,9 @@ pacmanCustom() {
 
 reflectorMirrors() {
 	pacman -S --needed --noconfirm reflector
-	reflector -c Canada -l 100 -a 12 -p https -f 50 --sort rate --save /etc/pacman.d/mirrorlist
+	echo
+	echo "Getting mirrors..."
+	reflector -l 100 -a 24 -p https -f 50 --sort rate --save /etc/pacman.d/mirrorlist
 	echo
 	cat /etc/pacman.d/mirrorlist
 }
@@ -260,7 +262,7 @@ systemdBootLoader="$(cat <<-EOT
 EOT
 )"
 
-systemdBootEntryArchFileDir="$rootMountDir$efiMountDir/loader/entries/"
+systemdBootEntryArchFileDir="$efiMountDir/loader/entries/"
 systemdBootEntryArchFileName="arch.conf"
 rootpartuuid=$(blkid -s PARTUUID -o value /dev/"$drive""$ospartition")
 systemdBootEntryArch="$(cat <<-EOT
@@ -272,7 +274,7 @@ systemdBootEntryArch="$(cat <<-EOT
 EOT
 )"
 
-systemdBootEntryArchLtsFileDir="$rootMountDir$efiMountDir/loader/entries/"
+systemdBootEntryArchLtsFileDir="$efiMountDir/loader/entries/"
 systemdBootEntryArchLtsFileName="archlts.conf"
 rootpartuuid=$(blkid -s PARTUUID -o value /dev/"$drive""$ospartition")
 systemdBootEntryArchLts="$(cat <<-EOT
@@ -295,14 +297,14 @@ inputVariables
 formatEfiRoot
 mountEfiRoot
 pacmanCustom "/"
-reflectorMirrors && read -r
-runPacstrap && read -r
-fstab && read -r
-setTimezone && read -r
-setLocale && read -r
-setHostname && read -r
-setRootPass && read -r
-installSystemdBoot && read -r
+reflectorMirrors
+runPacstrap
+fstab
+setTimezone
+setLocale
+setHostname
+setRootPass
+installSystemdBoot
 configSystemdBoot && read -r
 enableNetworkManager && read -r
 createAdminUser && read -r
@@ -320,6 +322,13 @@ set -u  : exits when unset variables found
 nounset : same as "set -u"
 line 249: drive: unbound variable
 line 261: drive: unbound variable
+
+# setLocale is after runPacstrap #
+perl : locale settings
+	LANGUAGE = (unset)
+	LC_ALL = (unset)
+	LC_MESSAGES = ""
+
 
 
 '
