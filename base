@@ -54,11 +54,14 @@ ssdHdd() {
 
 partitionDrive() {
 	statusDrivePart
-	echo "cfdisk /dev/${drive//p}"
-	echo
-	echo "Press 'Enter' to continue."
-	read -r
-	cfdisk /dev/"${drive//p}"
+	while [[ ! "$modifyDrive" =~ ^[yYnN]$ ]]; do read -n1 -rp "[ Create / Modify ] partitions: (y/n) : " modifyDrive && echo; done
+		case "$modifyDrive" in
+			y|Y )
+				cfdisk /dev/"${drive//p}";;
+			n|N )
+				echo "Skipping"
+				echo;;
+		esac
 }
 
 inputVariablesOne() {
