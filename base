@@ -166,6 +166,21 @@ installSystemdBoot() {
 }
 
 configSystemdBootHook() {
+	systemdBootHookFileDir="/etc/pacman.d/hooks/"
+	systemdBootHookFileName="systemd-boot.hook"
+	systemdBootHook="$(cat <<-EOT
+		[Trigger]
+		Type = Package
+		Operation = Upgrade
+		Target = systemd
+
+		[Action]
+		Description = Updating systemd-boot
+		When = PostTransaction
+		Exec = /usr/bin/bootctl update
+	EOT
+	)"
+	
 	arch-chroot "$rootMountDir" mkdir -p "$systemdBootHookFileDir"
 	arch-chroot "$rootMountDir" touch "$systemdBootHookFileDir$systemdBootHookFileName"
 	arch-chroot "$rootMountDir" cat "$systemdBootHookFileDir$systemdBootHookFileName"
@@ -173,18 +188,54 @@ configSystemdBootHook() {
 }
 
 configSystemdBootLoader() {
+	systemdBootLoaderFileDir="$efiMountDir/loader/"
+	systemdBootLoaderFileName="loader.conf"
+	systemdBootLoader="$(cat <<-EOT
+		default arch
+		timeout 0
+		editor yes
+		console-mode auto
+		auto-entries 1
+		auto-firmware 1
+	EOT
+	)"
+	
 	arch-chroot "$rootMountDir" touch "$systemdBootLoaderFileDir$systemdBootLoaderFileName"
 	arch-chroot "$rootMountDir" cat "$systemdBootLoaderFileDir$systemdBootLoaderFileName"
 	echo "$systemdBootLoader" > "$rootMountDir$systemdBootLoaderFileDir$systemdBootLoaderFileName"
 }
 
 configSystemdBootEntryArch() {
+	systemdBootEntryArchFileDir="$efiMountDir/loader/entries/"
+	systemdBootEntryArchFileName="arch.conf"
+	rootpartuuid=$(blkid -s PARTUUID -o value /dev/"$drive""$ospartition")
+	systemdBootEntryArch="$(cat <<-EOT
+		title Arch Linux
+		linux /vmlinuz-linux
+		initrd /intel-ucode.img
+		initrd /initramfs-linux.img
+		options root=PARTUUID="$rootpartuuid" rw rootflags=noatime module_blacklist=psmouse quiet loglevel=0 systemd.show_status=0 rd.udev.log_priority=0 systemd.restore_state=0
+	EOT
+	)"
+
 	arch-chroot "$rootMountDir" touch "$systemdBootEntryArchFileDir$systemdBootEntryArchFileName"
 	arch-chroot "$rootMountDir" cat "$systemdBootEntryArchFileDir$systemdBootEntryArchFileName"
 	echo "$systemdBootEntryArch" > "$rootMountDir$systemdBootEntryArchFileDir$systemdBootEntryArchFileName"
 }
 
 configSystemdBootEntryArchLts() {
+	systemdBootEntryArchLtsFileDir="$efiMountDir/loader/entries/"
+	systemdBootEntryArchLtsFileName="archlts.conf"
+	rootpartuuid=$(blkid -s PARTUUID -o value /dev/"$drive""$ospartition")
+	systemdBootEntryArchLts="$(cat <<-EOT
+		title Arch Linux LTS
+		linux /vmlinuz-linux-lts
+		initrd /intel-ucode.img
+		initrd /initramfs-linux-lts.img
+		options root=PARTUUID="$rootpartuuid" rw module_blacklist=psmouse
+	EOT
+	)"
+	
 	arch-chroot "$rootMountDir" touch "$systemdBootEntryArchLtsFileDir$systemdBootEntryArchLtsFileName"
 	arch-chroot "$rootMountDir" cat "$systemdBootEntryArchLtsFileDir$systemdBootEntryArchLtsFileName"
 	echo "$systemdBootEntryArchLts" > "$rootMountDir$systemdBootEntryArchLtsFileDir$systemdBootEntryArchLtsFileName"
@@ -195,6 +246,29 @@ configSystemdBoot() {
 	configSystemdBootLoader
 	configSystemdBootEntryArch
 	configSystemdBootEntryArchLts
+}
+
+configReflectorHook() {
+	reflectorHookFileDir="/etc/pacman.d/hooks/"
+	reflectorHookFileName="mirrorupgrade.hook"
+	reflectorHook="$(cat <<-EOT
+		[Trigger]
+		Operation = Upgrade
+		Type = Package
+		Target = pacman-mirrorlist
+
+		[Action]
+		Description = Updating pacman-mirrorlist with reflector and removing pacnew...
+		When = PostTransaction
+		Depends = reflector
+		Exec = /bin/sh -c "reflector -l 100 -a 24 -p https -f 50 --sort rate --save /etc/pacman.d/mirrorlist; rm -f /etc/pacman.d/mirrorlist.pacnew"
+	EOT
+	)"
+	
+	arch-chroot "$rootMountDir" mkdir -p "$reflectorHookFileDir"
+	arch-chroot "$rootMountDir" touch "$reflectorHookFileDir$reflectorHookFileName"
+	arch-chroot "$rootMountDir" cat "$reflectorHookFileDir$reflectorHookFileName"
+	echo "$reflectorHook" > "$rootMountDir$reflectorHookFileDir$reflectorHookFileName"
 }
 
 enableNetworkManager() {
@@ -242,60 +316,7 @@ finish() {
 	esac
 }
 
-# Configuration Files
-
-systemdBootHookFileDir="/etc/pacman.d/hooks/"
-systemdBootHookFileName="systemd-boot.hook"
-systemdBootHook="$(cat <<-EOT
-	[Trigger]
-	Type = Package
-	Operation = Upgrade
-	Target = systemd
-
-	[Action]
-	Description = Updating systemd-boot
-	When = PostTransaction
-	Exec = /usr/bin/bootctl update
-EOT
-)"
-
-systemdBootLoaderFileDir="$efiMountDir/loader/"
-systemdBootLoaderFileName="loader.conf"
-systemdBootLoader="$(cat <<-EOT
-	default arch
-	timeout 0
-	editor yes
-	console-mode auto
-	auto-entries 1
-	auto-firmware 1
-EOT
-)"
-
-systemdBootEntryArchFileDir="$efiMountDir/loader/entries/"
-systemdBootEntryArchFileName="arch.conf"
-rootpartuuid=$(blkid -s PARTUUID -o value /dev/"$drive""$ospartition")
-systemdBootEntryArch="$(cat <<-EOT
-	title Arch Linux
-	linux /vmlinuz-linux
-	initrd /intel-ucode.img
-	initrd /initramfs-linux.img
-	options root=PARTUUID="$rootpartuuid" rw rootflags=noatime module_blacklist=psmouse quiet loglevel=0 systemd.show_status=0 rd.udev.log_priority=0 systemd.restore_state=0
-EOT
-)"
-
-systemdBootEntryArchLtsFileDir="$efiMountDir/loader/entries/"
-systemdBootEntryArchLtsFileName="archlts.conf"
-rootpartuuid=$(blkid -s PARTUUID -o value /dev/"$drive""$ospartition")
-systemdBootEntryArchLts="$(cat <<-EOT
-	title Arch Linux LTS
-	linux /vmlinuz-linux-lts
-	initrd /intel-ucode.img
-	initrd /initramfs-linux-lts.img
-	options root=PARTUUID="$rootpartuuid" rw module_blacklist=psmouse
-EOT
-)"
-
-# Run (remove "read -r" when finished debugging)
+# Run
 
 scriptRoot
 efiBoot
@@ -316,28 +337,19 @@ setHostname
 setRootPass
 installSystemdBoot
 configSystemdBoot
+configReflectorHook
 enableNetworkManager
 createAdminUser
 setUserPass
 pacmanCustom "/mnt/"
 enablePeriodicTRIM
 editFstab
-postInstallCleanup && read -r
+postInstallCleanup
 finish
 
 # Debug
 : '
 set -e  : exits when any command fails
 set -u  : exits when unset variables found
-line 249: drive: unbound variable
-line 261: drive: unbound variable
-
-# setLocale is after runPacstrap #
-perl : locale settings
-	LANGUAGE = (unset)
-	LC_ALL = (unset)
-	LC_MESSAGES = ""
-
-
 
 '
