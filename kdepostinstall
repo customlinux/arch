@@ -48,7 +48,7 @@ installSublimeText() {
 	sudo pacman -Syu --noconfirm sublime-text
 }
 
-createKRunnerToggle() {
+configKRunner() {
 	mkdir -p /home/"$USER"/myScripts
 	kRunnerToggleFileDir="/home/$USER/myScripts/"
 	kRunnerToggleFileName="krunnerToggle.sh"
@@ -65,8 +65,8 @@ createKRunnerToggle() {
 	chmod +x "$kRunnerToggleFileDir""$kRunnerToggleFileName"
 }
 
-configKRunner() { # Not modular enough yet
-	createKRunnerToggle
+createKRunnerShortcut() { # Not modular enough yet
+	configKRunner
 	echo "Follow the instructions below to create a custom global shortcut for KRunner."
 	echo
 	echo "System Settings > Shortcuts > Custom Shortcuts > Edit > New > Global Shortcut > Command/URL"
@@ -92,6 +92,25 @@ configRofi() {
 	mkdir -p "$rofiConfigDir"
 	wget https://raw.githubusercontent.com/customlinux/files/master/configs/rofi/config.rasi -P "$rofiConfigDir"
 	wget https://raw.githubusercontent.com/customlinux/files/master/configs/rofi/breeze-dark.rasi -P "$rofiConfigDir"
+}
+
+createRofiShortcut() { # Not modular enough yet
+	configRofi
+	echo "Follow the instructions below to create a global shortcut for Rofi."
+	echo
+	echo "System Settings > Shortcuts > Custom Shortcuts > Edit > New > Global Shortcut > Command/URL"
+	echo "Name    : Rofi"
+	echo "Comment : Launch Rofi."
+	echo "Trigger : Alt+Space"
+	echo "Action  : rofi -no-lazy-grab -show drun"
+	echo "Hit 'Apply' to SAVE CHANGES and CLOSE settings."
+	echo
+	echo "Press 'Enter' to open settings..."
+	read -r
+	systemsettings5 > /dev/null 2>&1
+	echo
+	echo "Press 'Enter' to continue..."
+	read -r
 }
 
 configChromiumFlags() {
@@ -147,8 +166,8 @@ configDisplaySettings
 automountPartitions
 configLatteDock
 installSublimeText
-configKRunner
-configRofi
+createKRunnerShortcut
+createRofiShortcut
 configChromiumFlags
 configGit
 cleanUp
