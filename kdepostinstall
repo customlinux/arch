@@ -10,12 +10,7 @@ configDisplaySettings() {
 	chmod +x /home/"$USER"/myScripts/displaySetup.sh
 	/home/"$USER"/myScripts/displaySetup.sh
 	sudo touch /usr/share/sddm/scripts/Xsetup
-	displaySetupXsetup="$(cat <<-EOT
-	/home/"$USER"/myScripts/displaySetup.sh
-	EOT
-	)"
-
-	echo "$displaySetupXsetup" | sudo tee -a /usr/share/sddm/scripts/Xsetup # > /dev/null
+	echo "/home/$USER/myScripts/displaySetup.sh" | sudo tee -a /usr/share/sddm/scripts/Xsetup # > /dev/null
 }
 
 automountPartitions() {
@@ -53,28 +48,25 @@ installSublimeText() {
 	sudo pacman -Syu --noconfirm sublime-text
 }
 
-configKRunner() { # Not modular enough yet
+createKRunnerToggle() {
 	mkdir -p /home/"$USER"/myScripts
 	kRunnerToggleFileDir="/home/$USER/myScripts/"
 	kRunnerToggleFileName="krunnerToggle.sh"
 	touch "$kRunnerToggleFileDir""$kRunnerToggleFileName"
-	kRunnerToggle="$(cat <<-EOT
-		#!/bin/bash
-		krunnerWindow=$(xdotool getwindowfocus getwindowname)
-		if [[ $krunnerWindow == *"krunner"* ]]; then
-			xdotool key 'Escape'
-			exit 0
-		else
-			qdbus org.kde.krunner /App display
-			exit 0
-		fi
-	EOT
-	)"
-
-	echo "$kRunnerToggle" >> "$kRunnerToggleFileDir""$kRunnerToggleFileName"
+	echo '#!/bin/bash
+	krunnerWindow=$(xdotool getwindowfocus getwindowname)
+	if [[ $krunnerWindow == *"krunner"* ]]; then
+		xdotool key 'Escape'
+		exit 0
+	else
+		qdbus org.kde.krunner /App display
+		exit 0
+	fi' >> "$kRunnerToggleFileDir""$kRunnerToggleFileName"
 	chmod +x "$kRunnerToggleFileDir""$kRunnerToggleFileName"
+}
 
-	echo
+configKRunner() { # Not modular enough yet
+	createKRunnerToggle
 	echo "Follow the instructions below to create a custom global shortcut for KRunner."
 	echo
 	echo "System Settings > Shortcuts > Custom Shortcuts > Edit > New > Global Shortcut > Command/URL"
