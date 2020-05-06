@@ -87,6 +87,13 @@ configKRunner() { # Not modular enough yet
 	qdbus org.kde.KWin /KWin reconfigure
 }
 
+configRofi() {
+	rofiConfigDir="/home/$USER/.config/rofi/"
+	mkdir -p "$rofiConfigDir"
+	wget https://raw.githubusercontent.com/customlinux/files/master/configs/rofi/config.rasi -P "$rofiConfigDir"
+	wget https://raw.githubusercontent.com/customlinux/files/master/configs/rofi/breeze-dark.rasi -P "$rofiConfigDir"
+}
+
 configChromiumFlags() {
 	chromiumFlagsFileDir="/home/$USER/.config/"
 	chromiumFlagsFileName="chromium-flags.conf"
@@ -141,6 +148,7 @@ automountPartitions
 configLatteDock
 installSublimeText
 configKRunner
+configRofi
 configChromiumFlags
 configGit
 cleanUp
