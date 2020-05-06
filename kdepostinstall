@@ -56,7 +56,7 @@ configKRunner() {
 	echo '#!/bin/bash
 	krunnerWindow=$(xdotool getwindowfocus getwindowname)
 	if [[ $krunnerWindow == *"krunner"* ]]; then
-		xdotool key Return
+		xdotool key 0xff1b
 		exit 0
 	else
 		qdbus org.kde.krunner /App display
