@@ -1,101 +1,156 @@
 #!/bin/bash
-while [[ ! "$yesnowifi" =~ ^[yYnN]$ ]]; do read -n1 -p "Do you want to connect to wifi? [y/n] : " yesnowifi && echo; done
-case $yesnowifi in
-	y|Y)
-		echo "[ CONNECT TO WIFI ]"
-		nmcli device wifi list
-		echo
-		read -p "Enter your wifi SSID: " ssid
-		read -p "Enter your wifi password: " wifipass
-		nmcli device wifi connect $ssid password $wifipass
-		echo ;;
-	n|N)
-		echo
-		echo "Continuing..."
-		echo ;;
-esac
-echo "[ UPDATE SYSTEM ]"
-sudo pacman -Syu --noconfirm
-echo
-echo "[ CONFIGURE TIMEDATECTL ]"
-sudo timedatectl set-ntp true
-echo "----------------------------------------------------------------------"
-echo "INSTALL KDE"
-echo "----------------------------------------------------------------------"
-# Package Info: Don't reinstall|Don't Confirm (y/n)|Disk Partition Utilities  |KDE           |Display Manager         |File Manager|Dialog Viewer|Custom Shortcuts|Terminal|User Management|Bluetooth Management          |Power Management|Screen Management|Thunderbolt Management|Wallet Management         |KDE Connect     |KDE Info   |KDE RunAsRoot|GTK Management           |Screenshot|View Images|Network + Audio Applets|Default Home Directories|XDG QT Backend        |Chrome Integration        |Web Browser|Extract|Display Settings|Latte Dock|SysInfo |Torrent    |PDF   |Media|Android Tools: adb fastboot|
-sudo pacman -S  --needed        --noconfirm         gnome-disk-utility gparted plasma-desktop sddm sddm-kcm xorg-xinit dolphin ark  kdialog       khotkeys         konsole  user-manager    bluedevil pulseaudio-bluetooth powerdevil       kscreen           plasma-thunderbolt     kwallet-pam kwalletmanager kdeconnect sshfs kinfocenter kdesu         kde-gtk-config breeze-gtk spectacle  gwenview    plasma-nm plasma-pa     xdg-user-dirs            xdg-desktop-portal-kde plasma-browser-integration chromium    unzip   xorg-xrandr      latte-dock neofetch qbittorrent okular vlc   android-tools android-udev
-echo
-echo "[ INSTALL PIKAUR: AN AUR HELPER ]"
-git clone https://aur.archlinux.org/pikaur.git
-cd pikaur
-makepkg -fsri --noconfirm
-cd /home/$USER
-sudo rm -r pikaur
-echo
-echo "[ INSTALL AUR PACKAGES ]"
-# Package Info: Don't reinstall|Don't Confirm (y/n)|Browser Plugin for DRM|Touchpad Gestures|Google Sync
-pikaur -S       --needed        --noconfirm         chromium-widevine      libinput-gestures insync
-# Not needed: AppImage Launcher (appimagelauncher)
-# Not needed: AUR GUI Frontend (pamac-aur)
-echo
-echo "[ ENABLE DISPLAY MANAGER ]"
-sudo systemctl enable sddm
-echo
-echo "[ ENABLE BLUETOOTH ]"
-sudo systemctl enable bluetooth
-echo
-echo "[ CUSTOMIZE TOUCHPAD GESTURES ]"
-mkdir -p /home/$USER/.config
-touch /home/$USER/.config/libinput-gestures.conf
-wget -P /home/$USER/.config https://raw.githubusercontent.com/customlinux/files/master/configs/libinput-gestures/KDE4PointTouch
-mv /home/$USER/.config/KDE4PointTouch /home/$USER/.config/libinput-gestures.conf
-echo
-echo "[ ADD USER TO 'INPUT' GROUP ]"
-sudo gpasswd -a $USER input
-echo
-echo "[ SET APPS TO AUTOSTART ]"
-libinput-gestures-setup autostart
-mkdir -p /home/$USER/.config/autostart
-echo
-echo "[ SET SDDM STARTUP SCRIPT ]"
-sudo bash -c 'cat << EOT >> /etc/sddm.conf
+set -o pipefail
+IFS=$'\n\t'
 
-[X11]
-DisplayCommand=/usr/share/sddm/scripts/Xsetup
+# Functions
 
-EOT'
-sed -i "s/replaceWithUserNameXsetup/$USER/g" /home/$USER/kdepostinstall
-echo
-echo "[ SET SDDM TOUCHPAD CONFIGURATION ]"
-sudo touch /etc/X11/xorg.conf.d/20-touchpad.conf
-sudo cat << EOT > /etc/X11/xorg.conf.d/20-touchpad.conf
-Section "InputClass"
-	Identifier "libinput touchpad catchall"
-	MatchIsTouchpad "on"
-	MatchDevicePath "/dev/input/event*"
-	Driver "libinput"
+configWiFi() {
+	while [[ ! "$connectWiFi" =~ ^[yYnN]$ ]]; do read -n1 -rp "Connect to WiFi? [y/n] : " connectWiFi && echo; done
+	case "$connectWiFi" in
+		y|Y )
+			nmcli device wifi list
+			echo
+			read -rp "Enter WiFi SSID : " wifiSSID
+			read -rp "Enter Wifi PASS : " wifiPASS
+			nmcli device wifi connect "$wifiSSID" password "$wifiPASS";;
+		n|N )
+			echo;;
+	esac
+}
 
-	Option "Tapping" "on"
-	Option "ClickMethod" "clickfinger"
-	Option "NaturalScrolling" "true"
-	Option "ScrollMethod" "twofinger"
-	Option "DisableWhileTyping" "true"
-EndSection
-EOT
-echo "----------------------------------------------------------------------"
-echo "SET UP POST INSTALL SCRIPT TO RUN AFTER REBOOT"
-echo "----------------------------------------------------------------------"
-cat << EOT >> /home/$USER/.config/autostart/runkdepostinstall.desktop
-[Desktop Entry]
-Type=Application
-Version=1.0
-Name=kdepostinstall
-Exec=/home/$USER/kdepostinstall
-Terminal=true
-EOT
-chmod +x /home/$USER/.config/autostart/runkdepostinstall.desktop
-echo
-echo "----------------------------------------------------------------------"
-echo "REBOOT"
-echo "----------------------------------------------------------------------"
-sudo reboot
+systemUpdate() {
+	sudo pacman -Syu --noconfirm
+}
+
+updateSysClock() {
+	sudo timedatectl set-ntp true
+}
+
+installPacmanPackages() {
+	# Package Info: | Disk Partition Utilities    | KDE            | Display Manager              | File Manager  |Dialog Viewer|Custom Shortcuts|Terminal |User Management| Bluetooth Management             |Power Management|Screen Management|Thunderbolt Management|Wallet Management             |KDE Connect         |KDE Info     |KDE RunAsRoot|GTK Management               |Screenshot |View Images|Network + Audio Applets|Default Home Directories|XDG QT Backend          |Chrome Integration          |Web Browser|Extract|Display Settings|Latte Dock  |SysInfo   |Torrent      |PDF View|Media|Android Tools: adb fastboot   |
+	pacmanPackages=('gnome-disk-utility' 'gparted' 'plasma-desktop' 'sddm' 'sddm-kcm' 'xorg-xinit' 'dolphin' 'ark' 'kdialog'     'khotkeys'       'konsole' 'user-manager'  'bluedevil' 'pulseaudio-bluetooth' 'powerdevil'     'kscreen'         'plasma-thunderbolt'   'kwallet-pam' 'kwalletmanager' 'kdeconnect' 'sshfs' 'kinfocenter' 'kdesu'       'kde-gtk-config' 'breeze-gtk' 'spectacle' 'gwenview'  'plasma-nm' 'plasma-pa' 'xdg-user-dirs'          'xdg-desktop-portal-kde' 'plasma-browser-integration' 'chromium'  'unzip' 'xorg-xrandr'    'latte-dock' 'neofetch' 'qbittorrent' 'okular' 'vlc' 'android-tools' 'android-udev')
+	sudo pacman -S --needed --noconfirm "${pacmanPackages[@]}"
+}
+
+installPikaur() {
+	cd /home/"$USER" || return
+	git clone https://aur.archlinux.org/pikaur.git
+	cd pikaur || return
+	makepkg -fsri --noconfirm
+	cd /home/"$USER" || return
+	sudo rm -r pikaur
+}
+
+installPikaurPackages() {
+	# Package Info: |Browser Plugin for DRM|Touchpad Gestures|gDrive |
+	pikaurPackages=('chromium-widevine      libinput-gestures insync')
+	pikaur -S --needed --noconfirm "${pikaurPackages[@]}"
+}
+
+enableDisplayManager() {
+	sudo systemctl enable sddm
+}
+
+enableBluetooth() {
+	sudo systemctl enable bluetooth
+}
+
+enableSystemctlServices() {
+	enableDisplayManager
+	enableBluetooth
+}
+
+configTouchpadGestures() {
+	mkdir -p /home/"$USER"/.config
+	touch /home/"$USER"/.config/libinput-gestures.conf
+	wget -P /home/"$USER"/.config https://raw.githubusercontent.com/customlinux/files/master/configs/libinput-gestures/KDE4PointTouch
+	mv /home/"$USER"/.config/KDE4PointTouch /home/"$USER"/.config/libinput-gestures.conf
+}
+
+addGroupInputUser() {
+	sudo gpasswd -a "$USER" input
+}
+
+enableAutostart() {
+	libinput-gestures-setup autostart
+	mkdir -p /home/"$USER"/.config/autostart
+}
+
+configDisplayManager() {
+	sddmConf="$(cat <<-EOT
+
+		[X11]
+		DisplayCommand=/usr/share/sddm/scripts/Xsetup
+
+	EOT
+	)"
+
+	echo "$sddmConf" >> /etc/sddm.conf
+#	sed -i "s/replaceWithUserNameXsetup/"$USER"/g" /home/"$USER"/kdepostinstall
+}
+
+configDisplayManagerTouchpad() {
+	sudo touch /etc/X11/xorg.conf.d/20-touchpad.conf
+	xorgConfTouchpad="$(cat <<-EOT
+		Section "InputClass"
+			Identifier "libinput touchpad catchall"
+			MatchIsTouchpad "on"
+			MatchDevicePath "/dev/input/event*"
+			Driver "libinput"
+
+			Option "Tapping" "on"
+			Option "ClickMethod" "clickfinger"
+			Option "NaturalScrolling" "true"
+			Option "ScrollMethod" "twofinger"
+			Option "DisableWhileTyping" "true"
+		EndSection
+	EOT
+	)"
+
+	echo "$xorgConfTouchpad" > /etc/X11/xorg.conf.d/20-touchpad.conf
+}
+
+autostartKdePostInstallScript() {
+	postInstallAutostart="$(cat <<-EOT
+	[Desktop Entry]
+	Type=Application
+	Version=1.0
+	Name=kdepostinstall
+	Exec=/home/"$USER"/kdepostinstall
+	Terminal=true
+	EOT
+	)"
+
+	echo "$postInstallAutostart" > /home/"$USER"/.config/autostart/runkdepostinstall.desktop
+	chmod +x /home/"$USER"/.config/autostart/runkdepostinstall.desktop
+}
+
+rebootSystem() {
+	while [[ ! "$yesnoreboot" =~ ^[yYnN]$ ]]; do read -n1 -rp "Reboot: (y/n) : " yesnoreboot && echo; done
+	case "$yesnoreboot" in
+		y|Y )
+			sudo reboot;;
+		n|N )
+			echo
+			echo "Reboot  : reboot"
+			echo
+			exit 0;;
+	esac
+}
+
+# Install
+
+configWiFi
+systemUpdate
+updateSysClock
+installPacmanPackages
+installPikaur
+installPikaurPackages
+enableSystemctlServices
+configTouchpadGestures
+addGroupInputUser
+enableAutostart
+configDisplayManager
+configDisplayManagerTouchpad
+autostartKdePostInstallScript
+rebootSystem
