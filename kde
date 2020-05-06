@@ -14,6 +14,7 @@ configWiFi() {
 			read -rp "Enter Wifi PASS : " wifiPASS
 			nmcli device wifi connect "$wifiSSID" password "$wifiPASS";;
 		n|N )
+			echo "Skipping..."
 			echo;;
 	esac
 }
@@ -85,8 +86,7 @@ configDisplayManager() {
 	EOT
 	)"
 
-	echo "$sddmConf" >> /etc/sddm.conf
-#	sed -i "s/replaceWithUserNameXsetup/"$USER"/g" /home/"$USER"/kdepostinstall
+	echo "$sddmConf" | sudo tee -a /etc/sddm.conf # > /dev/null
 }
 
 configDisplayManagerTouchpad() {
@@ -107,7 +107,7 @@ configDisplayManagerTouchpad() {
 	EOT
 	)"
 
-	echo "$xorgConfTouchpad" > /etc/X11/xorg.conf.d/20-touchpad.conf
+	echo "$xorgConfTouchpad" | sudo tee -a /etc/X11/xorg.conf.d/20-touchpad.conf # > /dev/null
 }
 
 autostartKdePostInstallScript() {

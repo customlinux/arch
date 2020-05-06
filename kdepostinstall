@@ -1,133 +1,155 @@
 #!/bin/bash
-while [[ ! "$yesnodisplaysettings" =~ ^[yYnN]$ ]]; do read -n1 -p "Do you want configure the display settings? [y/n] : " yesnodisplaysettings && echo; done
-case $yesnodisplaysettings in
-	y|Y)
-		mkdir -p /home/$USER/myScripts
-		wget -P /home/$USER/myScripts https://raw.githubusercontent.com/customlinux/files/master/scripts/displaySetup.sh
-		chmod +x /home/$USER/myScripts/displaySetup.sh
-		/home/$USER/myScripts/displaySetup.sh
-		sudo touch /usr/share/sddm/scripts/Xsetup
-		sudo bash -c 'echo "/home/replaceWithUserNameXsetup/myScripts/displaySetup.sh" >> /usr/share/sddm/scripts/Xsetup'
-		echo ;;
-	n|N)
-		echo "Skipping..."
-		echo ;;
-esac
-while [[ ! "$yesnoautomountpartitions" =~ ^[yYnN]$ ]]; do read -n1 -p "Do you want to automount any partitions at startup? [y/n] : " yesnoautomountpartitions && echo; done
-case $yesnoautomountpartitions in
-	y|Y)
-		gnome-disks
-		echo ;;
-	n|N)
-		echo "Skipping..."
-		echo ;;
-esac
-echo "------------------------------------------------------------------------------------------------"
-echo " INSTALLING LATTE APPLETS + CUSTOM LAYOUTS + SOME PACKAGES"
-echo "------------------------------------------------------------------------------------------------"
-echo
-mkdir -p /home/$USER/myScripts
-wget -P /home/$USER/myScripts https://raw.githubusercontent.com/customlinux/files/master/scripts/updateGitInstalls.sh
-chmod +x /home/$USER/myScripts/updateGitInstalls.sh
-/home/$USER/myScripts/updateGitInstalls.sh
-echo
-# Custom Latte Layout
-wget -P /home/$USER/.config/latte https://raw.githubusercontent.com/customlinux/files/master/configs/LatteDock.layout.latte
-echo
-# Sublime Text Editor
-curl -O https://download.sublimetext.com/sublimehq-pub.gpg && sudo pacman-key --add sublimehq-pub.gpg && sudo pacman-key --lsign-key 8A8F901A && rm sublimehq-pub.gpg
-echo -e "\n[sublime-text]\nServer = https://download.sublimetext.com/arch/stable/x86_64" | sudo tee -a /etc/pacman.conf
-sudo pacman -Syu --noconfirm sublime-text
-echo
-echo "------------------------------------------------------------------------------------------------"
-echo " CONFIGURING MISCELLANEOUS SETTINGS"
-echo "------------------------------------------------------------------------------------------------"
-echo
-echo "[ 'SUPER' KEY KRUNNER TOGGLE ]"
-mkdir -p /home/$USER/myScripts
-krunner_toggle="/home/$USER/myScripts/krunnerToggle.sh"
-touch $krunner_toggle
-cat << 'EOT' >> $krunner_toggle
-#!/bin/bash
-krunnerWindow=$(xdotool getwindowfocus getwindowname)
-if [[ $krunnerWindow == *"krunner"* ]]; then
-	xdotool key 'Escape'
-	exit 0
-else
-	qdbus org.kde.krunner /App display
-	exit 0
-fi
-EOT
-chmod +x $krunner_toggle
-echo
-echo "Follow the instructions below to create a custom global shortcut for KRunner."
-echo
-echo "System Settings > Shortcuts > Custom Shortcuts > Edit > New > Global Shortcut > Command/URL"
-echo "Name    : KRunner Toggle"
-echo "Comment : Run a script to get 'toggle' ability for KRunner."
-echo "Trigger : Ctrl+Alt+Shift+K"
-echo "Action  : /home/$USER/myScripts/krunnerToggle.sh"
-echo "Hit 'Apply' to SAVE CHANGES and CLOSE settings."
-echo
-echo "Press 'Enter' to open settings..."
-read
-systemsettings5 > /dev/null 2>&1
-echo
-echo "Press 'Enter' to continue..."
-read
-krunner_Script_Shortcut_Uuid=$(grep -A 2 Ctrl+Alt+Shift+K /home/$USER/.config/khotkeysrc | grep 'Uuid=' | grep -o '{.*}')
-kwriteconfig5 --file ~/.config/kwinrc --group ModifierOnlyShortcuts --key Meta "org.kde.kglobalaccel,/component/khotkeys,org.kde.kglobalaccel.Component,invokeShortcut,$krunner_Script_Shortcut_Uuid"
-qdbus org.kde.KWin /KWin reconfigure
-echo
-echo "[ CHROMIUM FLAGS ]"
-chromium_flags="/home/$USER/.config/chromium-flags.conf"
-touch $chromium_flags
-cat << EOT >> $chromium_flags
-# This line will be ignored.
-# --password-store=<basic|gnome|kwallet>
-#--flag-switches-begin
---enable-smooth-scrolling
---enable-features=OverlayScrollbar,ParallelDownloading,SecurityInterstitialsDarkMode
-#AutomaticPasswordGeneration,FocusMode,UsernameFirstFlow,google-password-manager
-#--flag-switches-end
-EOT
-echo
-echo "[ GIT SETTINGS ]"
-git config --global core.editor "subl -n -w"
-git config --global credential.helper 'cache --timeout=1800'
-git config --global core.autocrlf input
-echo
-echo "[ PACMAN HOOKS - REFLECTOR ]"
-sudo mkdir -p /etc/pacman.d/hooks
-sudo touch /etc/pacman.d/hooks/reflectorMirrorlistUpdate.hook
-sudo bash -c 'cat << EOT > /etc/pacman.d/hooks/reflectorMirrorlistUpdate.hook
-[Trigger]
-Operation = Upgrade
-Type = Package
-Target = pacman-mirrorlist
+set -o pipefail
+IFS=$'\n\t'
 
-[Action]
-Description = Updating pacman-mirrorlist with reflector and removing pacnew...
-When = PostTransaction
-Depends = reflector
-Exec = /bin/sh -c "reflector -l 100 -a 24 -p http -p https --sort rate --save /etc/pacman.d/mirrorlist; rm -f /etc/pacman.d/mirrorlist.pacnew"
-EOT'
-echo
-echo "------------------------------------------------------------------------------------------------"
-echo "REMOVE EXTRA SOFTWARE / FILES"
-echo "------------------------------------------------------------------------------------------------"
-echo
-sudo pacman -Rns --noconfirm gnome-disk-utility
-echo
-sudo mkdir -p /home/$USER/Documents/Arch-Install
-sudo mv /home/$USER/*{gnome,kde,xfce,budgie,bedrock}* /home/$USER/Documents/Arch-Install
-sudo mv /home/$USER/.config/autostart/run*postinstall.desktop /home/$USER/Documents/Arch-Install
-echo
-echo "[ Installation scripts have been moved into directory '/home/$USER/Documents/Arch-Install'. ]"
-echo
-echo "[ OPTIONAL: Run /home/$USER/Documents/Arch-Install/kdecustomsettings to enable custom settings. ]"
-echo
-echo "[ PRESS 'ENTER' TO REBOOT ]"
-echo
-read
-sudo reboot
+# Functions
+
+configDisplaySettings() {
+	mkdir -p /home/"$USER"/myScripts
+	wget -P /home/"$USER"/myScripts https://raw.githubusercontent.com/customlinux/files/master/scripts/displaySetup.sh
+	chmod +x /home/"$USER"/myScripts/displaySetup.sh
+	/home/"$USER"/myScripts/displaySetup.sh
+	sudo touch /usr/share/sddm/scripts/Xsetup
+	displaySetupXsetup="$(cat <<-EOT
+	/home/"$USER"/myScripts/displaySetup.sh
+	EOT
+	)"
+
+	echo "$displaySetupXsetup" | sudo tee -a /usr/share/sddm/scripts/Xsetup # > /dev/null
+}
+
+automountPartitions() {
+	while [[ ! "$mountPartitions" =~ ^[yYnN]$ ]]; do read -n1 -rp "Do you want to automount any partitions at startup? [y/n] : " mountPartitions && echo; done
+	case $mountPartitions in
+		y|Y)
+			gnome-disks
+			echo ;;
+		n|N)
+			echo "Skipping..."
+			sudo pacman -Rns --noconfirm gnome-disk-utility
+			echo ;;
+	esac
+}
+
+# CUSTOM LAYOUTS + SOME PACKAGES"
+
+installLatteApplets() {
+	mkdir -p /home/"$USER"/myScripts
+	wget -P /home/"$USER"/myScripts https://raw.githubusercontent.com/customlinux/files/master/scripts/updateGitInstalls.sh
+	chmod +x /home/"$USER"/myScripts/updateGitInstalls.sh
+	/home/"$USER"/myScripts/updateGitInstalls.sh
+}
+
+installLatteDockLayout() {
+	wget -P /home/"$USER"/.config/latte https://raw.githubusercontent.com/customlinux/files/master/configs/LatteDock.layout.latte
+}
+
+configLatteDock() {
+	installLatteApplets
+	installLatteDockLayout
+}
+
+installSublimeText() {
+	curl -O https://download.sublimetext.com/sublimehq-pub.gpg && sudo pacman-key --add sublimehq-pub.gpg && sudo pacman-key --lsign-key 8A8F901A && rm sublimehq-pub.gpg
+	echo -e "\n[sublime-text]\nServer = https://download.sublimetext.com/arch/stable/x86_64" | sudo tee -a /etc/pacman.conf
+	sudo pacman -Syu --noconfirm sublime-text
+}
+
+configKRunner() { # Not modular enough yet
+	mkdir -p /home/"$USER"/myScripts
+	kRunnerToggleFileDir="/home/$USER/myScripts/"
+	kRunnerToggleFileName="krunnerToggle.sh"
+	touch "$kRunnerToggleFileDir""$kRunnerToggleFileName"
+	kRunnerToggle="$(cat <<-EOT
+		#!/bin/bash
+		krunnerWindow=$(xdotool getwindowfocus getwindowname)
+		if [[ $krunnerWindow == *"krunner"* ]]; then
+			xdotool key 'Escape'
+			exit 0
+		else
+			qdbus org.kde.krunner /App display
+			exit 0
+		fi
+	EOT
+	)"
+
+	echo "$kRunnerToggle" >> "$kRunnerToggleFileDir""$kRunnerToggleFileName"
+	chmod +x "$kRunnerToggleFileDir""$kRunnerToggleFileName"
+
+	echo "Follow the instructions below to create a custom global shortcut for KRunner."
+	echo
+	echo "System Settings > Shortcuts > Custom Shortcuts > Edit > New > Global Shortcut > Command/URL"
+	echo "Name    : KRunner Toggle"
+	echo "Comment : Run a script to get 'toggle' ability for KRunner."
+	echo "Trigger : Ctrl+Alt+Shift+K"
+	echo "Action  : /home/$USER/myScripts/krunnerToggle.sh"
+	echo "Hit 'Apply' to SAVE CHANGES and CLOSE settings."
+	echo
+	echo "Press 'Enter' to open settings..."
+	read -r
+	systemsettings5 > /dev/null 2>&1
+	echo
+	echo "Press 'Enter' to continue..."
+	read -r
+	kRunnerScriptShortcutUUID=$(grep -A 2 Ctrl+Alt+Shift+K /home/"$USER"/.config/khotkeysrc | grep 'Uuid=' | grep -o '{.*}')
+	kwriteconfig5 --file ~/.config/kwinrc --group ModifierOnlyShortcuts --key Meta "org.kde.kglobalaccel,/component/khotkeys,org.kde.kglobalaccel.Component,invokeShortcut,$kRunnerScriptShortcutUUID"
+	qdbus org.kde.KWin /KWin reconfigure
+}
+
+configChromiumFlags() {
+	chromiumFlagsFileDir="/home/$USER/.config/"
+	chromiumFlagsFileName="chromium-flags.conf"
+	touch "$chromiumFlagsFileDir""$chromiumFlagsFileName"
+	chromiumFlags="$(cat <<-EOT
+		# --password-store=<basic|gnome|kwallet>
+		#--flag-switches-begin
+		--enable-smooth-scrolling
+		--enable-features=OverlayScrollbar,ParallelDownloading,SecurityInterstitialsDarkMode
+		#AutomaticPasswordGeneration,FocusMode,UsernameFirstFlow,google-password-manager
+		#--flag-switches-end
+	EOT
+	)"
+
+	echo "$chromiumFlags" >> "$chromiumFlagsFileDir""$chromiumFlagsFileName"
+}
+
+configGit() {
+	git config --global core.editor "subl -n -w"
+	git config --global credential.helper 'cache --timeout=1800'
+	git config --global core.autocrlf input
+}
+
+cleanUp() {
+	sudo mkdir -p /home/"$USER"/Documents/Arch-Install
+	sudo mv /home/"$USER"/*{gnome,kde,xfce,budgie,bedrock}* /home/"$USER"/Documents/Arch-Install
+	sudo mv /home/"$USER"/.config/autostart/run*postinstall.desktop /home/"$USER"/Documents/Arch-Install
+	echo
+	echo "[ Installation scripts have been moved into directory '/home/$USER/Documents/Arch-Install'. ]"
+	echo
+	echo "[ OPTIONAL: Run /home/$USER/Documents/Arch-Install/kdecustomsettings to enable custom settings. ]"
+}
+
+rebootSystem() {
+	while [[ ! "$yesnoreboot" =~ ^[yYnN]$ ]]; do read -n1 -rp "Reboot: (y/n) : " yesnoreboot && echo; done
+	case "$yesnoreboot" in
+		y|Y )
+			sudo reboot;;
+		n|N )
+			echo
+			echo "Reboot  : reboot"
+			echo
+			exit 0;;
+	esac
+}
+
+# Install
+
+configDisplaySettings
+automountPartitions
+configLatteDock
+installSublimeText
+configKRunner
+configChromiumFlags
+configGit
+cleanUp
+rebootSystem
