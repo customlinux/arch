@@ -43,8 +43,8 @@ installPikaur() {
 }
 
 installPikaurPackages() {
-	# Package Info: |Browser Plugin for DRM|Touchpad Gestures  |gDrive |
-	pikaurPackages=('chromium-widevine'     'libinput-gestures' 'insync')
+	# Package Info: |Browser Plugin for DRM|Touchpad Gestures  |gDrive  |Windows Hello for Linux|
+	pikaurPackages=('chromium-widevine'     'libinput-gestures' 'insync' 'howdy')
 	pikaur -S --needed --noconfirm "${pikaurPackages[@]}"
 }
 
@@ -108,6 +108,28 @@ configDisplayManagerTouchpad() {
 	)"
 
 	echo "$xorgConfTouchpad" | sudo tee -a /etc/X11/xorg.conf.d/20-touchpad.conf # > /dev/null
+}
+
+configHowdy() {
+	howdyConfigFileDir="/lib/security/howdy/"
+	howdyConfigFileName="config.ini"
+	sudo sed -i "s|detection_notice = false|detection_notice = true|g" "$howdyConfigFileDir""$howdyConfigFileName"
+	sudo sed -i "s|no_confirmation = false|no_confirmation = true|g" "$howdyConfigFileDir""$howdyConfigFileName"
+# Slow	sudo sed -i "s|use_cnn = false|use_cnn = true|g" "$howdyConfigFileDir""$howdyConfigFileName"
+	sudo sed -i "s|device_path = none|device_path = /dev/video2|g" "$howdyConfigFileDir""$howdyConfigFileName"
+	sudo sed -i "s|dark_threshold = 50|dark_threshold = 100|g" "$howdyConfigFileDir""$howdyConfigFileName"
+	
+	addHowdyFaceModel() { sudo howdy list; sudo howdy add;}
+	
+	while [[ ! "$irFaceModels" =~ ^[123456789]$ ]]; do read -n1 -rp "How many IR Face Models do you want to create? [1-9] : " irFaceModels && echo; done
+	while [[ "$irFaceModels" -gt 0 ]]; do addHowdyFaceModel; irFaceModels=$(($irFaceModels-1)); echo; done
+	
+	addHowdyPAM() { sudo sed -i "s|#%PAM-1.0|#%PAM-1.0\n\nauth sufficient pam_python.so /lib/security/howdy/pam.py\n|g" /etc/pam.d/"$1";}
+	addHowdyPAM "sddm"
+	addHowdyPAM "kde"
+	addHowdyPAM "sudo"
+	addHowdyPAM "su"
+	addHowdyPAM "login"
 }
 
 autostartKdePostInstallScript() {
