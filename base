@@ -119,8 +119,8 @@ pacmanCustom() {
 	sed -i "s/SRCEXT='.src.tar.gz'/SRCEXT='.src.tar'/g" "$1"etc/makepkg.conf
 	sed -i "s/#TotalDownload/TotalDownload/g" "$1"etc/pacman.conf
 	sed -i "s/#Color/Color/g" "$1"etc/pacman.conf
-	sed -i "s/# Misc options/# Misc options\nILoveCandy/" "$1"etc/pacman.conf
-	sed -i "s/## Defaults specification/## Defaults specification\n\nDefaults insults/" "$1"etc/sudoers
+	sed -i "s/# Misc options/# Misc options\n\nILoveCandy/g" "$1"etc/pacman.conf
+	sed -i "s/## Defaults specification/## Defaults specification\n\nDefaults insults/g" "$1"etc/sudoers
 }
 
 reflectorMirrors() {
