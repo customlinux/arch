@@ -43,8 +43,8 @@ installPikaur() {
 }
 
 installPikaurPackages() {
-	# Package Info: |Browser Plugin for DRM|Touchpad Gestures|gDrive |
-	pikaurPackages=('chromium-widevine      libinput-gestures insync')
+	# Package Info: |Browser Plugin for DRM|Touchpad Gestures  |gDrive |
+	pikaurPackages=('chromium-widevine'     'libinput-gestures' 'insync')
 	pikaur -S --needed --noconfirm "${pikaurPackages[@]}"
 }
 
