@@ -31,8 +31,6 @@ automountPartitions() {
 	esac
 }
 
-# CUSTOM LAYOUTS + SOME PACKAGES"
-
 installLatteApplets() {
 	mkdir -p /home/"$USER"/myScripts
 	wget -P /home/"$USER"/myScripts https://raw.githubusercontent.com/customlinux/files/master/scripts/updateGitInstalls.sh
@@ -76,10 +74,11 @@ configKRunner() { # Not modular enough yet
 	echo "$kRunnerToggle" >> "$kRunnerToggleFileDir""$kRunnerToggleFileName"
 	chmod +x "$kRunnerToggleFileDir""$kRunnerToggleFileName"
 
+	echo
 	echo "Follow the instructions below to create a custom global shortcut for KRunner."
 	echo
 	echo "System Settings > Shortcuts > Custom Shortcuts > Edit > New > Global Shortcut > Command/URL"
-	echo "Name    : KRunner Toggle"
+	echo "Name    : KRunner"
 	echo "Comment : Run a script to get 'toggle' ability for KRunner."
 	echo "Trigger : Ctrl+Alt+Shift+K"
 	echo "Action  : /home/$USER/myScripts/krunnerToggle.sh"
@@ -133,6 +132,7 @@ rebootSystem() {
 	while [[ ! "$yesnoreboot" =~ ^[yYnN]$ ]]; do read -n1 -rp "Reboot: (y/n) : " yesnoreboot && echo; done
 	case "$yesnoreboot" in
 		y|Y )
+			echo
 			sudo reboot;;
 		n|N )
 			echo

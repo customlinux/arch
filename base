@@ -67,10 +67,10 @@ partitionDrive() {
 
 inputVariablesOne() {
 	echo
-	read -rp "Enter system hostname : " hostname
-	read -rp "Enter your username   : " username
-	read -rp "Enter user password   : " userpass
-	read -rp "Enter root password   : " rootpass
+	read -rp "Enter system hostname : " hostName
+	read -rp "Enter your username   : " userName
+	read -rp "Enter user password   : " userPass
+	read -rp "Enter root password   : " rootPass
 	echo
 }
 
@@ -155,11 +155,11 @@ setLocale() {
 }
 
 setHostname() {
-	echo "$hostname" > "$rootMountDir"/etc/hostname
+	echo "$hostName" > "$rootMountDir"/etc/hostname
 }
 
 setRootPass() {
-	arch-chroot "$rootMountDir" sh -c "echo 'root:$rootpass' | chpasswd"
+	arch-chroot "$rootMountDir" sh -c "echo 'root:$rootPass' | chpasswd"
 }
 
 installSystemdBoot() {
@@ -277,12 +277,12 @@ enableNetworkManager() {
 }
 
 createAdminUser() {
-	arch-chroot "$rootMountDir" useradd -m -g users -G wheel -s /bin/bash "$username"
+	arch-chroot "$rootMountDir" useradd -m -g users -G wheel -s /bin/bash "$userName"
 	sed -i 's/^# %wheel ALL=(ALL) ALL/ %wheel ALL=(ALL) ALL/g' "$rootMountDir"/etc/sudoers
 }
 
 setUserPass() {
-	arch-chroot "$rootMountDir" sh -c "echo '$username:$userpass' | chpasswd"
+	arch-chroot "$rootMountDir" sh -c "echo '$userName:$userPass' | chpasswd"
 }
 
 enablePeriodicTRIM() {
@@ -297,8 +297,8 @@ editFstab() {
 }
 
 postInstallCleanup() {
-	cp /root/arch/*{kde,gnome,xfce,budgie,bedrock}* "$rootMountDir"/home/"$username"
-	chmod +x "$rootMountDir"/home/"$username"/*
+	cp /root/arch/*{kde,gnome,xfce,budgie,bedrock}* "$rootMountDir"/home/"$userName"
+	chmod +x "$rootMountDir"/home/"$userName"/*
 	rm -r /root/arch
 }
 
