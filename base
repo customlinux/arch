@@ -120,7 +120,7 @@ pacmanCustom() {
 	sed -i "s/#TotalDownload/TotalDownload/g" "$1"etc/pacman.conf
 	sed -i "s/#Color/Color/g" "$1"etc/pacman.conf
 	sed -i "s/# Misc options/# Misc options\nILoveCandy/" "$1"etc/pacman.conf
-	sed -i "s/## Defaults specification/## Defaults specification\nDefaults insults/" "$1"etc/sudoers
+	sed -i "s/## Defaults specification/## Defaults specification\n\nDefaults insults/" "$1"etc/sudoers
 }
 
 reflectorMirrors() {
