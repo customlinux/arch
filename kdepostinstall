@@ -65,6 +65,13 @@ configKRunner() {
 	chmod +x "$kRunnerToggleFileDir""$kRunnerToggleFileName"
 }
 
+configRofi() {
+	rofiConfigDir="/home/$USER/.config/rofi/"
+	mkdir -p "$rofiConfigDir"
+	wget https://raw.githubusercontent.com/customlinux/files/master/configs/rofi/config.rasi -P "$rofiConfigDir"
+	wget https://raw.githubusercontent.com/customlinux/files/master/configs/rofi/breeze-dark.rasi -P "$rofiConfigDir"
+}
+
 createKRunnerShortcut() { # Not modular enough yet
 	configKRunner
 	echo "Follow the instructions below to create a custom global shortcut for KRunner."
@@ -85,13 +92,6 @@ createKRunnerShortcut() { # Not modular enough yet
 	kRunnerScriptShortcutUUID=$(grep -A 2 Ctrl+Alt+Shift+K /home/"$USER"/.config/khotkeysrc | grep 'Uuid=' | grep -o '{.*}')
 	kwriteconfig5 --file ~/.config/kwinrc --group ModifierOnlyShortcuts --key Meta "org.kde.kglobalaccel,/component/khotkeys,org.kde.kglobalaccel.Component,invokeShortcut,$kRunnerScriptShortcutUUID"
 	qdbus org.kde.KWin /KWin reconfigure
-}
-
-configRofi() {
-	rofiConfigDir="/home/$USER/.config/rofi/"
-	mkdir -p "$rofiConfigDir"
-	wget https://raw.githubusercontent.com/customlinux/files/master/configs/rofi/config.rasi -P "$rofiConfigDir"
-	wget https://raw.githubusercontent.com/customlinux/files/master/configs/rofi/breeze-dark.rasi -P "$rofiConfigDir"
 }
 
 createRofiShortcut() { # Not modular enough yet
