@@ -72,16 +72,23 @@ configRofi() {
 	wget https://raw.githubusercontent.com/customlinux/files/master/configs/rofi/breeze-dark.rasi -P "$rofiConfigDir"
 }
 
-createKRunnerShortcut() { # Not modular enough yet
-	configKRunner
-	echo "Follow the instructions below to create a custom global shortcut for KRunner."
+createKRunnerRofiShortcuts() { # Not modular enough yet
+	echo
+	echo "Follow the instructions below to create custom global shortcuts for KRunner and Rofi."
 	echo
 	echo "System Settings > Shortcuts > Custom Shortcuts > Edit > New > Global Shortcut > Command/URL"
+	echo
 	echo "Name    : KRunner"
-	echo "Comment : Run a script to get 'toggle' ability for KRunner."
+	echo "Comment : Toggle KRunner."
 	echo "Trigger : Ctrl+Alt+Shift+K"
 	echo "Action  : /home/$USER/myScripts/krunnerToggle.sh"
-	echo "Hit 'Apply' to SAVE CHANGES and CLOSE settings."
+	echo
+	echo "Name    : Rofi"
+	echo "Comment : Launch Rofi."
+	echo "Trigger : Alt+Space"
+	echo "Action  : rofi -no-lazy-grab -show drun"
+	echo
+	echo "Hit 'Apply' to SAVE changes and CLOSE settings."
 	echo
 	echo "Press 'Enter' to open settings..."
 	read -r
@@ -92,25 +99,6 @@ createKRunnerShortcut() { # Not modular enough yet
 	kRunnerScriptShortcutUUID=$(grep -A 2 Ctrl+Alt+Shift+K /home/"$USER"/.config/khotkeysrc | grep 'Uuid=' | grep -o '{.*}')
 	kwriteconfig5 --file ~/.config/kwinrc --group ModifierOnlyShortcuts --key Meta "org.kde.kglobalaccel,/component/khotkeys,org.kde.kglobalaccel.Component,invokeShortcut,$kRunnerScriptShortcutUUID"
 	qdbus org.kde.KWin /KWin reconfigure
-}
-
-createRofiShortcut() { # Not modular enough yet
-	configRofi
-	echo "Follow the instructions below to create a global shortcut for Rofi."
-	echo
-	echo "System Settings > Shortcuts > Custom Shortcuts > Edit > New > Global Shortcut > Command/URL"
-	echo "Name    : Rofi"
-	echo "Comment : Launch Rofi."
-	echo "Trigger : Alt+Space"
-	echo "Action  : rofi -no-lazy-grab -show drun"
-	echo "Hit 'Apply' to SAVE CHANGES and CLOSE settings."
-	echo
-	echo "Press 'Enter' to open settings..."
-	read -r
-	systemsettings5 > /dev/null 2>&1
-	echo
-	echo "Press 'Enter' to continue..."
-	read -r
 }
 
 configChromiumFlags() {
@@ -166,8 +154,9 @@ configDisplaySettings
 automountPartitions
 configLatteDock
 installSublimeText
-createKRunnerShortcut
-createRofiShortcut
+configKRunner
+configRofi
+createKRunnerRofiShortcuts
 configChromiumFlags
 configGit
 cleanUp
