@@ -132,6 +132,8 @@ configHowdy() {
 	addHowdyPAM "login"
 	addHowdyPAM "polkit-1"
 	addHowdyPAM "system-auth"
+	
+	sudo chmod -R 755 /lib/security/howdy # Temporary Fix: https://github.com/boltgolt/howdy/issues/219
 }
 
 autostartKdePostInstallScript() {
