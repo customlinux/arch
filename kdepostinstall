@@ -124,6 +124,10 @@ configGit() {
 	git config --global core.autocrlf input
 }
 
+fixDiscover() {
+	sudo pacman -S --noconfirm appstream
+}
+
 cleanUp() {
 	sudo mkdir -p /home/"$USER"/Documents/Arch-Install
 	sudo mv /home/"$USER"/*{gnome,kde,xfce,budgie,bedrock}* /home/"$USER"/Documents/Arch-Install
@@ -159,5 +163,6 @@ configRofi
 createKRunnerRofiShortcuts
 configChromiumFlags
 configGit
+fixDiscover
 cleanUp
 rebootSystem
