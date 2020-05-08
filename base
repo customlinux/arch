@@ -44,25 +44,31 @@ statusDrivePart() {
 }
 
 ssdHdd() {
-	rotational=$(cat /sys/block/sda/queue/rotational)
-	case "$rotational" in
-		0 )
-			drive="$solidStateDrive";;
+	case "$ssdOrHdd" in
 		1 )
+			drive="$solidStateDrive";;
+		2 )
 			drive="$hardDiskDrive";;
 	esac
+#	rotational=$(cat /sys/block/sda/queue/rotational)
+#	case "$rotational" in
+#		0 )
+#			drive="$solidStateDrive";;
+#		1 )
+#			drive="$hardDiskDrive";;
+#	esac
 }
 
 partitionDrive() {
 	statusDrivePart
 	while [[ ! "$modifyDrive" =~ ^[yYnN]$ ]]; do read -n1 -rp "[ Create / Modify ] partitions: (y/n) : " modifyDrive && echo; done
-		case "$modifyDrive" in
-			y|Y )
-				cfdisk /dev/"${drive//p}";;
-			n|N )
-				echo "Skipping"
-				echo;;
-		esac
+	case "$modifyDrive" in
+		y|Y )
+			cfdisk /dev/"${drive//p}";;
+		n|N )
+			echo "Skipping"
+			echo;;
+	esac
 }
 
 inputVariablesOne() {
@@ -71,6 +77,7 @@ inputVariablesOne() {
 	read -rp "Enter your username   : " userName
 	read -rp "Enter user password   : " userPass
 	read -rp "Enter root password   : " rootPass
+	while [[ ! "$ssdOrHdd" =~ ^[12]$ ]]; do read -n1 -rp "Drive: [1] SSD or [2] HDD: " ssdOrHdd && echo; done
 	echo
 }
 
@@ -352,5 +359,5 @@ finish
 : '
 set -e  : exits when any command fails
 set -u  : exits when unset variables found
-
+ssdHdd function: rotational variable: results in 1 everytime because it checks the install usb instead of system drive; Temporary solution: ask user in "inputVariables"
 '
