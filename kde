@@ -115,7 +115,7 @@ configHowdy() {
 	howdyConfigFileName="config.ini"
 	sudo sed -i "s|detection_notice = false|detection_notice = true|g" "$howdyConfigFileDir""$howdyConfigFileName"
 	sudo sed -i "s|no_confirmation = false|no_confirmation = true|g" "$howdyConfigFileDir""$howdyConfigFileName"
-# Slow	sudo sed -i "s|use_cnn = false|use_cnn = true|g" "$howdyConfigFileDir""$howdyConfigFileName"
+	sudo sed -i "s|certainty = 3.5|certainty = 4.5|g" "$howdyConfigFileDir""$howdyConfigFileName"
 	sudo sed -i "s|device_path = none|device_path = /dev/video2|g" "$howdyConfigFileDir""$howdyConfigFileName"
 	sudo sed -i "s|dark_threshold = 50|dark_threshold = 100|g" "$howdyConfigFileDir""$howdyConfigFileName"
 	
@@ -125,11 +125,13 @@ configHowdy() {
 	while [[ "$irFaceModels" -gt 0 ]]; do addHowdyFaceModel; irFaceModels=$(($irFaceModels-1)); echo; done
 	
 	addHowdyPAM() { sudo sed -i "s|#%PAM-1.0|#%PAM-1.0\n\nauth sufficient pam_python.so /lib/security/howdy/pam.py\n|g" /etc/pam.d/"$1";}
-	addHowdyPAM "sddm"
-	addHowdyPAM "kde"
 	addHowdyPAM "sudo"
+	addHowdyPAM "kde"
+	addHowdyPAM "sddm"
 	addHowdyPAM "su"
 	addHowdyPAM "login"
+	addHowdyPAM "polkit-1"
+	addHowdyPAM "system-auth"
 }
 
 autostartKdePostInstallScript() {
@@ -174,5 +176,6 @@ addGroupInputUser
 enableAutostart
 configDisplayManager
 configDisplayManagerTouchpad
+configHowdy
 autostartKdePostInstallScript
 rebootSystem
