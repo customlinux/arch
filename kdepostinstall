@@ -8,9 +8,9 @@ configDisplaySettings() {
 	mkdir -p /home/"$USER"/myScripts
 	wget -P /home/"$USER"/myScripts https://raw.githubusercontent.com/customlinux/files/master/scripts/displaySetup.sh
 	chmod +x /home/"$USER"/myScripts/displaySetup.sh
-	/home/"$USER"/myScripts/displaySetup.sh
 	sudo touch /usr/share/sddm/scripts/Xsetup
 	echo "/home/$USER/myScripts/displaySetup.sh" | sudo tee -a /usr/share/sddm/scripts/Xsetup # > /dev/null
+	/home/"$USER"/myScripts/displaySetup.sh
 }
 
 automountPartitions() {
