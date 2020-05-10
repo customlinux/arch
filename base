@@ -222,7 +222,7 @@ configSystemdBootEntryArch() {
 		linux /vmlinuz-linux
 		initrd /intel-ucode.img
 		initrd /initramfs-linux.img
-		options root=PARTUUID="$rootpartuuid" rw rootflags=noatime module_blacklist=psmouse mem_sleep_default=deep quiet loglevel=0 systemd.show_status=0 rd.udev.log_priority=0 systemd.restore_state=0
+		options root=PARTUUID="$rootpartuuid" rw rootflags=noatime module_blacklist=psmouse quiet loglevel=0 systemd.show_status=0 rd.udev.log_priority=0 systemd.restore_state=0
 	EOT
 	)"
 
