@@ -249,6 +249,20 @@ configSystemdBootEntryArchLts() {
 	echo "$systemdBootEntryArchLts" > "$rootMountDir$systemdBootEntryArchLtsFileDir$systemdBootEntryArchLtsFileName"
 }
 
+configSystemdBootEntryWindows() {
+	systemdBootEntryWindowsFileDir="$efiMountDir/loader/entries/"
+	systemdBootEntryWindowsFileName="windows.conf"
+	systemdBootEntryWindows="$(cat <<-EOT
+		title Windows 10
+		efi /EFI/Microsoft/Boot/bootmgfw.efi
+	EOT
+	)"
+	
+	arch-chroot "$rootMountDir" touch "$systemdBootEntryWindowsFileDir$systemdBootEntryWindowsFileName"
+	arch-chroot "$rootMountDir" cat "$systemdBootEntryWindowsFileDir$systemdBootEntryWindowsFileName"
+	echo "$systemdBootEntryWindows" > "$rootMountDir$systemdBootEntryWindowsFileDir$systemdBootEntryWindowsFileName"
+}
+
 configSystemdBoot() {
 	configSystemdBootHook
 	configSystemdBootLoader
