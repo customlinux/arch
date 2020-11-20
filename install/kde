@@ -68,7 +68,7 @@ sed -i "s/replaceWithUserNameXsetup/$USER/g" /home/$USER/kdepostinstall
 echo
 echo "[ SET SDDM TOUCHPAD CONFIGURATION ]"
 sudo touch /etc/X11/xorg.conf.d/20-touchpad.conf
-sudo cat << EOT > /etc/X11/xorg.conf.d/20-touchpad.conf
+sudo bash -c 'cat > /etc/X11/xorg.conf.d/20-touchpad.conf' << EOT
 Section "InputClass"
 	Identifier "libinput touchpad catchall"
 	MatchIsTouchpad "on"
