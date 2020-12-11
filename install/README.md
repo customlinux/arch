@@ -2,7 +2,11 @@
 
 **Boot into the arch install media and run the following commands.**
 
-wifi-menu (not required for ethernet)
+Wi-Fi Configuration
+- iwctl device list
+- iwctl station *device* scan
+- iwctl station *device* get-networks
+- iwctl --passphrase *password* station *device* connect *SSID*
 
 pacman -Sy --noconfirm git
 
