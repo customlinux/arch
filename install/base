@@ -242,4 +242,5 @@ echo
 echo "[ UNMOUNT & REBOOT ]"
 echo
 umount -R /mnt
-reboot
+echo "#reboot"
+echo "Run 'reboot' to reboot system."
