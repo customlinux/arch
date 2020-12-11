@@ -4,8 +4,6 @@
 
 - iwctl device list
 
-- iwctl station *device* scan
-
 - iwctl station *device* get-networks
 
 - iwctl --passphrase *password* station *device* connect *SSID*
