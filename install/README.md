@@ -2,7 +2,7 @@
 
 **Boot into the arch install media and run the following commands.**
 
-- iwctl device list (not required for ethernet)
+- iwctl device list
 
 - iwctl station *device* scan
 
